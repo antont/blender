@@ -29,19 +29,34 @@
 #
 # ***** END GPL/BL DUAL LICENSE BLOCK *****
 #
-# Makefile for Netscape-api style plugin base.
+#
 
-LIBNAME = ns_api_test_threaded_gears
-DIR = $(OCGDIR)/gameengine/GamePlayer/netscape/test
+LIBNAME = blenpluginapi
+DIR = $(OCGDIR)/blender/$(LIBNAME)
 
 include nan_compile.mk
 
-CPPFLAGS += -DXP_UNIX
-CPPFLAGS += $(LEVEL_1_CPP_WARNINGS) $(LEVEL_2_CPP_WARNINGS)
+ifeq ($(OS),$(findstring $(OS), "beos darwin freebsd linux openbsd solaris windows"))
+    CFLAGS += -funsigned-char
+endif
 
-CPPFLAGS += -I../../src
-CPPFLAGS += -I../../netscape_api
-CPPFLAGS += -I$(OPENGL_HEADERS)
-CPPFLAGS += -I$(NAN_NSPR)/include
-CPPFLAGS += -I$(NAN_NSPR)/include/nspr
-CPPFLAGS += -I$(NAN_MOZILLA_INC)/nspr
+ifeq ($(OS),$(findstring $(OS), "beos darwin freebsd linux openbsd solaris"))
+    CFLAGS += -shared
+endif
+
+CPPFLAGS += $(LEVEL_2_CPP_WARNINGS)
+
+# path to our own external headerfiles. On win2k this needs to be
+# longer, to avoid the util.h include problem
+CPPFLAGS += -I..
+ifeq ($(OS),windows)
+    CPPFLAGS += -I../..
+endif
+# also do dna
+CPPFLAGS += -I../../makesdna
+# path to blenlib
+CPPFLAGS += -I../../blenlib
+# path to imbuf
+CPPFLAGS += -I../../imbuf
+CPPFLAGS += -I$(NAN_GUARDEDALLOC)/include
+
