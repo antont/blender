@@ -28,29 +28,25 @@
 # Contributor(s): Hans Lambermont
 #
 # ***** END GPL/BL DUAL LICENSE BLOCK *****
-# moto main makefile.
+# container main makefile.
 #
 
 include nan_definitions.mk
 
-LIBNAME = moto
+LIBNAME = container
 SOURCEDIR = intern/$(LIBNAME)
 DIR = $(OCGDIR)/$(SOURCEDIR)
 DIRS = intern
-#not ready yet TESTDIRS = test
+#not yet TESTDIRS = test
  
 include nan_subdirs.mk
 
 install: all debug
-	@[ -d $(NAN_MOTO) ] || mkdir $(NAN_MOTO)
-	@[ -d $(NAN_MOTO)/include ] || mkdir $(NAN_MOTO)/include
-	@[ -d $(NAN_MOTO)/lib ] || mkdir $(NAN_MOTO)/lib
-	@[ -d $(NAN_MOTO)/lib/debug ] || mkdir $(NAN_MOTO)/lib/debug
-	@../tools/cpifdiff.sh $(DIR)/libmoto.a $(NAN_MOTO)/lib/
-	@../tools/cpifdiff.sh $(DIR)/debug/libmoto.a $(NAN_MOTO)/lib/debug/
-ifeq ($(OS),darwin)
-	ranlib $(NAN_MOTO)/lib/libmoto.a
-	ranlib $(NAN_MOTO)/lib/debug/libmoto.a
-endif
-	@../tools/cpifdiff.sh include/*.h $(NAN_MOTO)/include/
+	@[ -d $(NAN_CONTAINER) ] || mkdir $(NAN_CONTAINER)
+	@[ -d $(NAN_CONTAINER)/include ] || mkdir $(NAN_CONTAINER)/include
+	@[ -d $(NAN_CONTAINER)/lib ] || mkdir $(NAN_CONTAINER)/lib
+	@[ -d $(NAN_CONTAINER)/lib/debug ] || mkdir $(NAN_CONTAINER)/lib/debug
+	@../tools/cpifdiff.sh $(DIR)/libcontainer.a $(NAN_CONTAINER)/lib/
+	@../tools/cpifdiff.sh $(DIR)/debug/libcontainer.a $(NAN_CONTAINER)/lib/debug
+	@../tools/cpifdiff.sh *.h $(NAN_CONTAINER)/include/
 

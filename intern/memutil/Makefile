@@ -28,29 +28,25 @@
 # Contributor(s): Hans Lambermont
 #
 # ***** END GPL/BL DUAL LICENSE BLOCK *****
-# moto main makefile.
+# memutil main makefile.
 #
 
 include nan_definitions.mk
 
-LIBNAME = moto
+LIBNAME = memutil
 SOURCEDIR = intern/$(LIBNAME)
 DIR = $(OCGDIR)/$(SOURCEDIR)
 DIRS = intern
-#not ready yet TESTDIRS = test
+#not yet TESTDIRS = test
  
 include nan_subdirs.mk
 
 install: all debug
-	@[ -d $(NAN_MOTO) ] || mkdir $(NAN_MOTO)
-	@[ -d $(NAN_MOTO)/include ] || mkdir $(NAN_MOTO)/include
-	@[ -d $(NAN_MOTO)/lib ] || mkdir $(NAN_MOTO)/lib
-	@[ -d $(NAN_MOTO)/lib/debug ] || mkdir $(NAN_MOTO)/lib/debug
-	@../tools/cpifdiff.sh $(DIR)/libmoto.a $(NAN_MOTO)/lib/
-	@../tools/cpifdiff.sh $(DIR)/debug/libmoto.a $(NAN_MOTO)/lib/debug/
-ifeq ($(OS),darwin)
-	ranlib $(NAN_MOTO)/lib/libmoto.a
-	ranlib $(NAN_MOTO)/lib/debug/libmoto.a
-endif
-	@../tools/cpifdiff.sh include/*.h $(NAN_MOTO)/include/
+	@[ -d $(NAN_MEMUTIL) ] || mkdir $(NAN_MEMUTIL)
+	@[ -d $(NAN_MEMUTIL)/include ] || mkdir $(NAN_MEMUTIL)/include
+	@[ -d $(NAN_MEMUTIL)/lib ] || mkdir $(NAN_MEMUTIL)/lib
+	@[ -d $(NAN_MEMUTIL)/lib/debug ] || mkdir $(NAN_MEMUTIL)/lib/debug
+	@../tools/cpifdiff.sh $(DIR)/libmemutil.a $(NAN_MEMUTIL)/lib/
+	@../tools/cpifdiff.sh $(DIR)/debug/libmemutil.a $(NAN_MEMUTIL)/lib/debug
+	@../tools/cpifdiff.sh *.h $(NAN_MEMUTIL)/include/
 
