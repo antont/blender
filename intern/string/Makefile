@@ -1,5 +1,6 @@
 #
 # $Id$
+#
 # ***** BEGIN GPL/BL DUAL LICENSE BLOCK *****
 #
 # This program is free software; you can redistribute it and/or
@@ -27,62 +28,29 @@
 # Contributor(s): none yet.
 #
 # ***** END GPL/BL DUAL LICENSE BLOCK *****
-# blender keyreader-library makefile
+# string main makefile.
 #
 
-LIBNAME = blenkey
+include nan_definitions.mk
+
+LIBNAME = string
 SOURCEDIR = intern/$(LIBNAME)
 DIR = $(OCGDIR)/$(SOURCEDIR)
-CSRCS = mt19937int.c key.c
+DIRS = intern
+# not yet TESTDIRS = test
 
-ALLTARGETS = $(OBJS)
-
-include nan_compile.mk
-
-CFLAGS += $(LEVEL_2_C_WARNINGS)
-
-CPPFLAGS += -I$(NAN_OPENSSL)/include -Ipython/
-
-include nan_link.mk
-
-# OBJS is for the library, set by nan_compile.mk
-LOADER_OBJS = $(DIR)/$(DEBUG_DIR)keyloader.o
-
-ifneq ($(OS),windows)
-    LIBS = $(NAN_OPENSSL)/lib/libcrypto.a
-else
-    LIBS = $(NAN_OPENSSL)/lib/libeay32.lib
-    LIBS += advapi32.lib gdi32.lib
-endif
-
-all debug:: link
-
-link: $(DIR)/$(DEBUG_DIR)keyloader
-
-strip:
-    ifneq ($(OS),windows)
-	strip keyloader
-	@ls -la keyloader
-    else
-	@ls -la keyloader.exe
-    endif
+include nan_subdirs.mk
 
 install: all debug
-	@[ -d $(LCGDIR)/$(LIBNAME) ] || mkdir $(LCGDIR)/$(LIBNAME)
-	@[ -d $(LCGDIR)/$(LIBNAME)/include ] || mkdir $(LCGDIR)/$(LIBNAME)/include
-	@[ -d $(LCGDIR)/$(LIBNAME)/lib ] || mkdir $(LCGDIR)/$(LIBNAME)/lib
-	cp -f blenkey.h $(LCGDIR)/$(LIBNAME)/include/blenkey.h
-	cp -f $(LIB_a) $(LCGDIR)/$(LIBNAME)/lib/
+	@[ -d $(NAN_STRING) ] || mkdir $(NAN_STRING)
+	@[ -d $(NAN_STRING)/include ] || mkdir $(NAN_STRING)/include
+	@[ -d $(NAN_STRING)/lib ] || mkdir $(NAN_STRING)/lib
+	@[ -d $(NAN_STRING)/lib/debug ] || mkdir $(NAN_STRING)/lib/debug
+	cp -f $(DIR)/libstring.a $(NAN_STRING)/lib/
+	cp -f $(DIR)/debug/libstring.a $(NAN_STRING)/lib/debug/
 ifeq ($(OS),darwin)
-	ranlib $(LCGDIR)/$(LIBNAME)/lib/lib$(LIBNAME).a
+	ranlib $(NAN_STRING)/lib/libstring.a
+	ranlib $(NAN_STRING)/lib/debug/libstring.a
 endif
+	cp -f *.h $(NAN_STRING)/include/
 
-$(DIR)/$(DEBUG_DIR)keyloader: $(LOADER_OBJS) $(LIB_a)
-	$(CC) $(LDFLAGS) -o $@ $(LOADER_OBJS) $(LIB_a) $(LIBS)
-	
-clean::
-	$(RM) $(DIR)/key* $(DIR)/debug/key*
-	$(RM) $(DIR)/nan* $(DIR)/debug/nan*
-
-tags:
-	etags *.c *.h

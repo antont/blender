@@ -1,5 +1,6 @@
 #
 # $Id$
+#
 # ***** BEGIN GPL/BL DUAL LICENSE BLOCK *****
 #
 # This program is free software; you can redistribute it and/or
@@ -27,62 +28,29 @@
 # Contributor(s): none yet.
 #
 # ***** END GPL/BL DUAL LICENSE BLOCK *****
-# blender keyreader-library makefile
+# ghost main makefile.
 #
 
-LIBNAME = blenkey
+include nan_definitions.mk
+
+LIBNAME = ghost
 SOURCEDIR = intern/$(LIBNAME)
 DIR = $(OCGDIR)/$(SOURCEDIR)
-CSRCS = mt19937int.c key.c
+DIRS = intern
+TESTDIRS = test
 
-ALLTARGETS = $(OBJS)
-
-include nan_compile.mk
-
-CFLAGS += $(LEVEL_2_C_WARNINGS)
-
-CPPFLAGS += -I$(NAN_OPENSSL)/include -Ipython/
-
-include nan_link.mk
-
-# OBJS is for the library, set by nan_compile.mk
-LOADER_OBJS = $(DIR)/$(DEBUG_DIR)keyloader.o
-
-ifneq ($(OS),windows)
-    LIBS = $(NAN_OPENSSL)/lib/libcrypto.a
-else
-    LIBS = $(NAN_OPENSSL)/lib/libeay32.lib
-    LIBS += advapi32.lib gdi32.lib
-endif
-
-all debug:: link
-
-link: $(DIR)/$(DEBUG_DIR)keyloader
-
-strip:
-    ifneq ($(OS),windows)
-	strip keyloader
-	@ls -la keyloader
-    else
-	@ls -la keyloader.exe
-    endif
+include nan_subdirs.mk
 
 install: all debug
-	@[ -d $(LCGDIR)/$(LIBNAME) ] || mkdir $(LCGDIR)/$(LIBNAME)
-	@[ -d $(LCGDIR)/$(LIBNAME)/include ] || mkdir $(LCGDIR)/$(LIBNAME)/include
-	@[ -d $(LCGDIR)/$(LIBNAME)/lib ] || mkdir $(LCGDIR)/$(LIBNAME)/lib
-	cp -f blenkey.h $(LCGDIR)/$(LIBNAME)/include/blenkey.h
-	cp -f $(LIB_a) $(LCGDIR)/$(LIBNAME)/lib/
+	@[ -d $(NAN_GHOST) ] || mkdir $(NAN_GHOST)
+	@[ -d $(NAN_GHOST)/include ] || mkdir $(NAN_GHOST)/include
+	@[ -d $(NAN_GHOST)/lib ] || mkdir $(NAN_GHOST)/lib
+	@[ -d $(NAN_GHOST)/lib/debug ] || mkdir $(NAN_GHOST)/lib/debug
+	cp -f $(DIR)/libghost.a $(NAN_GHOST)/lib/
+	cp -f $(DIR)/debug/libghost.a $(NAN_GHOST)/lib/debug/
 ifeq ($(OS),darwin)
-	ranlib $(LCGDIR)/$(LIBNAME)/lib/lib$(LIBNAME).a
+	ranlib $(NAN_GHOST)/lib/libghost.a
+	ranlib $(NAN_GHOST)/lib/debug/libghost.a
 endif
+	cp -f *.h $(NAN_GHOST)/include/
 
-$(DIR)/$(DEBUG_DIR)keyloader: $(LOADER_OBJS) $(LIB_a)
-	$(CC) $(LDFLAGS) -o $@ $(LOADER_OBJS) $(LIB_a) $(LIBS)
-	
-clean::
-	$(RM) $(DIR)/key* $(DIR)/debug/key*
-	$(RM) $(DIR)/nan* $(DIR)/debug/nan*
-
-tags:
-	etags *.c *.h
