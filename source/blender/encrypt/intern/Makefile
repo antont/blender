@@ -29,12 +29,10 @@
 #
 # ***** END GPL/BL DUAL LICENSE BLOCK *****
 #
+#
 
-LIBNAME = creator
-DIR = $(OCGDIR)/creator
-
-# this HAS to go
-CSRCS = creator.c
+LIBNAME = encrypt
+DIR = $(OCGDIR)/blender/$(LIBNAME)
 
 include nan_compile.mk
 
@@ -42,24 +40,18 @@ ifeq ($(OS),$(findstring $(OS), "beos darwin freebsd linux openbsd solaris windo
     CFLAGS += -funsigned-char
 endif
 
-CFLAGS += $(LEVEL_1_C_WARNINGS)
+CFLAGS += $(LEVEL_2_C_WARNINGS)
 
-CPPFLAGS += -I$(OPENGL_HEADERS)
-CPPFLAGS += -I../blender/render/extern/include
-CPPFLAGS += -I../blender/radiosity/extern/include
-# two needed for the kernel
-CPPFLAGS += -I../blender/imbuf
-CPPFLAGS += -I../blender/makesdna
-CPPFLAGS += -I../blender/blenlib
-CPPFLAGS += -I../blender/include
-CPPFLAGS += -I../blender/renderconverter
-CPPFLAGS += -I../blender/blenkernel
-CPPFLAGS += -I../blender/bpython/include
-CPPFLAGS += -I../blender/blenloader
-CPPFLAGS += -I../kernel/gen_system
-CPPFLAGS += -I../kernel/gen_messaging
-CPPFLAGS += -I$(NAN_GUARDEDALLOC)/include
+# path to our own external headerfiles
+CPPFLAGS += -I..
 
-ifeq ($(WITH_QUICKTIME), true)
-	CPPFLAGS += -I$(NAN_QUICKTIME)/include -DWITH_QUICKTIME
+# external modules
+CPPFLAGS += -I../../../kernel/gen_messaging
+CPPFLAGS += -I../../writestreamglue
+CPPFLAGS += -I../../readstreamglue
+CPPFLAGS += -I../../decrypt
+
+ifeq ($(OS),$(findstring $(OS), "solaris windows"))
+    CPPFLAGS += -I$(NAN_ZLIB)/include
 endif
+
