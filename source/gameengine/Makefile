@@ -28,23 +28,16 @@
 # Contributor(s): none yet.
 #
 # ***** END GPL/BL DUAL LICENSE BLOCK *****
-# Bounces make to subdirectories. Also installs after succesful all target.
+#
+# Bounces make to subdirectories.
 
-SOURCEDIR = intern
+include nan_definitions.mk
 
-# include nan_subdirs.mk
+SOURCEDIR = source/gameengine
+DIR = $(OCGDIR)/gameengine
+DIRS = BlenderRoutines
+DIRS += Converter
+DIRS += Expressions GameLogic Ketsji Rasterizer SceneGraph
+DIRS += Network GamePlayer Physics
 
-ALLDIRS = string ghost guardedalloc bmfont moto container memutil
-ALLDIRS += decimation iksolver bsp SoundSystem
-
-all::
-	@for i in $(ALLDIRS); do \
-	    echo "====> $(MAKE) $@ in $(SOURCEDIR)/$$i" ;\
-	    $(MAKE) -C $$i install || exit 1; \
-	done
-clean test debug::
-	@for i in $(ALLDIRS); do \
-	    echo "====> $(MAKE) $@ in $(SOURCEDIR)/$$i" ;\
-	    $(MAKE) -C $$i $@ || exit 1; \
-	done
-
+include nan_subdirs.mk

@@ -28,23 +28,19 @@
 # Contributor(s): none yet.
 #
 # ***** END GPL/BL DUAL LICENSE BLOCK *****
-# Bounces make to subdirectories. Also installs after succesful all target.
+#
+#
 
-SOURCEDIR = intern
+LIBNAME = FmodSoundSystem
+DIR = $(OCGDIR)/intern/$(LIBNAME)
 
-# include nan_subdirs.mk
+include nan_compile.mk
 
-ALLDIRS = string ghost guardedalloc bmfont moto container memutil
-ALLDIRS += decimation iksolver bsp SoundSystem
+CCFLAGS += $(LEVEL_1_CPP_WARNINGS)
 
-all::
-	@for i in $(ALLDIRS); do \
-	    echo "====> $(MAKE) $@ in $(SOURCEDIR)/$$i" ;\
-	    $(MAKE) -C $$i install || exit 1; \
-	done
-clean test debug::
-	@for i in $(ALLDIRS); do \
-	    echo "====> $(MAKE) $@ in $(SOURCEDIR)/$$i" ;\
-	    $(MAKE) -C $$i $@ || exit 1; \
-	done
-
+CPPFLAGS += -I$(NAN_FMOD)/include    
+CPPFLAGS += -I$(NAN_STRING)/include    
+CPPFLAGS += -I$(NAN_MOTO)/include
+CPPFLAGS += -I../intern
+CPPFLAGS += -I..
+CPPFLAGS += -I.

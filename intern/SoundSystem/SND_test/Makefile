@@ -28,23 +28,25 @@
 # Contributor(s): none yet.
 #
 # ***** END GPL/BL DUAL LICENSE BLOCK *****
-# Bounces make to subdirectories. Also installs after succesful all target.
+#
+#
 
-SOURCEDIR = intern
+LIBNAME = SoundSystem
+DIR = $(OCGDIR)/intern/$(LIBNAME)
+ALLTARGETS = $(OBJS) $(DIR)/$(DEBUG_DIR)SoundSystem
 
-# include nan_subdirs.mk
+include nan_compile.mk
 
-ALLDIRS = string ghost guardedalloc bmfont moto container memutil
-ALLDIRS += decimation iksolver bsp SoundSystem
+CPPFLAGS += $(NAN_LEVEL_1_WARNINGS)
 
-all::
-	@for i in $(ALLDIRS); do \
-	    echo "====> $(MAKE) $@ in $(SOURCEDIR)/$$i" ;\
-	    $(MAKE) -C $$i install || exit 1; \
-	done
-clean test debug::
-	@for i in $(ALLDIRS); do \
-	    echo "====> $(MAKE) $@ in $(SOURCEDIR)/$$i" ;\
-	    $(MAKE) -C $$i $@ || exit 1; \
-	done
+CPPFLAGS += -I$(NAN_MOTO)/include
+CPPFLAGS += -I.. -I../SND_BlenderWaveCache -I../SND_OpenAL
 
+TESTLIB = $(OCGDIR)/gameengine/OpenALSoundSystem/$(DEBUG_DIR)libOpenALSoundSystem.a
+TESTLIB += $(OCGDIR)/gameengine/BlenderWaveCache/$(DEBUG_DIR)libBlenderWaveCache.a
+TESTLIB += $(OCGDIR)/kernel/gen_system/$(DEBUG_DIR)libgen_system.a
+TESTLIB += $(OCGDIR)/intern/SoundSystem/$(DEBUG_DIR)libSoundSystem.a
+TESTLIB += $(NAN_OPENAL)/lib/libopenal.a
+
+$(DIR)/$(DEBUG_DIR)SoundSystem: $(OBJS) $(TESTLIB)
+	$(CC) $(LDFLAGS) -o $@ $(OBJS) $(TESTLIB) -lm -pthread -ldl -lstdc++
