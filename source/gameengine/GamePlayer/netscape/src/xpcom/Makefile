@@ -31,63 +31,57 @@
 #
 # Makefile for Netscape-api style plugin base.
 
-LIBNAME = plugin_ketsji_hooks
+LIBNAME = plugin_xpcom_hooks
 DIR = $(OCGDIR)/gameengine/GamePlayer/netscape/src
 
 include nan_compile.mk
 
-CPPFLAGS += -c 
-
-ifeq ($(OS),$(findstring $(OS), "freebsd irix solaris linux"))
-CPPFLAGS +=-DXP_UNIX
-endif
-
+CPPFLAGS += -c -DXP_UNIX
 CPPFLAGS += $(LEVEL_1_C_WARNINGS) 
 
 # only plugin related:
 CPPFLAGS += -I.
 CPPFLAGS += -I..
 CPPFLAGS += -I../../netscape_api
-CPPFLAGS += -I../../common
+
+# Mozilla headers:
 CPPFLAGS += -I$(NAN_NSPR)/include
 CPPFLAGS += -I$(NAN_NSPR)/include/nspr
+CPPFLAGS += -I$(NAN_MOZILLA_INC)
 CPPFLAGS += -I$(NAN_MOZILLA_INC)/nspr
+CPPFLAGS += -I$(NAN_MOZILLA_INC)/xpcom
 
-# game engine: main chunks:
-CPPFLAGS += -I../../../../Expressions
-CPPFLAGS += -I../../../../Converter
-CPPFLAGS += -I../../../../Ketsji
-CPPFLAGS += -I../../../../Ketsji/KXNetwork
-CPPFLAGS += -I../../../../GameLogic
-CPPFLAGS += -I../../../../Rasterizer
-CPPFLAGS += -I../../../../Rasterizer/RAS_OpenGLRasterizer
-CPPFLAGS += -I../../../../SceneGraph
-CPPFLAGS += -I../../../../SoundSystem
-CPPFLAGS += -I../../../../Network
-CPPFLAGS += -I../../../../Network/LoopBackNetwork
+# quick hack for using some intermediates:
+# :OBJPATH = /home/nzc/obj/linux-glibc2.1.2-i386/gameengine/GamePlayer/netscape/src
 
-# physics
-CPPFLAGS += -I$(NAN_FUZZICS)/include
+# To generate the proper code, use the xpidl compiler that comes with
+# Mozilla. This is the standard XPCOM compiler. These tools are not in
+# the NaN repo at this moment, sorry... Get a Mozilla tarball and
+# build one. You need to generate a header and a .xpt file. This
+# generation is only needed when the interface changes, so in general
+# you should use the existing files.
 
-# moto
-CPPFLAGS += -I$(NAN_SUMO)/include
-CPPFLAGS += -I$(NAN_MOTO)/include
+# Compile the Blender3DPlugin interface
+IDLSRC = Blender3DPlugin.idl
 
-# player dirs:
-CPPFLAGS += -I../../../common
-CPPFLAGS += -I../../../common/unix
-CPPFLAGS += -I../../../common/windows
+# This is the place where you built the Moz stuff.
+MOZ_BUILD_PLACE = /home/nzc/dist
 
-# blenderish stuff
-CPPFLAGS += -I../../../../../blender/blenlib
-CPPFLAGS += -I../../../../../blender/blenkernel
-CPPFLAGS += -I../../../../../blender/blenloader
-CPPFLAGS += -I../../../../../blender/makesdna
+# The Mozilla idl compiler
+IDL = $(MOZ_BUILD_PLACE)/bin/xpidl
 
-# general system and other libs:
-CPPFLAGS += -I../../../../../kernel/gen_system
-CPPFLAGS += -I../../../../../kernel/gen_messaging
-CPPFLAGS += -I$(NAN_STRING)/include
-CPPFLAGS += -I$(NAN_BMFONT)/include
-CPPFLAGS += -I$(OPENGL_HEADERS)
-CPPFLAGS += -I$(NAN_PYTHON)/include/python$(NAN_PYTHON_VERSION)
+# warnings and verbose:
+IDLFLAGS = -w -v
+
+# Repo with Moz interfaces.
+INTERFACE_REPO = -I$(MOZ_BUILD_PLACE)/idl
+
+# Output modes: specify what to generate
+GENHEADER = -m header
+GENTYPELIB = -m typelib
+GENDOC = -m doc
+GENJAVA = -m java
+
+idl:
+	$(IDL) $(IDLFLAGS) $(GENHEADER) $(INTERFACE_REPO) $(IDLSRC)
+	$(IDL) $(IDLFLAGS) $(GENTYPELIB) $(INTERFACE_REPO) $(IDLSRC)
