@@ -31,46 +31,23 @@
 #
 #
 
-LIBNAME = blenkernel
+LIBNAME = blenlib
 DIR = $(OCGDIR)/blender/$(LIBNAME)
 
 include nan_compile.mk
 
-ifeq ($(OS),$(findstring $(OS), "beos darwin freebsd openbsd linux solaris windows"))
+ifeq ($(OS),$(findstring $(OS), "beos darwin freebsd linux openbsd solaris windows"))
     CFLAGS += -funsigned-char
 endif
 
-CFLAGS += $(LEVEL_1_C_WARNINGS)
+CPPFLAGS += $(LEVEL_2_C_WARNINGS)
 
-# OpenGL and Python
-CPPFLAGS += -I$(OPENGL_HEADERS)
-CPPFLAGS += -I$(NAN_PYTHON)/include/python$(NAN_PYTHON_VERSION)
-
-CPPFLAGS += -I$(NAN_GUARDEDALLOC)/include
-# Reference to the types in makesdna and imbuf
+# path to SDNA types
 CPPFLAGS += -I../../makesdna
-CPPFLAGS += -I../../imbuf
-# This mod uses the BLI and BLO module
-CPPFLAGS += -I../../blenlib
-CPPFLAGS += -I../../blenloader
-CPPFLAGS += -I../../bpython/include
-# also avi is used
-CPPFLAGS += -I../../avi
-CPPFLAGS += -I$(NAN_GUARDEDALLOC)/include
-
-CPPFLAGS += -I$(NAN_FREETYPE)/include/freetype2
-
-# we still refer to /include a bit...
-CPPFLAGS += -I../../include
-
-# to include the render stuff:
-CPPFLAGS += -I../../render/extern/include
-
-# for sound
-#CPPFLAGS += -I../../../kernel/gen_system
-
-CPPFLAGS += -I$(NAN_IKSOLVER)/include
-
 # path to our own external headerfiles
 CPPFLAGS += -I..
-
+# path to the guarded memory allocator
+CPPFLAGS += -I$(NAN_GUARDEDALLOC)/include
+# path to freetype font stuff
+CPPFLAGS += -I$(NAN_FREETYPE)/include/freetype2
+CPPFLAGS += -I../../include/
