@@ -31,19 +31,48 @@
 #
 #
 
-LIBNAME = expression
-DIR = $(OCGDIR)/gameengine/$(LIBNAME)
+LIBNAME = blenkernel
+DIR = $(OCGDIR)/blender/$(LIBNAME)
 
 include nan_compile.mk
 
-CCFLAGS += $(LEVEL_1_CPP_WARNINGS)
+ifeq ($(OS),$(findstring $(OS), "beos darwin freebsd openbsd linux solaris windows"))
+    CFLAGS += -funsigned-char
+endif
 
+CFLAGS += $(LEVEL_1_C_WARNINGS)
+
+# OpenGL and Python
+CPPFLAGS += -I$(OPENGL_HEADERS)
 ifeq ($(OS),$(findstring $(OS), "freebsd"))
     CPPFLAGS += -I$(NAN_PYTHON)$(NAN_PYTHON_VERSION)
 else
     CPPFLAGS += -I$(NAN_PYTHON)/include/python$(NAN_PYTHON_VERSION)
 endif
 
-CPPFLAGS += -I$(NAN_STRING)/include    
-CPPFLAGS += -I../../kernel/gen_system
+CPPFLAGS += -I$(NAN_GUARDEDALLOC)/include
+# Reference to the types in makesdna and imbuf
+CPPFLAGS += -I../../makesdna
+CPPFLAGS += -I../../imbuf
+# This mod uses the BLI and BLO module
+CPPFLAGS += -I../../blenlib
+CPPFLAGS += -I../../blenloader
+CPPFLAGS += -I../../bpython/include
+# also avi is used
+CPPFLAGS += -I../../avi
+CPPFLAGS += -I$(NAN_GUARDEDALLOC)/include
+
+# we still refer to /include a bit...
+CPPFLAGS += -I../../include
+
+# to include the render stuff:
+CPPFLAGS += -I../../render/extern/include
+
+# for sound
+#CPPFLAGS += -I../../../kernel/gen_system
+
+CPPFLAGS += -I$(NAN_IKSOLVER)/include
+
+# path to our own external headerfiles
+CPPFLAGS += -I..
 

@@ -31,8 +31,8 @@
 #
 #
 
-LIBNAME = expression
-DIR = $(OCGDIR)/gameengine/$(LIBNAME)
+LIBNAME = KXNetwork
+DIR = $(OCGDIR)/gameengine/ketsji/$(LIBNAME)
 
 include nan_compile.mk
 
@@ -45,5 +45,9 @@ else
 endif
 
 CPPFLAGS += -I$(NAN_STRING)/include    
-CPPFLAGS += -I../../kernel/gen_system
+CPPFLAGS += -I../../Expressions
+CPPFLAGS += -I../../GameLogic
+CPPFLAGS += -I../../Network
+CPPFLAGS += -I../../../kernel/gen_system
+CPPFLAGS += -I..
 

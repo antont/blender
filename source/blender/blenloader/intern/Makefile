@@ -31,19 +31,49 @@
 #
 #
 
-LIBNAME = expression
-DIR = $(OCGDIR)/gameengine/$(LIBNAME)
+LIBNAME = blenloader
+DIR = $(OCGDIR)/blender/$(LIBNAME)
 
 include nan_compile.mk
 
-CCFLAGS += $(LEVEL_1_CPP_WARNINGS)
+CFLAGS += $(LEVEL_2_C_WARNINGS)
 
+ifeq ($(OS),$(findstring $(OS), "beos darwin freebsd linux openbsd solaris windows"))
+    CFLAGS += -funsigned-char
+endif
+
+# OpenGL and Python
+CPPFLAGS += $(OGL_CPPFLAGS)
 ifeq ($(OS),$(findstring $(OS), "freebsd"))
     CPPFLAGS += -I$(NAN_PYTHON)$(NAN_PYTHON_VERSION)
 else
     CPPFLAGS += -I$(NAN_PYTHON)/include/python$(NAN_PYTHON_VERSION)
 endif
 
-CPPFLAGS += -I$(NAN_STRING)/include    
-CPPFLAGS += -I../../kernel/gen_system
+# zlib
+ifeq ($(OS),$(findstring $(OS), "solaris windows"))
+    CPPFLAGS += -I$(NAN_ZLIB)/include
+endif
 
+# streaming write function
+CPPFLAGS += -I../../writestreamglue
+CPPFLAGS += -I../../readstreamglue
+
+# initiate a streaming read pipe
+CPPFLAGS += -I../../readblenfile
+
+# This mod uses the GEN, DNA, BLI and BKE modules
+CPPFLAGS += -I../../../kernel/gen_messaging
+CPPFLAGS += -I../../makesdna
+CPPFLAGS += -I../../blenlib
+# path to the guarded memory allocator
+CPPFLAGS += -I$(NAN_GUARDEDALLOC)/include
+CPPFLAGS += -I../../blenkernel
+CPPFLAGS += -I../../render/extern/include/
+CPPFLAGS += -I../../bpython/include
+
+# we still refer to /include a bit...
+CPPFLAGS += -I../../include
+
+# path to our own external headerfiles
+CPPFLAGS += -I..

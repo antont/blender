@@ -31,19 +31,22 @@
 #
 #
 
-LIBNAME = expression
-DIR = $(OCGDIR)/gameengine/$(LIBNAME)
+LIBNAME = dummy
+DIR = $(OCGDIR)/gameengine/blphys/$(LIBNAME)
 
 include nan_compile.mk
 
 CCFLAGS += $(LEVEL_1_CPP_WARNINGS)
 
+CPPFLAGS += -I$(OPENGL_HEADERS)
+CPPFLAGS += -I$(NAN_STRING)/include    
 ifeq ($(OS),$(findstring $(OS), "freebsd"))
     CPPFLAGS += -I$(NAN_PYTHON)$(NAN_PYTHON_VERSION)
 else
     CPPFLAGS += -I$(NAN_PYTHON)/include/python$(NAN_PYTHON_VERSION)
 endif
 
-CPPFLAGS += -I$(NAN_STRING)/include    
-CPPFLAGS += -I../../kernel/gen_system
-
+CPPFLAGS += -I$(NAN_FUZZICS)/include -I$(NAN_SUMO)/include -I$(NAN_MOTO)/include
+CPPFLAGS += -I$(NAN_GUARDEDALLOC)/include
+CPPFLAGS += -I../../Physics/common
+CPPFLAGS += -I../../Physics/Dummy

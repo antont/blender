@@ -31,19 +31,49 @@
 #
 #
 
-LIBNAME = expression
+LIBNAME = bloutines
 DIR = $(OCGDIR)/gameengine/$(LIBNAME)
 
 include nan_compile.mk
 
 CCFLAGS += $(LEVEL_1_CPP_WARNINGS)
 
-ifeq ($(OS),$(findstring $(OS), "freebsd"))
+CPPFLAGS += -I$(OPENGL_HEADERS)
+CPPFLAGS += -I$(NAN_SUMO)/include
+CPPFLAGS += -I$(NAN_STRING)/include    
+CPPFLAGS += -I$(NAN_MOTO)/include
+CPPFLAGS += -I$(NAN_BMFONT)/include
+CPPFLAGS += -I$(NAN_FUZZICS)/include
+# because of kernel dependency on makesdna
+CPPFLAGS += -I../../blender/makesdna
+CPPFLAGS += -I../../blender/include
+# timer stuff
+CPPFLAGS += -I../../blender/misc
+# because of kernel dependency on imbuf
+CPPFLAGS += -I../../blender/imbuf
+CPPFLAGS += -I../../blender/blenlib
+CPPFLAGS += -I../../blender/blenkernel
+CPPFLAGS += -I../../blender/render/extern/include
+CPPFLAGS += -I../../blender/blenloader
+CPPFLAGS += -I../../blender/blenkernel
+CPPFLAGS += -I../Converter
+CPPFLAGS += -I../Expressions
+CPPFLAGS += -I../GameLogic
+CPPFLAGS += -I../Ketsji
+CPPFLAGS += -I../Rasterizer
+CPPFLAGS += -I../Rasterizer/RAS_OpenGLRasterizer
+CPPFLAGS += -I../SceneGraph
+CPPFLAGS += -I../SoundSystem
+CPPFLAGS += -I../../kernel/gen_system
+CPPFLAGS += -I../Network
+CPPFLAGS += -I../Network/LoopBackNetwork
+ifeq ($(OS),windows)
+    CPPFLAGS += -I../../blender
+endif
+
+ifeq ($(OS),freebsd)
     CPPFLAGS += -I$(NAN_PYTHON)$(NAN_PYTHON_VERSION)
 else
     CPPFLAGS += -I$(NAN_PYTHON)/include/python$(NAN_PYTHON_VERSION)
 endif
-
-CPPFLAGS += -I$(NAN_STRING)/include    
-CPPFLAGS += -I../../kernel/gen_system
 

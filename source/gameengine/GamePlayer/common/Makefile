@@ -31,19 +31,58 @@
 #
 #
 
-LIBNAME = expression
-DIR = $(OCGDIR)/gameengine/$(LIBNAME)
+LIBNAME = common
+DIR = $(OCGDIR)/gameengine/GamePlayer/$(LIBNAME)
 
 include nan_compile.mk
 
 CCFLAGS += $(LEVEL_1_CPP_WARNINGS)
 
+CPPFLAGS += -I$(OPENGL_HEADERS)
+
+CPPFLAGS += -I../../../blender/blenkernel
+CPPFLAGS += -I../../../blender/blenloader
+CPPFLAGS += -I../../../blender/blenlib
+CPPFLAGS += -I../../../blender/imbuf
+CPPFLAGS += -I../../../blender/makesdna
+CPPFLAGS += -I../../../kernel/gen_system
+CPPFLAGS += -I$(NAN_GUARDEDALLOC)/include
+
+CPPFLAGS += -I$(NAN_FUZZICS)/include
+CPPFLAGS += -I$(NAN_STRING)/include    
+CPPFLAGS += -I$(NAN_MOTO)/include
+CPPFLAGS += -I$(NAN_SUMO)/include
 ifeq ($(OS),$(findstring $(OS), "freebsd"))
     CPPFLAGS += -I$(NAN_PYTHON)$(NAN_PYTHON_VERSION)
 else
     CPPFLAGS += -I$(NAN_PYTHON)/include/python$(NAN_PYTHON_VERSION)
 endif
 
-CPPFLAGS += -I$(NAN_STRING)/include    
-CPPFLAGS += -I../../kernel/gen_system
+CPPFLAGS += -I$(NAN_BMFONT)/include
+CPPFLAGS += -I../../../gameengine/Converter
+CPPFLAGS += -I../../../gameengine/Expressions
+CPPFLAGS += -I../../../gameengine/GameLogic
+CPPFLAGS += -I../../../gameengine/Converter
+CPPFLAGS += -I../../../gameengine/Ketsji
+CPPFLAGS += -I../../../gameengine/Ketsji/KXNetwork
+CPPFLAGS += -I../../../gameengine/Network
+CPPFLAGS += -I../../../gameengine/Network/LoopBackNetwork
+CPPFLAGS += -I../../../gameengine/Rasterizer
+CPPFLAGS += -I../../../gameengine/SceneGraph
+CPPFLAGS += -I../../../gameengine/SoundSystem
+CPPFLAGS += -I../../../gameengine/Rasterizer/RAS_OpenGLRasterizer
 
+###############################
+
+SOURCEDIR = source/gameengine/GamePlayer/common
+DIRS =
+ifeq ($(OS),windows)
+# Still 
+    DIRS = windows
+else
+  ifneq ($(OS),darwin)
+    DIRS = unix
+  endif
+endif
+
+include nan_subdirs.mk
