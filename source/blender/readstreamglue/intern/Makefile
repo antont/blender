@@ -31,24 +31,35 @@
 #
 #
 
-include nan_definitions.mk
+LIBNAME = readstreamglue
+DIR = $(OCGDIR)/blender/$(LIBNAME)
 
-DIRS = blenloader
-DIRS += deflate inflate encrypt decrypt
-DIRS += writestreamglue readstreamglue writeblenfile readblenfile
-DIRS += avi imbuf img render radiosity blenlib blenkernel blenpluginapi
-DIRS += bpython makesdna src renderconverter
+include nan_compile.mk
 
-ifeq ($(INTERNATIONAL), true)
-	DIRS += ftfont
+ifeq ($(OS),$(findstring $(OS), "beos darwin freebsd linux openbsd solaris windows"))
+    CFLAGS += -funsigned-char
 endif
 
-ifeq ($(WITH_QUICKTIME), true)
-	DIRS += quicktime
+CFLAGS += $(LEVEL_2_C_WARNINGS)
+
+# path to our own private header files
+CPPFLAGS += -I.
+
+# path to our own external header files
+CPPFLAGS += -I..
+
+# external modules
+CPPFLAGS += -I../../../kernel/gen_messaging
+CPPFLAGS += -I../../blenloader
+CPPFLAGS += -I../../inflate
+CPPFLAGS += -I../../decrypt
+
+CPPFLAGS += -I$(NAN_OPENSSL)/include
+
+#TODO make keystore a seperate lib
+CPPFLAGS += -I$(NAN_BLENKEY)/include
+
+ifeq ($(OS),$(findstring $(OS), "solaris windows"))
+    CPPFLAGS += -I$(NAN_ZLIB)/include
 endif
 
-DIR = $(OCGDIR)/blender
-SOURCEDIR = source/blender
-TESTDIRS = deflate streamglue
-
-include nan_subdirs.mk
