@@ -31,30 +31,31 @@
 #
 #
 
-LIBNAME = render
-DIR = $(OCGDIR)/blender/$(LIBNAME)
+LIBNAME = imbuf
+DIR = $(OCGDIR)/blender/imbuf
 
 include nan_compile.mk
 
 ifeq ($(OS),$(findstring $(OS), "beos darwin freebsd linux openbsd solaris windows"))
     CFLAGS += -funsigned-char
-    CCFLAGS += -funsigned-char
 endif
 
-CFLAGS += $(LEVEL_2_C_WARNINGS)
+CFLAGS += $(LEVEL_1_C_WARNINGS)
 
-# first /include is my own includes, second is the external interface. 
-# The external modules follow after. There should be a nicer way to say this.
-CPPFLAGS += -I../include 
-CPPFLAGS += -I../../extern/include 
-CPPFLAGS += -I../../../radiosity/extern/include 
-CPPFLAGS += -I../../../blenlib
-CPPFLAGS += -I../../../imbuf
-CPPFLAGS += -I../../../makesdna
-CPPFLAGS += -I../../../blenkernel
-CPPFLAGS += -I../../../quicktime
-CPPFLAGS += -I../../../../kernel/gen_messaging
+CPPFLAGS += -I$(NAN_JPEG)/include
+CPPFLAGS += -I$(NAN_PNG)/include
+CPPFLAGS += -I$(NAN_ZLIB)/include
+CPPFLAGS += -I../../include
+CPPFLAGS += -I../../blenkernel
+CPPFLAGS += -I../../blenlib
+CPPFLAGS += -I../../avi
+CPPFLAGS += -I../../quicktime
+# path to the guarded memory allocator
 CPPFLAGS += -I$(NAN_GUARDEDALLOC)/include
-# not very neat: the rest of blender..
-CPPFLAGS += -I../../../include 
+# This is not really needed, but until /include is cleaned, it must be
+# there for proper compilation.
+# - No, it is also needed in antialias, for listbase (nzc)
+CPPFLAGS += -I../../makesdna
+# external interface of this module
+CPPFLAGS += -I..
 
