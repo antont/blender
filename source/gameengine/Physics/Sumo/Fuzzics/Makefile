@@ -29,20 +29,9 @@
 #
 # ***** END GPL/BL DUAL LICENSE BLOCK *****
 #
-#
+# Bounces make to subdirectories.
 
-SOURCEDIR = extern/solid/src
-LIBNAME = solid
-DIR = $(OCGDIR)/extern/$(LIBNAME)
-DIRS = broad complex convex
+SOURCEDIR = source/gameengine/Physics/Sumo/Fuzzics
+DIRS = src
 
 include nan_subdirs.mk
-
-CCFLAGS += $(LEVEL_1_CPP_WARNINGS)
-
-CPPFLAGS += -I../include -I$(NAN_QHULL)/include
-CPPFLAGS += -Iconvex -Icomplex
-CPPFLAGS += -DQHULL -DUSE_DOUBLES
-
-include nan_compile.mk 
-
