@@ -29,9 +29,10 @@
 #
 # ***** END GPL/BL DUAL LICENSE BLOCK *****
 #
+# Bounce make to subdirectories.
 #
 
-LIBNAME = rasterizer
+LIBNAME = OpenGLrasterizer
 DIR = $(OCGDIR)/gameengine/$(LIBNAME)
 
 include nan_compile.mk
@@ -41,13 +42,8 @@ CCFLAGS += $(LEVEL_1_CPP_WARNINGS)
 CPPFLAGS += -I$(OPENGL_HEADERS)
 CPPFLAGS += -I$(NAN_STRING)/include    
 CPPFLAGS += -I$(NAN_MOTO)/include
-CPPFLAGS += -I../../kernel/gen_system
+CPPFLAGS += -I../../../kernel/gen_system
+CPPFLAGS += -I..
 ifeq ($(OS),darwin)
 	CPPFLAGS += -fpascal-strings
 endif
-###############
-
-SOURCEDIR = source/gameengine/Rasterizer
-DIRS = RAS_OpenGLRasterizer
-
-include nan_subdirs.mk
