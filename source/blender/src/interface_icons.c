@@ -78,6 +78,7 @@
 #include "BIF_interface_icons.h"
 #include "BIF_previewrender.h"
 #include "BIF_resources.h" /* elubie: should be removed once the enum for the ICONS is in BIF_preview_icons.h */
+#include "BIF_writeimage.h"
 
 #include "interface.h"
 
@@ -483,6 +484,7 @@ static void prepare_internal_icons(ImBuf* bbuf)
 	clear_transp_rect(transp, back, bbuf->x, bbuf->y, rowstride);
 	
 	/* hack! */
+#if 0	
 	for (y=0; y<12; y++) {
 		for (x=0; x<21; x++) {
 			unsigned char *start= ((unsigned char*) bbuf->rect) + (y*21 + 3)*rowstride + (x*20 + 3)*4;
@@ -496,6 +498,7 @@ static void prepare_internal_icons(ImBuf* bbuf)
 				
 		}
 	} 
+#endif
 }
 
 
