@@ -78,7 +78,6 @@
 #include "BIF_interface_icons.h"
 #include "BIF_previewrender.h"
 #include "BIF_resources.h" /* elubie: should be removed once the enum for the ICONS is in BIF_preview_icons.h */
-#include "BIF_writeimage.h"
 
 #include "interface.h"
 
