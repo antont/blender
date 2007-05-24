@@ -1902,6 +1902,7 @@ void BGLCache_addTriangle(void *vself, float verts[][3], float normals[][3], cha
 {
 	bglCacheMesh *self = (bglCacheMesh*) vself;
 	bglTriangle *tri;
+
 	CACHEERROR_CHECK
 
 	if (mat < 0 || mat >= self->totmat) {
@@ -1927,11 +1928,13 @@ void BGLCache_addEdgeWire(void *vself, float v1[3], float v2[3], char c1[3], cha
 {
 	bglCacheMesh *self = (bglCacheMesh*) vself;
 	bglEdgeWire *ewire;
+
 	CACHEERROR_CHECK
 
 	ewire = BLI_memarena_alloc(self->arena, sizeof(*ewire));
 	VECCOPY(ewire->v1, v1);
 	VECCOPY(ewire->v2, v2);
+
 	if (c1) VECCOPY(ewire->c2, c2);
 
 	if (c2) {
@@ -1948,6 +1951,7 @@ void BGLCache_addVertPoint(void *vself, float v[3], char col[3], float size)
 {
 	bglCacheMesh *self = (bglCacheMesh*) vself;
 	bglVertPoint *point;
+
 	CACHEERROR_CHECK
 
 	point = BLI_memarena_alloc(self->arena, sizeof(*point));
@@ -2003,12 +2007,12 @@ void BGLCache_endCache(void *vself)
 
 	if (self->totwire) {
 		self->wireverts = BLI_memarena_alloc(self->gl_arena, sizeof(float)*3*2*self->totwire);
-		self->wireverts = BLI_memarena_alloc(self->gl_arena, 3*2*self->totwire);
+		self->wirecols = BLI_memarena_alloc(self->gl_arena, 3*2*self->totwire);
 		for (wire=self->wires.first, i=0; wire; i++, wire=wire->next) {
 			VECCOPY(self->wireverts+i*3*2, wire->v1);
 			VECCOPY(self->wireverts+i*3*2+3, wire->v2);
-			VECCOPY(self->wireverts+i*3*2, wire->v1);
-			VECCOPY(self->wireverts+i*3*2+3, wire->v2);
+			VECCOPY(self->wirecols+i*3*2, wire->c1);
+			VECCOPY(self->wirecols+i*3*2+3, wire->c2);
 		}
 	}
 
