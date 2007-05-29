@@ -36,7 +36,7 @@ include nan_definitions.mk
 DIRS = blenloader readblenfile
 DIRS += avi imbuf render radiosity blenlib blenkernel blenpluginapi
 DIRS += makesdna src yafray
-DIRS += python nodes
+DIRS += python nodes bmesh
 
 ifeq ($(INTERNATIONAL), true)
 	DIRS += ftfont
