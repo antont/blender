@@ -28,33 +28,21 @@
 # Contributor(s): none yet.
 #
 # ***** END GPL/BL DUAL LICENSE BLOCK *****
+# GHOST gears test application Makefile
 #
-#
 
-include nan_definitions.mk
+LIBNAME = gearstest
+DIR = $(OCGDIR)/intern/ghost/test
 
-SOURCEDIR = extern/solid
-LIBNAMES = solid solid_broad solid_convex solid_complex
-DIR = $(OCGDIR)/extern/
-DIRS = src
+# we don't want a library here, only object files:
+ALLTARGETS = $(OBJS)
 
-include nan_subdirs.mk
+include nan_compile.mk
 
-install: all debug
-	@[ -d $(NAN_SOLID) ] || mkdir -p $(NAN_SOLID)
-	@[ -d $(NAN_SOLID)/include/SOLID ] || mkdir -p $(NAN_SOLID)/include/SOLID
-	@[ -d $(NAN_SOLID)/include/SOLID/MT ] || mkdir -p $(NAN_SOLID)/include/SOLID/MT
-	@[ -d $(NAN_SOLID)/lib ] || mkdir -p $(NAN_SOLID)/lib
-	@[ -d $(NAN_SOLID)/lib/debug ] || mkdir -p $(NAN_SOLID)/lib/debug
-	@for i in $(LIBNAMES); do \
-	    $(NANBLENDERHOME)/intern/tools/cpifdiff.sh $(DIR)/$$i/lib$$i.a $(NAN_SOLID)/lib/ ; \
-	    $(NANBLENDERHOME)/intern/tools/cpifdiff.sh $(DIR)/$$i/debug/lib$$i.a $(NAN_SOLID)/lib/debug/ ; \
-	    if [ $(OS) = darwin ] ; then \
-            ranlib $(NAN_SOLID)/lib/lib$$i.a ; \
-            ranlib $(NAN_SOLID)/lib/debug/lib$$i.a ; \
-        fi ; \
-	done
-	@$(NANBLENDERHOME)/intern/tools/cpifdiff.sh include/*.h $(NAN_SOLID)/include/SOLID
-	@$(NANBLENDERHOME)/intern/tools/cpifdiff.sh include/MT/*.h $(NAN_SOLID)/include/SOLID/MT
+CFLAGS += $(LEVEL_2_C_WARNINGS)
+CCFLAGS += $(LEVEL_2_CPP_WARNINGS)
 
+CPPFLAGS += -I$(OPENGL_HEADERS)
+CPPFLAGS += -I$(NAN_STRING)/include
+CPPFLAGS += -I../..
 
