@@ -47,7 +47,7 @@
 #include "BKE_bmesh.h"
 #include "BLI_blenlib.h"
 #include "BLI_arithb.h"
-#include <windows.h> // for sleep, debug
+
 
 
 
@@ -466,8 +466,8 @@ int BME_extrude_edges(BME_Mesh *bm){
 		if(e->tflag1==1){
 			/*find one face incident upon e and use it for winding of new face*/
 			if(e->loop){
-				v1 = e->loop->v;
-				v2 = e->loop->next->v;
+				v1 = e->loop->next->v;
+				v2 = e->loop->v;
 			}
 			else{
 				v1 = e->v1;
