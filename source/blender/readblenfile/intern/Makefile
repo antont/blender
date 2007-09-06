@@ -29,38 +29,22 @@
 #
 # ***** END GPL/BL DUAL LICENSE BLOCK *****
 #
+#
 
-LIBNAME = creator
-DIR = $(OCGDIR)/creator
-
-# this HAS to go
-CSRCS = creator.c
+LIBNAME = readblenfile
+DIR = $(OCGDIR)/blender/$(LIBNAME)
 
 include nan_compile.mk
 
-CFLAGS += $(LEVEL_1_C_WARNINGS)
+CFLAGS += $(LEVEL_2_C_WARNINGS)
 
-CPPFLAGS += -I../blender/render/extern/include
-CPPFLAGS += -I../blender/radiosity/extern/include
-# two needed for the kernel
-CPPFLAGS += -I../blender/imbuf
-CPPFLAGS += -I../blender/makesdna
-CPPFLAGS += -I../blender/blenlib
-CPPFLAGS += -I../blender/include
-CPPFLAGS += -I../blender/renderconverter
-CPPFLAGS += -I../blender/blenkernel
-CPPFLAGS += -I../blender/python
-CPPFLAGS += -I../blender/blenloader
-CPPFLAGS += -I../kernel/gen_system
-CPPFLAGS += -I../kernel/gen_messaging
-CPPFLAGS += -I$(NAN_GUARDEDALLOC)/include
+# path to our own external headerfiles
+CPPFLAGS += -I..
 
-ifeq ($(WITH_QUICKTIME), true)
-	CPPFLAGS += -I$(NAN_QUICKTIME)/include -DWITH_QUICKTIME
-endif
-
-ifeq ($(NAN_YESIAMSTUPID), true)
-	CPPFLAGS += -DYESIAMSTUPID
-endif
-
-CPPFLAGS += -I$(OPENGL_HEADERS)
+# external modules
+CPPFLAGS += -I../../../kernel/gen_messaging
+CPPFLAGS += -I../../readstreamglue
+CPPFLAGS += -I../../blenlib
+CPPFLAGS += -I../../makesdna
+CPPFLAGS += -I../../blenkernel
+CPPFLAGS += -I../../blenloader

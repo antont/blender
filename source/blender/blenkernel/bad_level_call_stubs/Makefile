@@ -29,38 +29,23 @@
 #
 # ***** END GPL/BL DUAL LICENSE BLOCK *****
 #
+#
 
-LIBNAME = creator
-DIR = $(OCGDIR)/creator
-
-# this HAS to go
-CSRCS = creator.c
+LIBNAME = blenkernel_blc
+DIR = $(OCGDIR)/blender/blenkernel/$(LIBNAME)
 
 include nan_compile.mk
 
-CFLAGS += $(LEVEL_1_C_WARNINGS)
+CFLAGS += $(LEVEL_2_C_WARNINGS)
+CFLAGS += $(FIX_STUBS_WARNINGS)
 
-CPPFLAGS += -I../blender/render/extern/include
-CPPFLAGS += -I../blender/radiosity/extern/include
-# two needed for the kernel
-CPPFLAGS += -I../blender/imbuf
-CPPFLAGS += -I../blender/makesdna
-CPPFLAGS += -I../blender/blenlib
-CPPFLAGS += -I../blender/include
-CPPFLAGS += -I../blender/renderconverter
-CPPFLAGS += -I../blender/blenkernel
-CPPFLAGS += -I../blender/python
-CPPFLAGS += -I../blender/blenloader
-CPPFLAGS += -I../kernel/gen_system
-CPPFLAGS += -I../kernel/gen_messaging
-CPPFLAGS += -I$(NAN_GUARDEDALLOC)/include
+CPPFLAGS += $(OGL_CPPFLAGS)
+CPPFLAGS += -I../../makesdna
+CPPFLAGS += -I../../include
+CPPFLAGS += -I../../blenlib
+CPPFLAGS += -I../../render/extern/include
+CPPFLAGS += -I$(NAN_IKSOLVER)/include
 
-ifeq ($(WITH_QUICKTIME), true)
-	CPPFLAGS += -I$(NAN_QUICKTIME)/include -DWITH_QUICKTIME
-endif
+# path to our own external headerfiles
+CPPFLAGS += -I..
 
-ifeq ($(NAN_YESIAMSTUPID), true)
-	CPPFLAGS += -DYESIAMSTUPID
-endif
-
-CPPFLAGS += -I$(OPENGL_HEADERS)
