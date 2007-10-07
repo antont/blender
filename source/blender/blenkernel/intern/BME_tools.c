@@ -988,7 +988,7 @@ static BME_Poly *addface_from_edges(BME_Mesh *bm)
 				if( eedar[a]->v2==v3 && eedar[a]->v1==v4) break;
 			}
 			if(a!=4) {
-				return add_quadtri(bm,v1,v2,v3,v4,4);
+				return add_quadtri(bm,v1,v2,v3,v4);
 			}
 		}
 	}
