@@ -190,7 +190,6 @@ int BME_radial_find_face(struct BME_Edge *e,struct BME_Poly *f);
 struct BME_Mesh *BME_make_mesh(void);
 void BME_free_mesh(struct BME_Mesh *bm);
 struct BME_Mesh *BME_copy_mesh(struct BME_Mesh *bm);
-void BME_tesselate_polys(struct BME_Mesh *bm);
 /*FULL MESH VALIDATION*/
 int BME_validate_mesh(struct BME_Mesh *bm, int halt);
 /*ENTER/EXIT MODELLING LOOP*/
