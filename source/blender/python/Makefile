@@ -1,5 +1,5 @@
 #
-# $Id: Makefile 1823 2004-01-05 00:06:11Z larstiq $
+# $Id$
 #
 # ***** BEGIN GPL/BL DUAL LICENSE BLOCK *****
 #

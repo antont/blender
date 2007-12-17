@@ -1,5 +1,5 @@
 /* 
- * $Id: BPY_interface.c 12813 2007-12-07 09:51:02Z campbellbarton $
+ * $Id$
  *
  * ***** BEGIN GPL/BL DUAL LICENSE BLOCK *****
  *
