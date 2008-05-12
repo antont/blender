@@ -4,6 +4,7 @@
 # ***** BEGIN GPL LICENSE BLOCK *****
 #
 # Copyright (C) 2006: Illusoft - colladablender@illusoft.com
+# 2008.05.08 modif. for debug mode by migius (AKA Remigiusz Fiedler)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,6 +23,7 @@
 # ***** END GPL LICENCE BLOCK *****
 # --------------------------------------------------------------------------
 
+#debug = True
 debug = False
 _ERROR = False
 _PERROR = False
@@ -42,7 +44,10 @@ Blender.Window.WaitCursor(1)
 # indicates if the user can choose a file to import
 useDefaultFile = True
 
-defaultFileUrl = ''
+defaultFileUrl = 'animation.DAE'
+#defaultFileUrl = 'animation.DAE'
+#defaultFileUrl = 'animated_letters.DAE'
+#defaultFileUrl = 'animation_robot.DAE'
 defaultExportUrl = ''
 
 # Check if full version of python is installed.	
@@ -150,7 +155,7 @@ def Main(doImp, scriptsLoc):
 	cutils.Debug.Debug('Illusoft Collada 1.4 Plugin v%s started'%(__version__),'FEEDBACK')
 	# Create a Collada <-> Blender Translator
 	if debug:
-		#keep track of the time to execute this script
+		print 'keep track of the time to execute this script' #---------
 		startTime = Blender.sys.time()
 		
 		##fileurl = scriptsDir
@@ -159,11 +164,29 @@ def Main(doImp, scriptsLoc):
 			fileurl+= defaultFileUrl
 		else :
 			fileurl += defaultExportUrl
-		transl = translator.Translator(doImport,__version__,debug,fileurl)		  
-		
+		print 'deb: fileurl=',fileurl #-------
+
+		useTriangles = False
+		usePolygons = False
+		bakeMatrices = False
+		exportSelection = False
+		newScene = True
+		clearScene = False
+		lookAt = False
+		usePhysics = True
+		exportCurrentScene = False
+		exportRelativePaths = False
+		useUV = False
+		sampleAnimation = False
+		onlyMainScene = False
+
+		transl = translator.Translator(doImport,__version__,debug,fileurl, useTriangles, usePolygons, bakeMatrices, exportSelection, newScene, clearScene, lookAt, usePhysics, exportCurrentScene, exportRelativePaths, useUV, sampleAnimation, onlyMainScene)
+	
+		##transl = translator.Translator(doImport,__version__,debug,fileurl)		  
 		##translator = Translator(False,__version__,debug,scriptsDir+defaultExportUrl)		  
 		##translator = Translator(True,__version__,debug,scriptsDir+defaultExportUrl)
 		# Redraw al 3D windows.
+		print 'deb: ---- the end ----' #-----
 		Blender.Window.RedrawAll()	  
 		
 		# calculate the elapsed time
