@@ -46,7 +46,7 @@ typedef struct Text {
 	ID id;
 	
 	char *name;
-	
+
 	int flags, nlines;
 	
 	ListBase lines;
@@ -57,6 +57,8 @@ typedef struct Text {
 	int undo_pos, undo_len;
 	
 	void *compiled;
+	
+	time_t  mtime;
 } Text;
 
 
