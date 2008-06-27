@@ -31,6 +31,8 @@
 #ifndef DNA_TEXT_TYPES_H
 #define DNA_TEXT_TYPES_H
 
+#include "time.h"
+
 #include "DNA_listBase.h"
 #include "DNA_ID.h"
 
@@ -58,7 +60,7 @@ typedef struct Text {
 	
 	void *compiled;
 	
-	time_t  mtime;
+	time_t mtime;
 } Text;
 
 
