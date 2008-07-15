@@ -16,10 +16,20 @@ except ImportError:
 	OK = False
 
 def check_membersuggest(line, c):
-	return c > 0 and line[c-1] == '.'
+	pos = line.rfind('.', 0, c)
+	if pos == -1:
+		return False
+	for s in line[pos+1:c]:
+		if not s.isalnum() and not s == '_':
+			return False
+	return True
 
 def check_imports(line, c):
-	return line.rfind('import ', 0, c) == c-7 or line.rfind('from ', 0, c) == c-5
+	if line.rfind('import ', 0, c) == c-7:
+		return True
+	if line.rfind('from ', 0, c) == c-5:
+		return True
+	return False
 
 def main():
 	txt = bpy.data.texts.active

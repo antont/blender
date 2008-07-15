@@ -235,8 +235,7 @@ def get_imports(txt):
 			# Handle special case of 'import *'
 			if impname == '*':
 				parent = get_module(fromname)
-				for symbol, attr in parent.__dict__.items():
-					imports[symbol] = attr
+				imports.update(parent.__dict__)
 				
 			else:
 				# Try importing the name as a module
@@ -246,12 +245,12 @@ def get_imports(txt):
 					else:
 						module = get_module(impname)
 					imports[symbol] = module
-				except (ImportError, ValueError):
+				except (ImportError, ValueError, AttributeError, TypeError):
 					# Try importing name as an attribute of the parent
 					try:
 						module = __import__(fromname, globals(), locals(), [impname])
 						imports[symbol] = getattr(module, impname)
-					except (ImportError, ValueError, AttributeError):
+					except (ImportError, ValueError, AttributeError, TypeError):
 						pass
 			
 			# More to import from the same module?
@@ -286,7 +285,6 @@ def get_defs(txt):
 	step = 0
 	
 	for type, string, start, end, line in tokens:
-		print string
 		
 		# Look for 'def'
 		if step == 0:
