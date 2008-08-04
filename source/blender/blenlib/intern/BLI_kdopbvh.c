@@ -444,13 +444,6 @@ static void create_kdop_hull(BVHTree *tree, BVHNode *node, float *co, int numpoi
 				bv[(2 * i) + 1] = newminmax;
 		}
 	}
-
-	// inflate the bv with some epsilon
-	for (i = tree->start_axis; i < tree->stop_axis; i++)
-	{
-		bv[(2 * i)] -= tree->epsilon; // minimum 
-		bv[(2 * i) + 1] += tree->epsilon; // maximum 
-	}
 }
 
 // depends on the fact that the BVH's for each face is already build
@@ -503,6 +496,13 @@ int BLI_bvhtree_insert(BVHTree *tree, int index, float *co, int numpoints)
 	create_kdop_hull(tree, node, co, numpoints, 0);
 	node->index= index;
 	
+	// inflate the bv with some epsilon
+	for (i = tree->start_axis; i < tree->stop_axis; i++)
+	{
+		bv[(2 * i)] -= tree->epsilon; // minimum 
+		bv[(2 * i) + 1] += tree->epsilon; // maximum 
+	}
+
 	return 1;
 }
 
@@ -890,6 +890,13 @@ int BLI_bvhtree_update_node(BVHTree *tree, int index, float *co, float *co_movin
 	if(co_moving)
 		create_kdop_hull(tree, node, co_moving, numpoints, 1);
 	
+	// inflate the bv with some epsilon
+	for (i = tree->start_axis; i < tree->stop_axis; i++)
+	{
+		bv[(2 * i)] -= tree->epsilon; // minimum 
+		bv[(2 * i) + 1] += tree->epsilon; // maximum 
+	}
+
 	return 1;
 }
 
