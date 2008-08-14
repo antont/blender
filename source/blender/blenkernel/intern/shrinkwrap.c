@@ -544,7 +544,7 @@ void shrinkwrap_calc_nearest_surface_point(ShrinkwrapCalcData *calc)
 	nearest.dist = FLT_MAX;
 
 
-	//Find the nearest vertex 
+	//Find the nearest vertex
 #pragma omp parallel for default(none) private(i) firstprivate(nearest) shared(calc,treeData) schedule(static)
 	for(i = 0; i<calc->numVerts; ++i)
 	{
@@ -570,7 +570,7 @@ void shrinkwrap_calc_nearest_surface_point(ShrinkwrapCalcData *calc)
 		BLI_bvhtree_find_nearest(treeData.tree, tmp_co, &nearest, treeData.nearest_callback, &treeData);
 
 		//Found the nearest vertex
-		if(nearest.index)
+		if(nearest.index != -1)
 		{
 			if(calc->smd->shrinkOpts & MOD_SHRINKWRAP_KEEP_ABOVE_SURFACE)
 			{
