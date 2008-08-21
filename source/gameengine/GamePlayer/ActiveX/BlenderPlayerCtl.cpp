@@ -659,7 +659,8 @@ bool CBlenderPlayerCtrl::startEngine(void)
 				m_mouse,
 				m_networkdevice,
 				m_audiodevice,
-				startscenename);
+				startscenename,
+				m_gamedata->curscene);
 			
 			PyObject* m_dictionaryobject = initGamePlayerPythonScripting("Ketsji", psl_Highest);
 			//PyObject* m_dictionaryobject = initGamePlayerPythonScripting("Ketsji", psl_Lowest);

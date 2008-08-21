@@ -564,7 +564,7 @@ initialize_gameengine(ketsji_engine_data* k, struct BlendFileData * active_file)
 			= new KX_Scene((SCA_IInputDevice*)k->keyboarddevice,
 				       (SCA_IInputDevice*)k->mousedevice, k->net_dev,
 				       k->audiodevice,
-				       startSceneName->Ptr());
+				       startSceneName->Ptr(), scene);
 		
 		initRasterizer(k->rasterizer, k->canvas_device);;
 		PyDict_SetItemString(dictionaryobject, "GameLogic", initGameLogic(k->kx_engine, startscene)); // Same as importing the module
