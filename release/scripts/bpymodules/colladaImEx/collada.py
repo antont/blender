@@ -28,6 +28,8 @@ import xmlUtils
 from cutils import *
 from datetime import *
 
+debprn = 0 #False #--- print debug "print 'deb: ..."
+
 # The number of decimals to export floats to
 ROUND = 5
 
@@ -169,8 +171,9 @@ class DaeDocument(object):
 	self.geometriesLibrary.GetItemCount()+
 	self.lightsLibrary.GetItemCount()+
 	##self.materialsLibrary.GetItemCount()+
-	self.nodesLibrary.GetItemCount()##+
-	##self.visualScenesLibrary.GetItemCount()
+	self.nodesLibrary.GetItemCount()+
+	##self.visualScenesLibrary.GetItemCount()+
+	0
 	)
 
 	def __str__(self):
@@ -202,9 +205,12 @@ class DaeElement(DaeEntity):
 	def LoadFromXml(self,daeDocument, xmlNode):
 		if xmlNode is None:
 			return
-
 		self.id = xmlNode.getAttribute(DaeSyntax.ID)
 		self.name = xmlNode.getAttribute(DaeSyntax.NAME)
+		if self.id is None:
+			if debprn: print 'deb: missing Node.ID tag !!!!!****!!!!!'
+			self.id = self.name # TODO: try to repair corrupt xmlNode data
+
 
 	def SaveToXml(self, daeDocument):
 		node = super(DaeElement,self).SaveToXml(daeDocument)
@@ -479,11 +485,11 @@ class DaeChannel(DaeEntity):
 		self.target = xmlUtils.ReadAttribute(xmlNode, DaeSyntax.TARGET)
 
 	def SaveToXml(self, daeDocument):
-#		print 'deb:DaeChannel() self.source=', self.source #-------
-#		print 'deb:DaeChannel() self.target=', self.target #-------
+		if debprn: print 'deb:DaeChannel() self.source=', self.source #-------
+		if debprn: print 'deb:DaeChannel() self.target=', self.target #-------
 		node = super(DaeChannel, self).SaveToXml(daeDocument)
-#org		SetAttribute(node, DaeSyntax.SOURCE, StripString('#'+self.source.id))
-		SetAttribute(node, DaeSyntax.SOURCE, StripString('#'+self.source))
+		SetAttribute(node, DaeSyntax.SOURCE, StripString('#'+self.source.id))
+		##SetAttribute(node, DaeSyntax.SOURCE, StripString('#'+self.source))
 		SetAttribute(node, DaeSyntax.TARGET, self.target)
 		return node
 
@@ -1171,6 +1177,7 @@ class DaeNode(DaeElement):
 
 		# Get transforms
 		xmlUtils.RemoveWhiteSpaceNode(xmlNode)
+		xmlUtils.RemoveComments(xmlNode)
 		child = xmlNode.firstChild
 		while child != None:
 			name = child.localName
@@ -1921,7 +1928,7 @@ class DaeSyntax(object):
 
 	VCOUNT = 'vcount'
 
-	##BIND_MATERIAL = 'bind_material'
+	BIND_MATERIAL = 'bind_material' #---
 	SKELETON = 'skeleton'
 
 	P = 'p'
@@ -2004,7 +2011,7 @@ class DaeSyntax(object):
 	ANIMATION_CLIP = 'animation_clip'
 	GEOMETRY = 'geometry'
 	IMAGE = 'image'
-	##EFFECT = 'effect'
+	EFFECT = 'effect' #---
 	VISUAL_SCENE = 'visual_scene'
 	CONTROLLER = 'controller'
 	MATERIAL = 'material'
@@ -2055,7 +2062,7 @@ class DaeSyntax(object):
 	INSTANCE_ANIMATION = 'instance_animation'
 	INSTANCE_CAMERA = 'instance_camera'
 	INSTANCE_CONTROLLER = 'instance_controller'
-	##INSTANCE_EFFECT = 'instance_effect'
+	INSTANCE_EFFECT = 'instance_effect' #---
 	INSTANCE_GEOMETRY = 'instance_geometry'
 	INSTANCE_LIGHT = 'instance_light'
 	INSTANCE_NODE = 'instance_node'
@@ -2128,20 +2135,20 @@ class DaeFxBindVertexInput(DaeEntity):
 	def __init__(self):
 		super(DaeFxBindVertexInput, self).__init__()
 		self.semantic = "CHANNEL1"
-		self.input_semantic = "TEXCOORD";
-		self.input_set = "1";
-		self.syntax = "bind_vertex_input";
+		self.input_semantic = "TEXCOORD"
+		self.input_set = "1"
+		self.syntax = "bind_vertex_input"
 
 	def LoadFromXml(self, daeDocument, xmlNode):
-		self.semantic = xmlUtils.ReadAttribute(xmlNode, "semantic");
-		self.input_set = xmlUtils.ReadAttribute(xmlNode, "input_semantic");
-		self.input_semantic = xmlUtils.ReadAttribute(xmlNode, "input_set");
+		self.semantic = xmlUtils.ReadAttribute(xmlNode, "semantic")
+		self.input_set = xmlUtils.ReadAttribute(xmlNode, "input_semantic")
+		self.input_semantic = xmlUtils.ReadAttribute(xmlNode, "input_set")
 
 	def SaveToXml(self, daeDocument):
 		node = super(DaeFxBindVertexInput,self).SaveToXml(daeDocument)
-		SetAttribute(node, "semantic", self.semantic);
-		SetAttribute(node, "input_semantic", self.input_semantic);
-		SetAttribute(node, "input_set", self.input_set);
+		SetAttribute(node, "semantic", self.semantic)
+		SetAttribute(node, "input_semantic", self.input_semantic)
+		SetAttribute(node, "input_set", self.input_set)
 		return node
 
 
@@ -2254,7 +2261,7 @@ class DaeFxSampler2D(DaeElement):
 
 	def SaveToXml(self, daeDocument):
 		node = super(DaeFxSampler2D,self).SaveToXml(daeDocument)
-#		print 'deb:####class DaeFxSampler2D SaveToXml self.source=', self.source #----------
+#		if debprn: print 'deb:####class DaeFxSampler2D SaveToXml self.source=', self.source #----------
 		AppendChild(daeDocument, node, self.source) #bug----
 		AppendChild(daeDocument, node, self.minfilter);
 		AppendChild(daeDocument, node, self.maxfilter);
@@ -3474,10 +3481,10 @@ def IsVersionOk(version, curVersion):
 	return True
 
 def StripString(text):
-    if text != None:
-	   return text.replace(' ','_').replace('.','_')
-    else:
-        return text;
+	if text != None:
+		return text.replace(' ','_').replace('.','_')
+	else:
+		return text;
 
 def CreateExtra(colladaInstance):
 	if isinstance(colladaInstance, DaeEntity):
