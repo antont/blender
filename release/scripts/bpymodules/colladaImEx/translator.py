@@ -24,11 +24,6 @@
 # --------------------------------------------------------------------------
 
 # History
-# 2008.08.31 by migius:
-# - added support for import IPOs interpolation type: LINEAR,BEZIER
-# - include patch jointVertexWeight from Dmitri: http://projects.blender.org/tracker/index.php?func=detail&aid=17427
-# - non-armature-animation export/import seams to work
-# - still buggy: armatures-position and armature-animation export&import
 # 2008.08.04 by migius:
 # - bugfix/refactor localTransformMatrix usage in hierarchies:
 #   it preserves local orientation for each child, so imported IPOs are correct working
@@ -42,8 +37,7 @@ import math
 import datetime
 from helperObjects import *
 
-debprn = 0 #--- print debug "print 'deb: ..."
-dmitri = 0 #switch for testing patch from Dmitri
+debprn = False #--- print debug "print 'deb: ..."
 
 class Translator(object):
 	isImporter = False
@@ -108,6 +102,44 @@ class DocumentTranslator(object):
 	scenesLibrary = None
 	fps = 25
 
+	def CreateID(self, name, typeName=None):
+		if len(name) > 0 and not name[0].isalpha():
+			name = "i"+name
+
+		if not (name in self.ids):
+			self.ids.append(name)
+			return name
+		else:
+			tempName = name
+			if not(typeName is None) and name.rfind(typeName) >= 0:
+				# Check for existing number at the end?
+				return self.IncrementString(tempName, True)
+			else:
+				# First check if no Blender Object exists with the name 'tempName + typeName'
+				if (tempName + typeName) in self.allBlenderNames:
+					return self.IncrementString(tempName + typeName, True)
+				else:
+					return self.CreateID(tempName+typeName, typeName)
+
+	def IncrementString(self, name, checkName):
+		tempName = name
+		if name.rfind('.') >= 0:
+			while tempName[-1:].isdigit():
+				tempName =	tempName[:-1]
+			digitStr = name[-(len(name)-len(tempName)):]
+			digit = 1
+			if len(digitStr) > 0 and len(digitStr) != len(name):
+				digit = int(digitStr)+1
+			newName = tempName+str(digit).zfill(3)
+		else:
+			newName = name+'.001'
+
+		if not (newName in self.ids) and (not checkName or not (newName in self.allBlenderNames)):
+			self.ids.append(newName)
+			return newName
+		else:
+			return self.IncrementString(newName, checkName)
+
 	def __init__(self, fileName):
 		global waitingControllers, armatures
 		# Keep track of the controller that are waiting to be applied
@@ -149,44 +181,6 @@ class DocumentTranslator(object):
 		self.axisTransformMatrix = Matrix()
 		self.inverseAxisTransformMatrix  = Matrix()
 		self.orgAxiss = ["X","Y","Z"]
-
-	def CreateID(self, name, typeName=None):
-		if len(name) > 0 and not name[0].isalpha():
-			name = "i"+name
-
-		if not (name in self.ids):
-			self.ids.append(name)
-			return name
-		else:
-			tempName = name
-			if not(typeName is None) and name.rfind(typeName) >= 0:
-				# Check for existing number at the end?
-				return self.IncrementString(tempName, True)
-			else:
-				# First check if no Blender Object exists with the name 'tempName + typeName'
-				if (tempName + typeName) in self.allBlenderNames:
-					return self.IncrementString(tempName + typeName, True)
-				else:
-					return self.CreateID(tempName+typeName, typeName)
-
-	def IncrementString(self, name, checkName):
-		tempName = name
-		if name.rfind('.') >= 0:
-			while tempName[-1:].isdigit():
-				tempName =	tempName[:-1]
-			digitStr = name[-(len(name)-len(tempName)):]
-			digit = 1
-			if len(digitStr) > 0 and len(digitStr) != len(name):
-				digit = int(digitStr)+1
-			newName = tempName+str(digit).zfill(3)
-		else:
-			newName = name+'.001'
-
-		if not (newName in self.ids) and (not checkName or not (newName in self.allBlenderNames)):
-			self.ids.append(newName)
-			return newName
-		else:
-			return self.IncrementString(newName, checkName)
 
 
 	def CreateNameForObject(self, name, replace, myType):
@@ -280,11 +274,12 @@ class DocumentTranslator(object):
 
 		self.inverseAxisTransformMatrix = Matrix(self.axisTransformMatrix).invert()
 
+
+
 		self.progressStep = self.progressField/(self.colladaDocument.GetItemCount()+1)
 
 		# Get the animation info
-		#TODO: for what is this good? (migius)
-		if 0:	animations = AnimationInfo.CreateAnimations(self.animationsLibrary, self.fps, self.axiss)
+		animations = AnimationInfo.CreateAnimations(self.animationsLibrary, self.fps, self.axiss)
 
 		# Read the COLLADA stucture and build the scene in Blender.
 		Blender.Window.DrawProgressBar(0.4, 'Translate Collada 2 Blender')
@@ -711,13 +706,13 @@ class Controller(object):
 		if debprn: print 'deb:class Controller_PoseBone() ---RUN---' #----------
 		#if debprn: print 'deb:class Controller_PoseBone() bindMatrices=', bindMatrices #----------
 		boneInfo = armature.boneInfos[boneName]
-		#if debprn: print 'deb:class Controller_PoseBone() boneInfo     =', boneInfo #----------
+		#if debprn: print 'deb:class Controller_PoseBone() boneInfo=', boneInfo #----------
 		#if debprn: print 'deb:class Controller_PoseBone() dir(boneInfo)=', dir(boneInfo) #----------
 		bBone = boneInfo.GetBone()
-		#if debprn: print 'deb:class Controller_PoseBone()         bBone=', bBone #----------
+		#if debprn: print 'deb:class Controller_PoseBone() bBone=', bBone #----------
 		jointName = boneInfo.GetJointName()
 		#jointName = u'joint1'
-		#if debprn: print 'deb:class Controller_PoseBone()     jointName=', jointName #----------
+		#if debprn: print 'deb:class Controller_PoseBone() jointName=', jointName #----------
 		bindMatrixCollada = bindMatrices[jointName]
 		bindMatrixBlender = self.document.CalcMatrix(bindMatrixCollada)
 ##		PrintTransforms(bindMatrixBlender, "bind "+boneName)
@@ -813,8 +808,8 @@ class Controller(object):
 		if not vertexWeights.vcount is None and not vertexWeights.v is None:
 			# Get the Joint Source
 			jointList = daeSkin.FindSource(vertexWeights.FindInput('JOINT')).source.data
-			#if debprn: print 'deb: jointList=', jointList #---------------
-			#if debprn: print 'deb: jointList[0]=', jointList[0], type(jointList[0] #---------------
+			#if debprn: print 'deb: jointList', jointList #---------------
+			#if debprn: print 'deb: jointList[0]', jointList[0], type(jointList[0]) #---------------
 			# Get the weights
 			weightList = 		daeSkin.FindSource(vertexWeights.FindInput('WEIGHT')).source.data
 			# Get the BindMatrix values
@@ -1038,16 +1033,11 @@ class Controller(object):
 
 ##				print
 ##				PrintTransforms(Matrix(bArmature.bones[vertexGroupName].matrix['ARMATURESPACE']).transpose().invert(), vertexGroupName)
-				if 0:
-					bindMatrix = Matrix(bArmature.bones[vertexGroupName].matrix['ARMATURESPACE']).transpose()
-					bindMatrix = Matrix(bMeshObject.matrix).transpose() * bindMatrix
-				elif dmitri:	#by dmitri: Use ARAMATURE matrix for a global position/orientation
-					bindMatrix = Matrix(bArmature.bones[vertexGroupName].matrix["ARMATURESPACE"]).resize4x4().transpose()
-					bindMatrix = Matrix(bArmatureObject.getMatrix('localspace')).transpose() * bindMatrix
-				else:
-					headPos = bArmature.bones[vertexGroupName].head["ARMATURESPACE"]
-					bindMatrix = Matrix([1,0,0,headPos.x], [0,1,0,headPos.y], [0,0,1,headPos.z],[0,0,0,1])
-					bindMatrix = Matrix(bArmatureObject.getMatrix('localspace')).transpose() * bindMatrix
+				#bindMatrix = Matrix(bArmature.bones[vertexGroupName].matrix['ARMATURESPACE']).transpose()
+				headPos = bArmature.bones[vertexGroupName].head["ARMATURESPACE"]
+				bindMatrix = Matrix([1,0,0,headPos.x], [0,1,0,headPos.y], [0,0,1,headPos.z],[0,0,0,1])
+				##bindMatrix = Matrix(bMeshObject.matrix).transpose() * bindMatrix
+				bindMatrix = Matrix(bArmatureObject.getMatrix('localspace')).transpose() * bindMatrix
 
 				invBindMatrix = Matrix(bindMatrix).invert()
 				poseSourceArray.data.extend(MatrixToList(invBindMatrix))
@@ -1060,8 +1050,6 @@ class Controller(object):
 		weightIndex = 0
 		for vert in bMesh.verts:
 			jointCount = 0
-			vertTotalWeight = 0.0
-			jointVertexWeight = dict()
 
 			#count up the number of joints to get an equal weight
 			for vGroup in vGroups:
@@ -1070,23 +1058,16 @@ class Controller(object):
 					if len(adjustedName) > 0 and not adjustedName[0].isalpha():
 						adjustedName = "i"+adjustedName
 					found = False
-					weight = 0.0
 					try :
-						jointSourceArray.data.index(adjustedName.replace('.','_'))
-						vi = vGroups[vGroup]
-						weight = vi[vert.index]
+						jointSourceArray.data.index(adjustedName)
 						found = True
 					except:
 						found = False
 					if found :
 						jointCount += 1
 						vertJointCount[vert.index] = jointCount
-						jointVertexWeight[adjustedName.replace('.','_')] = weight
-						vertTotalWeight+= weight
 
 			#now we know how many, so make an even weight:
-			# !!! Update cast3d !!! - even weight distribution only used if vertex total weight == 0
-			# otherwise used each joint weight normalised by total weight
 			for vGroup in vGroups:
 				if vert.index in vGroups[vGroup]:
 					adjustedName = "" + vGroup
@@ -1094,20 +1075,14 @@ class Controller(object):
 						adjustedName = "i"+adjustedName
 					found = False
 					try :
-						jointSourceArray.data.index(adjustedName.replace('.','_'))
+						jointSourceArray.data.index(adjustedName)
 						found = True
 					except:
 						found = False
 					if found :
-						daeSkin.vertexWeights.v.append(jointSourceArray.data.index(adjustedName.replace('.','_')))
+						daeSkin.vertexWeights.v.append(jointSourceArray.data.index(adjustedName))
 						daeSkin.vertexWeights.v.append(weightIndex)
-						if vertTotalWeight != 0.0:
-							jw = jointVertexWeight[adjustedName.replace('.','_')]
-							vw = jw / vertTotalWeight
-							weightSourceArray.data.append(vw)
-							#print "Joint ", adjustedName, " weight=", jw, "Total weight=",vertTotalWeight, " Final weight=", vw
-						else:
-							weightSourceArray.data.append( 1.0 / vertJointCount[vert.index])
+						weightSourceArray.data.append( 1.0 / vertJointCount[vert.index])
 						weightIndex += 1
 
 			#update the counts for this vertex
@@ -1128,13 +1103,13 @@ class Animation(object):
 		# Loop trough all channels
 		for channel in daeAnimation.channels:
 			if debprn: print 'deb: channel.target=',channel.target #------
-			if debprn: print 'deb:     daeNode.id=',daeNode.id #------
+			if debprn: print 'deb: daeNode.id=',daeNode.id #------
 			ca = channel.target.split("/",1)
 			#if it targets to this daeNode
 			if ca[0] == daeNode.id:
 				for s in daeAnimation.samplers:
 					if debprn: print 'deb:           s.id=',s.id #------
-					#if debprn: print 'deb: channel.source=',channel.source #------
+					if debprn: print 'deb: channel.source=',channel.source #------
 #org				if s.id == channel.source[1:]:
 					if s.id == channel.source:
 						if debprn: print 'deb: BINGO ---> channel.source=s.id' #------
@@ -1155,8 +1130,6 @@ class Animation(object):
 						outputSource = daeAnimation.GetSource(output.source)
 						accessorCount = outputSource.techniqueCommon.accessor.count
 						accessorStride = outputSource.techniqueCommon.accessor.stride
-						interpolations = sampler.GetInput("INTERPOLATION")
-						interpolationsSource = daeAnimation.GetSource(interpolations.source)
 						times = [x * self.document.fps for x in inputSource.source.data]
 						if type[0] == "translate" or type[0] == "scale" or (type[0] == "rotate" and type[1][1] == "ANGLE"):
 							axiss = []
@@ -1175,28 +1148,12 @@ class Animation(object):
 									cname = "Rot"
 								cname += self.document.axiss[self.document.orgAxiss.index(axis)]
 								curve = ipo.addCurve(cname)
-								curve.interpolation = 1 #LINEAR
 								for time in times:
-									value = outputSource.source.data[times.index(time) * accessorStride + axiss.index(axis)]
+									val = outputSource.source.data[times.index(time) * accessorStride + axiss.index(axis)]
 									if type[0] == "rotate":
-										value /= 10
-#old								curve.addBezier((time,value))
-									inter = interpolationsSource.source.data[times.index(time) * accessorStride + axiss.index(axis)]
-									if inter=='BEZIER':
-										point=Blender.BezTriple.New()
-										point.pt=(time, value)
-										point.handleTypes=[1,1]
-									else: #if inter=='LINEAR': inter=1
-										point=(time, value)
-									curve.append(point)
-								if 1: #TODO: need individual support interpolation type for each point
-									#if debprn: print 'deb: dir(curve)=', dir(curve) #--------
-									if inter=='LINEAR': inter = 1
-									elif inter=='BEZIER': inter = 2
-									else: inter = 1
-									curve.interpolation = inter
-								#if debprn: print 'deb: inter=', inter #--------
-								#if debprn: print 'deb: curve.interpolation=', curve.interpolation #--------
+										val /= 10
+									curve.addBezier((time,val))
+
 
 	def FindType(self, target, daeNode):
 		ta = target.split(".",1)
@@ -1257,24 +1214,19 @@ class Animation(object):
 				euler = quats[key].toEuler()
 
 				if not joint is None:
-					if dmitri:
-						bindMatrix = Matrix(joint.matrix["ARMATURESPACE"]).resize4x4().transpose()
-					else:
-						headPos = joint.head["ARMATURESPACE"]
-						bindMatrix = Matrix([1,0,0,headPos.x], [0,1,0,headPos.y], [0,0,1,headPos.z],[0,0,0,1])
+					headPos = joint.head["ARMATURESPACE"]
+					bindMatrix = Matrix([1,0,0,headPos.x], [0,1,0,headPos.y], [0,0,1,headPos.z],[0,0,0,1])
 					armMatrix = Matrix(bindMatrix)
 					if ( not joint.hasParent() ):
 						armMatrix = Matrix(bArmatureObject.getMatrix('localspace')).transpose().invert()
 						armMatrix *= bindMatrix
 
 					poseMatrix = Matrix(bParentMatrix).invert() * armMatrix
-					poseMatrix.transpose()
 
 					poseEuler = poseMatrix.toEuler()
 					euler.x += poseEuler.x
 					euler.y += poseEuler.y
 					euler.z += poseEuler.z
-					#if debprn: print 'deb: getEuler: ', joint.name , poseEuler, euler
 
 				eulers[key] = euler
 
@@ -1292,8 +1244,6 @@ class Animation(object):
 			for curve in curves:
 				cName = curve.getName()
 				interpolation = curve.getInterpolation()
-				#interpolation = curve.interpolation
-				if debprn: print 'deb: interpolation=', interpolation #--------
 				if cName.startswith("Loc") or cName.startswith("Rot") or cName.startswith("Scale"):
 					if cName.startswith("Loc"):
 						n = collada.DaeSyntax.TRANSLATE
@@ -1319,11 +1269,8 @@ class Animation(object):
 						anit[cName[-1]] = timeVal
 
 						if not joint is None:
-							if dmitri:
-								bindMatrix = Matrix(joint.matrix["ARMATURESPACE"]).resize4x4().transpose()
-							else:
-								headPos = joint.head["ARMATURESPACE"]
-								bindMatrix = Matrix([1,0,0,headPos.x], [0,1,0,headPos.y], [0,0,1,headPos.z],[0,0,0,1])
+							headPos = joint.head["ARMATURESPACE"]
+							bindMatrix = Matrix([1,0,0,headPos.x], [0,1,0,headPos.y], [0,0,1,headPos.z],[0,0,0,1])
 							armMatrix = bindMatrix
 							if ( not joint.hasParent() ):
 								armMatrix = Matrix(bArmatureObject.getMatrix('localspace')).transpose()
@@ -1457,10 +1404,7 @@ class Animation(object):
 					outputArray.data.append(value[name[-1]])
 					interpolationArray.data.append(cInterpolation)
 
-			#if not name.startswith(collada.DaeSyntax.ROTATE) or sum(outputArray.data) != 0:
-			#dimitr: rotation could be full circle, can not use  sum(outputArray.data) != 0:
-			if not name.startswith(collada.DaeSyntax.ROTATE) or len(animation) > 0:
-
+			if not name.startswith(collada.DaeSyntax.ROTATE) or sum(outputArray.data) != 0:
 				daeSampler = collada.DaeSampler()
 				daeSampler.id = self.document.CreateID(daeAnimation.id,"-sampler")
 				daeAnimation.samplers.append(daeSampler)
@@ -1557,7 +1501,7 @@ class SceneNode(object):
 		self.id = daeNode.id
 		self.name = daeNode.name
 		self.type = daeNode.type
-		if debprn: print 'deb: daeNode.id  =', daeNode.id #------------
+		if debprn: print 'deb:   daeNode.id=', daeNode.id #------------
 		if debprn: print 'deb: daeNode.name=', daeNode.name #------------
 		if debprn: print 'deb: daeNode.type=', daeNode.type #------------
 
@@ -1568,6 +1512,7 @@ class SceneNode(object):
 		parentBone = None
 		daeInstance = None
 		boneName = None
+#old	noninverse = 0
 		noninverse = 0
 
 		#Get the transformation
@@ -1749,13 +1694,11 @@ class SceneNode(object):
 
 				# Get the location of the armature.
 				armatureLoc = self.armature.GetLocation().resize3D()
-				if debprn: print 'deb:  armatureLoc=', armatureLoc #----------
 
 				# Set the correct head and tail positons of this bone.
 				headLoc = Vector(0,0,0)
 				tailLoc = Vector(0,0,1)
-				if not parentBoneName is None:
-					# The head of this bone starts at the end of it's parent.
+				if not parentBoneName is None: # The head of this bone starts at the end of it's parent.
 					parentBone = boneInfo.parent.GetBone()
 
 					if currentBoneExists:
@@ -2365,11 +2308,8 @@ class ArmatureNode(object):
 		daeNode.type = collada.DaeSyntax.TYPE_JOINT
 
 		# Get the transformations
-		if dmitri:
-			bindMatrix = Matrix(bBone.matrix["ARMATURESPACE"]).resize4x4().transpose()
-		else:
-			headPos = bBone.head["ARMATURESPACE"]
-			bindMatrix = Matrix([1,0,0,headPos.x], [0,1,0,headPos.y], [0,0,1,headPos.z],[0,0,0,1])
+		headPos = bBone.head["ARMATURESPACE"]
+		bindMatrix = Matrix([1,0,0,headPos.x], [0,1,0,headPos.y], [0,0,1,headPos.z],[0,0,0,1])
 		armMatrix = bindMatrix
 
 		if ( not bBone.hasParent() ):
@@ -2396,7 +2336,6 @@ class ArmatureNode(object):
 		mat = Matrix(parentMatrix).invert() * armMatrix
 		boneMatrix = Matrix(bindMatrix)
 		mat.transpose()
-		#PrintTransforms(mat, "ARMATURESPACE: " + bBone.name)
 
 		if bakeMatrices :
 			mat = Matrix(mat).transpose()
@@ -3116,14 +3055,14 @@ class MaterialNode(object):
 			if not (daeEffect.profileCommon is None):
 				shader = daeEffect.profileCommon.technique.shader
 				if shader.transparent:
-					if shader.transparent.color!=None:
+					if shader.transparent.color:
 						tcol = shader.transparent.color.rgba
 						tkey = 1
 						if shader.transparency:
 							tkey = shader.transparency.float
 						alpha = 1 - tkey * (tcol[0]*0.21 + tcol[1]*0.71 + tcol[2]*0.08)
 						bMat.setAlpha(alpha)
-					if shader.transparent.texture!=None: # Texture
+					if shader.transparent.texture: # Texture
 						textureSampler = shader.transparent.texture.texture
 						print "shader"
 						print shader.transparent.texture

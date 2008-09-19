@@ -53,7 +53,6 @@ defaultExportUrl = ''
 # Check if full version of python is installed.
 try:
 	import os
-	import xml
 except ImportError:
 	print"Error! Could not find full version of Python..."
 	_ERROR = True
