@@ -28,6 +28,8 @@ import xmlUtils
 from cutils import *
 from datetime import *
 
+debprn = 0 #False #--- print debug "print 'deb: ..."
+
 # The number of decimals to export floats to
 ROUND = 5
 
@@ -483,11 +485,11 @@ class DaeChannel(DaeEntity):
 		self.target = xmlUtils.ReadAttribute(xmlNode, DaeSyntax.TARGET)
 
 	def SaveToXml(self, daeDocument):
-#		if debprn: print 'deb:DaeChannel() self.source=', self.source #-------
-#		if debprn: print 'deb:DaeChannel() self.target=', self.target #-------
+		if debprn: print 'deb:DaeChannel() self.source=', self.source #-------
+		if debprn: print 'deb:DaeChannel() self.target=', self.target #-------
 		node = super(DaeChannel, self).SaveToXml(daeDocument)
-#org		SetAttribute(node, DaeSyntax.SOURCE, StripString('#'+self.source.id))
-		SetAttribute(node, DaeSyntax.SOURCE, StripString('#'+self.source))
+		SetAttribute(node, DaeSyntax.SOURCE, StripString('#'+self.source.id))
+		##SetAttribute(node, DaeSyntax.SOURCE, StripString('#'+self.source))
 		SetAttribute(node, DaeSyntax.TARGET, self.target)
 		return node
 
@@ -766,7 +768,7 @@ class DaeConvexMesh(DaeEntity):
 
 	def SaveToXml(self, daeDocument):
 		node = super(DaeConvexMesh, self).SaveToXml(daeDocument)
-		SetAttribute(node, DaeSyntax.CONVEX_HULL_OF, StripString(self.convexHullOf))
+		SetAttribute(node, DaeSyntax.CONVEX_HULL_OF, StripString('#'+self.convexHullOf))
 		return node
 
 class DaeMesh(DaeEntity):
@@ -2248,25 +2250,28 @@ class DaeFxSampler2D(DaeElement):
 		self.syntax = DaeFxSyntax.SAMPLER2D
 		self.source = DaeSamplerSource();
 		self.minfilter = DaeMinFilter();
-		self.maxfilter = DaeMaxFilter();
+		self.magfilter = DaeMagFilter();
 
 	def LoadFromXml(self, daeDocument, xmlNode):
 		super(DaeFxSampler2D, self).LoadFromXml(daeDocument, xmlNode)
 		self.source = str(xmlUtils.ReadContents(xmlUtils.FindElementByTagName(xmlNode, DaeSyntax.SOURCE)))
 #remi self.source = CreateObjectFromXml(daeDocument, xmlNode, "source", DaeSyntax.SOURCE)
 		self.minfilter = CreateObjectFromXml(daeDocument, xmlNode, "minfilter", DaeMinFilter)
-		self.maxfilter = CreateObjectFromXml(daeDocument, xmlNode, "maxfilter", DaeMaxFilter)
+		self.magfilter = CreateObjectFromXml(daeDocument, xmlNode, "magfilter", DaeMagFilter)
 
 	def SaveToXml(self, daeDocument):
 		node = super(DaeFxSampler2D,self).SaveToXml(daeDocument)
 #		if debprn: print 'deb:####class DaeFxSampler2D SaveToXml self.source=', self.source #----------
 		AppendChild(daeDocument, node, self.source) #bug----
 		AppendChild(daeDocument, node, self.minfilter);
-		AppendChild(daeDocument, node, self.maxfilter);
+		AppendChild(daeDocument, node, self.magfilter);
 		return node
 
 	def __str__(self):
 		return super(DaeFxSampler2D, self).__str__() + ', source: %s, minfilter: %s, maxfilter: %s' % (self.source, self.minfilter, self.maxfilter)
+
+	def AddShader(self, daeShader):
+		self.profileCommon.technique.shader = daeShader
 
 
 class DaeFxSurface(DaeElement):
@@ -2321,9 +2326,9 @@ class DaeMinFilter(DaeElement):
 		AppendTextInChild(node, self.value)
 		return node
 
-class DaeMaxFilter(DaeElement):
+class DaeMagFilter(DaeElement):
 	def __init__(self):
-		self.syntax = "maxfilter"
+		self.syntax = "magfilter"
 		self.id = ""
 		self.name = ""
 		self.value = "LINEAR";
@@ -2332,7 +2337,7 @@ class DaeMaxFilter(DaeElement):
 		self.value = xmlUtils.ReadContents(xmlNode)
 
 	def SaveToXml(self, daeDocument):
-		node = super(DaeMaxFilter,self).SaveToXml(daeDocument)
+		node = super(DaeMagFilter,self).SaveToXml(daeDocument)
 		AppendTextInChild(node, self.value)
 		return node
 
