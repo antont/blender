@@ -253,6 +253,12 @@ inline float lerp(float t, float v1, float v2) {
 	return (1.f - t) * v1 + t * v2;
 }
 
+inline float do_lerp(float t, float a, float b) {
+	if (a > 0.f && b > 0.f) return lerp(t, a, b);
+	else if (a < 0.f) 		return b;
+	else if (b < 0.f) 		return a;
+}
+
 /* trilinear interpolation */
 static void vol_get_precached_scattering(ShadeInput *shi, float *scatter_col, float *co)
 {
@@ -587,6 +593,7 @@ static void shade_intersection(ShadeInput *shi, float *col, Isect *is)
 	shi_new.combinedflag= 0xFFFFFF;		 /* ray trace does all options */
 	shi_new.light_override= shi->light_override;
 	shi_new.mat_override= shi->mat_override;
+	shi_new.re = shi->re;
 	
 	VECCOPY(shi_new.camera_co, is->start);
 	
@@ -918,15 +925,19 @@ void vol_precache_objectinstance(Render *re, ObjectInstanceRen *obi, Material *m
 				}
 				
 				/* don't bother if the point is not inside the volume mesh */
-				if (!point_inside_obi(tree, obi, co))
-					continue;
+				if (!point_inside_obi(tree, obi, co)) {
+					obi->volume_precache[0*res_3 + x*res_2 + y*res + z] = -1.0f;
+					obi->volume_precache[1*res_3 + x*res_2 + y*res + z] = -1.0f;
+					obi->volume_precache[2*res_3 + x*res_2 + y*res + z] = -1.0f;
+				}
+				else {
+					density = vol_get_density(&shi, co);
+					vol_get_scattering(&shi, scatter_col, co, stepsize, density);
 				
-				density = vol_get_density(&shi, co);
-				vol_get_scattering(&shi, scatter_col, co, stepsize, density);
-			
-				obi->volume_precache[0*res_3 + x*res_2 + y*res + z] = scatter_col[0];
-				obi->volume_precache[1*res_3 + x*res_2 + y*res + z] = scatter_col[1];
-				obi->volume_precache[2*res_3 + x*res_2 + y*res + z] = scatter_col[2];
+					obi->volume_precache[0*res_3 + x*res_2 + y*res + z] = scatter_col[0];
+					obi->volume_precache[1*res_3 + x*res_2 + y*res + z] = scatter_col[1];
+					obi->volume_precache[2*res_3 + x*res_2 + y*res + z] = scatter_col[2];
+				}
 			}
 		}
 	}
