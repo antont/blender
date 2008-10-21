@@ -925,19 +925,15 @@ void vol_precache_objectinstance(Render *re, ObjectInstanceRen *obi, Material *m
 				}
 				
 				/* don't bother if the point is not inside the volume mesh */
-				if (!point_inside_obi(tree, obi, co)) {
-					obi->volume_precache[0*res_3 + x*res_2 + y*res + z] = -1.0f;
-					obi->volume_precache[1*res_3 + x*res_2 + y*res + z] = -1.0f;
-					obi->volume_precache[2*res_3 + x*res_2 + y*res + z] = -1.0f;
-				}
-				else {
-					density = vol_get_density(&shi, co);
-					vol_get_scattering(&shi, scatter_col, co, stepsize, density);
-				
-					obi->volume_precache[0*res_3 + x*res_2 + y*res + z] = scatter_col[0];
-					obi->volume_precache[1*res_3 + x*res_2 + y*res + z] = scatter_col[1];
-					obi->volume_precache[2*res_3 + x*res_2 + y*res + z] = scatter_col[2];
-				}
+				if (!point_inside_obi(tree, obi, co))
+					continue;
+
+				density = vol_get_density(&shi, co);
+				vol_get_scattering(&shi, scatter_col, co, stepsize, density);
+			
+				obi->volume_precache[0*res_3 + x*res_2 + y*res + z] = scatter_col[0];
+				obi->volume_precache[1*res_3 + x*res_2 + y*res + z] = scatter_col[1];
+				obi->volume_precache[2*res_3 + x*res_2 + y*res + z] = scatter_col[2];
 			}
 		}
 	}
