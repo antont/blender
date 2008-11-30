@@ -67,7 +67,7 @@
 
 struct View2D;
 struct View2DGrid;
-struct View2DScrollbar;
+struct View2DScrollers;
 
 struct wmWindowManager;
 struct bContext;
@@ -90,7 +90,7 @@ void UI_view2d_free_grid(View2DGrid *grid);
 
 /* scrollbar drawing */
 
-void UI_view2d_draw_scrollers(const struct bContext *C, struct View2D *v2d, View2dScrollers *scrollers, int flag);
+void UI_view2d_draw_scrollers(const struct bContext *C, struct View2D *v2d, View2DScrollers *scrollers, int flag);
 void UI_view2d_free_scrollbars(View2DScrollers *scrollers);
 
 /* coordinate conversion */
