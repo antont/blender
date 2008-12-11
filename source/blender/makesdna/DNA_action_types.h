@@ -175,8 +175,8 @@ typedef struct bAction {
 /* Action Editor Space. This is defined here instead of in DNA_space_types.h */
 typedef struct SpaceAction {
 	struct SpaceLink *next, *prev;
-	int spacetype;
 	ListBase regionbase;		/* storage of regions for inactive spaces */
+	int spacetype;
 	float blockscale;
 	struct ScrArea *area;
 

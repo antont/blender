@@ -132,8 +132,8 @@ typedef struct bSoundListener {
 
 typedef struct SpaceSound {
 	struct SpaceLink *next, *prev;
-	int spacetype;
 	ListBase regionbase;		/* storage of regions for inactive spaces */
+	int spacetype;
 	float blockscale;
 	struct ScrArea *area;
 	
