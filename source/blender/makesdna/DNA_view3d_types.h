@@ -73,6 +73,7 @@ typedef struct BGpic {
 typedef struct View3D {
 	struct SpaceLink *next, *prev;
 	int spacetype;
+	ListBase regionbase;		/* storage of regions for inactive spaces */
 	float blockscale;
 	
 	short blockhandler[8];
