@@ -3,11 +3,11 @@ Import ('env')
 
 
 SConscript(['datafiles/SConscript',
+			'space_api/SConscript',
+			'util/SConscript',
 			'interface/SConscript',
 			'mesh/SConscript',
 			'object/SConscript',
-			'screen/SConscript'
-			'space_api/SConscript',
 			'space_buttons/SConscript',
 			'space_file/SConscript',
 			'space_image/SConscript',
@@ -18,4 +18,4 @@ SConscript(['datafiles/SConscript',
 			'space_time/SConscript',
 			'space_view3d/SConscript',
 			'transform/SConscript',
-			'util/SConscript'])
+			'screen/SConscript'])
