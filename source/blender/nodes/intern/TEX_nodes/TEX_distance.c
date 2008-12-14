@@ -21,54 +21,53 @@
  *
  * The Original Code is: all of this file.
  *
- * Contributor(s): none yet.
+ * Contributor(s): Mathias Panzenböck (panzi) <grosser.meister.morti@gmx.net>.
  *
  * ***** END GPL LICENSE BLOCK *****
  */
 
+#include <math.h>
+#include "BLI_arithb.h"
 #include "../TEX_util.h"
 
-/* **************** INVERT ******************** */ 
-static bNodeSocketType inputs[]= { 
-	{ SOCK_RGBA, 1, "Color", 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f}, 
+static bNodeSocketType inputs[]= {
+	{ SOCK_VECTOR, 1, "Coordinate 1", 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f },
+	{ SOCK_VECTOR, 1, "Coordinate 2", 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f },
 	{ -1, 0, "" } 
 };
 
-static bNodeSocketType outputs[]= { 
-	{ SOCK_RGBA, 0, "Color", 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f}, 
-	{ -1, 0, "" } 
+static bNodeSocketType outputs[]= {
+	{ SOCK_VALUE, 0, "Value", 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f },
+	{ -1, 0, "" }
 };
 
-static void colorfn(float *out, float *coord, bNode *node, bNodeStack **in, short thread)
+static void valuefn(float *out, float *coord, bNode *node, bNodeStack **in, short thread)
 {
-	float col[4];
-	
-	tex_input_rgba(col, in[0], coord, thread);
+	float coord1[3], coord2[3];
+	float x, y, z;
 
-	col[0] = 1.0f - col[0];
-	col[1] = 1.0f - col[1];
-	col[2] = 1.0f - col[2];
-	
-	VECCOPY(out, col);
-	out[3] = col[3];
+	tex_input_vec(coord1, in[0], coord, thread);
+	tex_input_vec(coord2, in[1], coord, thread);
+
+	*out = VecLenf(coord2, coord1);
 }
 
 static void exec(void *data, bNode *node, bNodeStack **in, bNodeStack **out)
 {
-	tex_output(node, in, out[0], &colorfn);
+	tex_output(node, in, out[0], &valuefn);
 	
 	tex_do_preview(node, out[0], data);
 }
 
-bNodeType tex_node_invert= {
+bNodeType tex_node_distance= {
 	/* *next,*prev */	NULL, NULL,
-	/* type code   */	TEX_NODE_INVERT, 
-	/* name        */	"Invert", 
-	/* width+range */	90, 80, 100, 
-	/* class+opts  */	NODE_CLASS_OP_COLOR, NODE_OPTIONS, 
-	/* input sock  */	inputs, 
-	/* output sock */	outputs, 
-	/* storage     */	"", 
+	/* type code   */	TEX_NODE_DISTANCE,
+	/* name        */	"Distance",
+	/* width+range */	120, 110, 160,
+	/* class+opts  */	NODE_CLASS_CONVERTOR, NODE_OPTIONS,
+	/* input sock  */	inputs,
+	/* output sock */	outputs,
+	/* storage     */	"node_distance",
 	/* execfunc    */	exec,
 	/* butfunc     */	NULL,
 	/* initfunc    */	NULL,
@@ -76,4 +75,5 @@ bNodeType tex_node_invert= {
 	/* copystoragefunc    */	NULL,
 	/* id          */	NULL
 };
+
 

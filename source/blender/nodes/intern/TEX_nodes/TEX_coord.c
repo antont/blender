@@ -21,54 +21,41 @@
  *
  * The Original Code is: all of this file.
  *
- * Contributor(s): none yet.
+ * Contributor(s): Mathias Panzenböck (panzi) <grosser.meister.morti@gmx.net>.
  *
  * ***** END GPL LICENSE BLOCK *****
  */
 
 #include "../TEX_util.h"
 
-/* **************** INVERT ******************** */ 
-static bNodeSocketType inputs[]= { 
-	{ SOCK_RGBA, 1, "Color", 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f}, 
-	{ -1, 0, "" } 
-};
-
 static bNodeSocketType outputs[]= { 
-	{ SOCK_RGBA, 0, "Color", 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f}, 
-	{ -1, 0, "" } 
+	{ SOCK_VECTOR, 0, "Coordinates", 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 1.0f },
+	{ -1, 0, "" }
 };
 
-static void colorfn(float *out, float *coord, bNode *node, bNodeStack **in, short thread)
+static void vectorfn(float *out, float *coord, bNode *node, bNodeStack **in, short thread)
 {
-	float col[4];
-	
-	tex_input_rgba(col, in[0], coord, thread);
-
-	col[0] = 1.0f - col[0];
-	col[1] = 1.0f - col[1];
-	col[2] = 1.0f - col[2];
-	
-	VECCOPY(out, col);
-	out[3] = col[3];
+	out[0] = coord[0];
+	out[1] = coord[1];
+	out[2] = coord[2];
 }
 
 static void exec(void *data, bNode *node, bNodeStack **in, bNodeStack **out)
 {
-	tex_output(node, in, out[0], &colorfn);
+	tex_output(node, in, out[0], &vectorfn);
 	
 	tex_do_preview(node, out[0], data);
 }
 
-bNodeType tex_node_invert= {
+bNodeType tex_node_coord= {
 	/* *next,*prev */	NULL, NULL,
-	/* type code   */	TEX_NODE_INVERT, 
-	/* name        */	"Invert", 
-	/* width+range */	90, 80, 100, 
-	/* class+opts  */	NODE_CLASS_OP_COLOR, NODE_OPTIONS, 
-	/* input sock  */	inputs, 
-	/* output sock */	outputs, 
-	/* storage     */	"", 
+	/* type code   */	TEX_NODE_COORD,
+	/* name        */	"Coordinates",
+	/* width+range */	120, 110, 160,
+	/* class+opts  */	NODE_CLASS_INPUT, NODE_OPTIONS,
+	/* input sock  */	NULL,
+	/* output sock */	outputs,
+	/* storage     */	"node_coord",
 	/* execfunc    */	exec,
 	/* butfunc     */	NULL,
 	/* initfunc    */	NULL,
