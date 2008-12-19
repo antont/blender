@@ -2105,7 +2105,7 @@ static int write_file_handle(bContext *C, int handle, MemFile *compare, MemFile 
 	mywrite(wd, &bhead, sizeof(BHead));
 
 	blo_join_main(&mainlist);
-	// XXX huh? G.main= mainlist.first;
+	G.main= mainlist.first;
 
 	return endwrite(wd);
 }
