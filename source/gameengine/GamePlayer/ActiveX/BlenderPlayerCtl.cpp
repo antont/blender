@@ -77,6 +77,8 @@ extern "C"
 
 #include "BLO_readfile.h"
 
+#include "BKE_report.h"
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus
@@ -495,8 +497,12 @@ void CBlenderPlayerCtrl::SetGameData(struct BlendFileData *gamedata)
 
 bool CBlenderPlayerCtrl::LoadGameData(char *fromfile)
 {
-	BlendReadError error;
-	BlendFileData *bfd= BLO_read_from_file(fromfile, &error);
+	ReportList reports;
+	BlendFileData *bfd;
+	
+	BKE_reports_init(&reports, 0);
+	bfd= BLO_read_from_file(fromfile, &reports);
+	BKE_reports_clear(&reports);
 
 	if (bfd) {
 		SetGameData(bfd);
@@ -510,8 +516,12 @@ bool CBlenderPlayerCtrl::LoadGameData(char *fromfile)
 
 bool CBlenderPlayerCtrl::LoadGameData(void *mem, int memsize)
 {
-	BlendReadError error;
-	BlendFileData *bfd= BLO_read_from_memory(mem, memsize, &error);
+	ReportList reports;
+	BlendFileData *bfd;
+	
+	BKE_reports_init(&reports, 0);
+	bfd= BLO_read_from_memory(mem, memsize, &reports);
+	BKE_reports_clear(&reports);
 
 	if (bfd) {
 		SetGameData(bfd);

@@ -276,14 +276,17 @@ APH_main_file_loaded(APH_application_handle h,
 		     int size)
 {
 	ketsji_engine_data* k = (ketsji_engine_data*) h;
+	ReportList reports;
 	KXH_log_entry("APH_main_file_loaded");
+
+	BKE_reports_init(&reports, 0);
 	k->blendfile = BLO_read_from_memory(buffer, 
 					    size, 
-					    &(k->error));
-	if ((!k->blendfile) 
-	    || (k->error != BRE_NONE) ) {
+					    &reports);
+	BKE_reports_clear(&reports);
+
+	if (!k->blendfile) 
 		k->blendfile_failed = true;
-	}
 }
 
 void
@@ -292,14 +295,17 @@ APH_loading_anim_loaded(APH_application_handle h,
 			int size)
 {
 	ketsji_engine_data* k = (ketsji_engine_data*) h;
+	ReportList reports;
 	KXH_log_entry("APH_loading_anim_loaded");
+
+	BKE_reports_init(&reports, 0);
 	k->loading_anim = BLO_read_from_memory(buffer, 
 					       size, 
-					       &(k->error));
-	if ((!k->blendfile) 
-	    || (k->error != BRE_NONE) ) {
+					       &reports);
+	BKE_reports_clear(&reports);
+
+	if (!k->blendfile) 
 		k->loading_anim_failed = true;
-	}
 }
 
 
@@ -490,14 +496,16 @@ APH_terminate_application(APH_application_handle handle)
 void 
 open_default_loader(ketsji_engine_data* k)
 {
+	ReportList reports;
 	unsigned char * data;
 	int size;
 
 	KXH_log_entry("open_default_loader");
 
 	GetRawLoadingAnimation(&data, &size);
-	k->loading_anim = BLO_read_from_memory(data, size, &(k->error));
-
+	BKE_reports_init(&reports, 0);
+	k->loading_anim = BLO_read_from_memory(data, size, &reports);
+	BKE_reports_clear(&reports);
 }
 
 void
