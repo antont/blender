@@ -29,7 +29,7 @@
 #ifndef BLI_DYNAMIC_LIST_H
 #define BLI_DYNAMIC_LIST_H
 
-#include "DNA_listbase.h"
+#include "DNA_listBase.h"
 
 /*
  * Access array using realloc 

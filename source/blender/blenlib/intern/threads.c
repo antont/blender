@@ -35,7 +35,7 @@
 
 #include "MEM_guardedalloc.h"
 
-#include "DNA_listbase.h"
+#include "DNA_listBase.h"
 
 #include "BLI_blenlib.h"
 #include "BLI_threads.h"
