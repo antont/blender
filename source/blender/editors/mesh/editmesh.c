@@ -78,6 +78,7 @@
 #include "BIF_retopo.h"
 
 #include "ED_mesh.h"
+#include "ED_util.h"
 
 /* own include */
 #include "editmesh.h"
@@ -98,8 +99,6 @@ static void key_to_mesh() {}
 static void undo_editmode_clear() {}
 static int multires_test() {return 0;}
 static void adduplicate() {}
-static void *undo_editmode_get_prev() {return NULL;}
-static void undo_editmode_push() {}
 
 
 /* ***************** HASH ********************* */
