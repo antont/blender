@@ -49,7 +49,7 @@
 #include "BKE_object.h"
 
 #include "BLI_blenlib.h"
-#include "BLI_editvert.h"
+#include "BLI_editVert.h"
 #include "BLI_dynstr.h"
 
 #include "BKE_utildefines.h"
