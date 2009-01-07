@@ -1,15 +1,12 @@
 /**
  * $Id$
  *
- * ***** BEGIN GPL/BL DUAL LICENSE BLOCK *****
+ * ***** BEGIN GPL LICENSE BLOCK *****
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version. The Blender
- * Foundation also sells licenses for use in proprietary software under
- * the Blender License.  See http://www.blender.org/BL/ for information
- * about this.
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -27,7 +24,7 @@
  *
  * Contributor(s): none yet.
  *
- * ***** END GPL/BL DUAL LICENSE BLOCK *****
+ * ***** END GPL LICENSE BLOCK *****
  * Blender Player Active X control class implementation.
  */
 
@@ -79,6 +76,8 @@ extern "C"
 #include "DNA_scene_types.h"
 
 #include "BLO_readfile.h"
+
+#include "BKE_report.h"
 
 #ifdef __cplusplus
 }
@@ -498,8 +497,12 @@ void CBlenderPlayerCtrl::SetGameData(struct BlendFileData *gamedata)
 
 bool CBlenderPlayerCtrl::LoadGameData(char *fromfile)
 {
-	BlendReadError error;
-	BlendFileData *bfd= BLO_read_from_file(fromfile, &error);
+	ReportList reports;
+	BlendFileData *bfd;
+	
+	BKE_reports_init(&reports, 0);
+	bfd= BLO_read_from_file(fromfile, &reports);
+	BKE_reports_clear(&reports);
 
 	if (bfd) {
 		SetGameData(bfd);
@@ -513,8 +516,12 @@ bool CBlenderPlayerCtrl::LoadGameData(char *fromfile)
 
 bool CBlenderPlayerCtrl::LoadGameData(void *mem, int memsize)
 {
-	BlendReadError error;
-	BlendFileData *bfd= BLO_read_from_memory(mem, memsize, &error);
+	ReportList reports;
+	BlendFileData *bfd;
+	
+	BKE_reports_init(&reports, 0);
+	bfd= BLO_read_from_memory(mem, memsize, &reports);
+	BKE_reports_clear(&reports);
 
 	if (bfd) {
 		SetGameData(bfd);
@@ -662,7 +669,8 @@ bool CBlenderPlayerCtrl::startEngine(void)
 				m_mouse,
 				m_networkdevice,
 				m_audiodevice,
-				startscenename);
+				startscenename,
+				m_gamedata->curscene);
 			
 			PyObject* m_dictionaryobject = initGamePlayerPythonScripting("Ketsji", psl_Highest);
 			//PyObject* m_dictionaryobject = initGamePlayerPythonScripting("Ketsji", psl_Lowest);
@@ -671,10 +679,10 @@ bool CBlenderPlayerCtrl::startEngine(void)
 			m_ketsjiengine->SetPythonDictionary(m_dictionaryobject);
 
 			initRasterizer(m_rasterizer, m_canvas);			
-			initGameLogic(startscene);
-			initGameKeys();
-			
+			PyDict_SetItemString(m_dictionaryobject, "GameLogic", initGameLogic(m_ketsjiengine, startscene)); // Same as importing the module
+			initGameKeys();			
 			initPythonConstraintBinding();
+			initMathutils();
 			
 			m_sceneconverter->ConvertScene(
 				startscenename,

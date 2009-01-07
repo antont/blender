@@ -9,7 +9,7 @@ Tooltip: 'Export scene from Blender to COLLADA 1.4 format (.dae)'
 
 __author__ = "Illusoft - Pieter Visser"
 __url__ = ("Project homepage, http://colladablender.illusoft.com")
-__version__ = "0.3.146"
+__version__ = "0.3.159"
 __email__ = "colladablender@illusoft.com"
 __bpydoc__ = """\
 
@@ -21,7 +21,7 @@ Usage: Run the script from the menu or inside Blender.
 """
 
 # --------------------------------------------------------------------------
-# Illusoft Collada 1.4 plugin for Blender version 0.3.146
+# Illusoft Collada 1.4 plugin for Blender
 # --------------------------------------------------------------------------
 # ***** BEGIN GPL LICENSE BLOCK *****
 #
@@ -61,7 +61,7 @@ scriptsDir = ""
 
 try:
 	import colladaImEx.cstartup
-	if Blender.Get('scriptsdir') is None:
+	if not Blender.Get('scriptsdir') and not Blender.Get('uscriptsdir'):
 		if scriptsDir == '' or scriptsDir is None:
 			Blender.Draw.PupMenu("Cannot find folder %t | Please set path in file 'colladaImport14.py'")
 			error = True
@@ -118,5 +118,5 @@ if not error:
 	try:
 		reload(colladaImEx.cstartup)
 		colladaImEx.cstartup.Main(False, loc)
-	except StandardError:
+	except ImportError:
 		pass

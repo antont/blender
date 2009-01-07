@@ -1,15 +1,12 @@
 /**
  * $Id$
  *
- * ***** BEGIN GPL/BL DUAL LICENSE BLOCK *****
+ * ***** BEGIN GPL LICENSE BLOCK *****
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version. The Blender
- * Foundation also sells licenses for use in proprietary software under
- * the Blender License.  See http://www.blender.org/BL/ for information
- * about this.
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -27,7 +24,7 @@
  *
  * Contributor(s): none yet.
  *
- * ***** END GPL/BL DUAL LICENSE BLOCK *****
+ * ***** END GPL LICENSE BLOCK *****
  * Data wraps for the engine.
  */
 
@@ -49,6 +46,7 @@ extern "C"
 #include "BLO_readfile.h"
 #include "DNA_scene_types.h"
 #include "BKE_blender.h"
+#include "BKE_report.h"
 #ifdef __cplusplus
 }
 #endif // __cplusplus
@@ -158,15 +156,11 @@ extern "C" {
 
 		/** Did the main file retrieval fail for some reason? */
 		bool blendfile_failed;
-		/* for parsing the errors from the main file */
-		BlendReadError error;
 
 		/** The loading anim resource. */
 		struct BlendFileData *loading_anim;
 		/** Did the loading anim file retrieval fail for some reason? */
 		bool loading_anim_failed;
-		/* for parsing the errors from the loading anim */
-		BlendReadError loading_anim_error;
 
 		/** Placeholder for blender logo, if needed */
 		GPC_RawImage* blender_logo;

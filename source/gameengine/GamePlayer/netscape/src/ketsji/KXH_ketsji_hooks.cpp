@@ -1,15 +1,12 @@
 /**
  * $Id$
  *
- * ***** BEGIN GPL/BL DUAL LICENSE BLOCK *****
+ * ***** BEGIN GPL LICENSE BLOCK *****
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version. The Blender
- * Foundation also sells licenses for use in proprietary software under
- * the Blender License.  See http://www.blender.org/BL/ for information
- * about this.
+ * of the License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -27,7 +24,7 @@
  *
  * Contributor(s): none yet.
  *
- * ***** END GPL/BL DUAL LICENSE BLOCK *****
+ * ***** END GPL LICENSE BLOCK *****
  * Implementation of the application hooks between browser and app, 
  * where app = Ketjsi.
  */
@@ -279,14 +276,17 @@ APH_main_file_loaded(APH_application_handle h,
 		     int size)
 {
 	ketsji_engine_data* k = (ketsji_engine_data*) h;
+	ReportList reports;
 	KXH_log_entry("APH_main_file_loaded");
+
+	BKE_reports_init(&reports, 0);
 	k->blendfile = BLO_read_from_memory(buffer, 
 					    size, 
-					    &(k->error));
-	if ((!k->blendfile) 
-	    || (k->error != BRE_NONE) ) {
+					    &reports);
+	BKE_reports_clear(&reports);
+
+	if (!k->blendfile) 
 		k->blendfile_failed = true;
-	}
 }
 
 void
@@ -295,14 +295,17 @@ APH_loading_anim_loaded(APH_application_handle h,
 			int size)
 {
 	ketsji_engine_data* k = (ketsji_engine_data*) h;
+	ReportList reports;
 	KXH_log_entry("APH_loading_anim_loaded");
+
+	BKE_reports_init(&reports, 0);
 	k->loading_anim = BLO_read_from_memory(buffer, 
 					       size, 
-					       &(k->error));
-	if ((!k->blendfile) 
-	    || (k->error != BRE_NONE) ) {
+					       &reports);
+	BKE_reports_clear(&reports);
+
+	if (!k->blendfile) 
 		k->loading_anim_failed = true;
-	}
 }
 
 
@@ -493,14 +496,16 @@ APH_terminate_application(APH_application_handle handle)
 void 
 open_default_loader(ketsji_engine_data* k)
 {
+	ReportList reports;
 	unsigned char * data;
 	int size;
 
 	KXH_log_entry("open_default_loader");
 
 	GetRawLoadingAnimation(&data, &size);
-	k->loading_anim = BLO_read_from_memory(data, size, &(k->error));
-
+	BKE_reports_init(&reports, 0);
+	k->loading_anim = BLO_read_from_memory(data, size, &reports);
+	BKE_reports_clear(&reports);
 }
 
 void
@@ -567,12 +572,13 @@ initialize_gameengine(ketsji_engine_data* k, struct BlendFileData * active_file)
 			= new KX_Scene((SCA_IInputDevice*)k->keyboarddevice,
 				       (SCA_IInputDevice*)k->mousedevice, k->net_dev,
 				       k->audiodevice,
-				       startSceneName->Ptr());
+				       startSceneName->Ptr(), scene);
 		
-		initRasterizer(k->rasterizer, k->canvas_device);
-		initGameLogic(startscene);
+		initRasterizer(k->rasterizer, k->canvas_device);;
+		PyDict_SetItemString(dictionaryobject, "GameLogic", initGameLogic(k->kx_engine, startscene)); // Same as importing the module
 		initGameKeys();
 		initPythonConstraintBinding();
+		initMathutils();
 		
 		KXH_log_entry("APH_initialize_gameengine:: will enter kx engine");
 		
@@ -883,9 +889,8 @@ set_plain_color_redraw_func(ketsji_engine_data* k)
   //	KXH_log_entry("set_plain_color_redraw_func");
 	PLA_acquire_gl_context(k->plugin);
 
-	float* c = PLA_get_foreground_color(k->plugin);
-
 #ifndef _WIN32
+	float *c = PLA_get_foreground_colour(k->plugin);
  	glClearColor(c[0], c[1], c[2], 1.0);
  	glClear(GL_COLOR_BUFFER_BIT);
 #endif
