@@ -482,13 +482,15 @@ static int ui_but_update_from_old_block(const bContext *C, uiBlock *block, uiBut
 static void ui_menu_block_set_keymaps(const bContext *C, uiBlock *block)
 {
 	uiBut *but;
+	IDProperty *prop;
 	char buf[512], *butstr;
+	int bounds= 0;;
 
-	/* XXX bounds? */
 	for(but=block->buttons.first; but; but=but->next) {
-		/* only hotkey for menus without properties */
-		if(but->opname && but->opptr==NULL) {
-			if(WM_key_event_operator_string(C, but->opname, but->opcontext, buf, sizeof(buf))) {
+		if(but->opname) {
+			prop= (but->opptr)? but->opptr->data: NULL;
+
+			if(WM_key_event_operator_string(C, but->opname, but->opcontext, prop, buf, sizeof(buf))) {
 				butstr= MEM_mallocN(strlen(but->str)+strlen(buf)+2, "menu_block_set_keymaps");
 				strcpy(butstr, but->str);
 				strcat(butstr, "|");
@@ -499,9 +501,14 @@ static void ui_menu_block_set_keymaps(const bContext *C, uiBlock *block)
 				MEM_freeN(butstr);
 
 				ui_check_but(but);
+				bounds= 1;
 			}
 		}
 	}
+
+	// XXX not nice ..
+	if(bounds)
+		uiTextBoundsBlock(block, 50);
 }
 
 void uiEndBlock(const bContext *C, uiBlock *block)
