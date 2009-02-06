@@ -1957,7 +1957,7 @@ static int armature_calc_roll_exec(bContext *C, wmOperator *op)
 void ARMATURE_OT_calculate_roll(wmOperatorType *ot)
 {
 	/* identifiers */
-	ot->name= "Align Bones";
+	ot->name= "Recalculate Roll";
 	ot->idname= "ARMATURE_OT_calculate_roll";
 	
 	/* api callbacks */
@@ -2065,14 +2065,14 @@ static EditBone *add_editbone(Object *obedit, char *name)
 	BLI_addtail(arm->edbo, bone);
 	
 	bone->flag |= BONE_TIPSEL;
-	bone->weight= 1.0F;
-	bone->dist= 0.25F;
-	bone->xwidth= 0.1;
-	bone->zwidth= 0.1;
-	bone->ease1= 1.0;
-	bone->ease2= 1.0;
-	bone->rad_head= 0.10;
-	bone->rad_tail= 0.05;
+	bone->weight= 1.0f;
+	bone->dist= 0.25f;
+	bone->xwidth= 0.1f;
+	bone->zwidth= 0.1f;
+	bone->ease1= 1.0f;
+	bone->ease2= 1.0f;
+	bone->rad_head= 0.10f;
+	bone->rad_tail= 0.05f;
 	bone->segments= 1;
 	bone->layer= arm->layer;
 	
