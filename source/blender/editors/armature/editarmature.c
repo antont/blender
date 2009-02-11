@@ -3520,13 +3520,7 @@ static int armature_de_select_all_exec(bContext *C, wmOperator *op)
 
 	/*	Determine if there are any selected bones
 	And therefore whether we are selecting or deselecting */
-	CTX_DATA_BEGIN(C, EditBone *, selbone, selected_editable_bones) {
-		if (selbone->flag & (BONE_SELECTED | BONE_TIPSEL | BONE_ROOTSEL)){
-			sel=0;
-			break;
-		}
-	}
-	CTX_DATA_END;
+	if (CTX_DATA_COUNT(C, selected_bones) > 0)	sel=0;
 	
 	/*	Set the flags */
 	for (ebone=arm->edbo->first;ebone;ebone=ebone->next) {
@@ -3545,7 +3539,7 @@ static int armature_de_select_all_exec(bContext *C, wmOperator *op)
 	}	
 	
 	/* undo? */
-	WM_event_add_notifier(C, NC_SCENE|ND_OB_SELECT, CTX_data_scene(C));
+	WM_event_add_notifier(C, NC_OBJECT|ND_BONE_SELECT, NULL);
 	
 	return OPERATOR_FINISHED;
 }
@@ -4397,11 +4391,7 @@ static int pose_de_select_all_exec(bContext *C, wmOperator *op)
 
 	/*	Determine if there are any selected bones
 	And therefore whether we are selecting or deselecting */
-	CTX_DATA_BEGIN(C, bPoseChannel *, selbone, selected_pchans) {
-		sel=0;
-		break;
-	}
-	CTX_DATA_END;
+	if (CTX_DATA_COUNT(C, selected_pchans) > 0)	sel=0;
 	
 	/*	Set the flags */
 	for (pchan= ob->pose->chanbase.first; pchan; pchan= pchan->next) {
@@ -4411,7 +4401,7 @@ static int pose_de_select_all_exec(bContext *C, wmOperator *op)
 		}
 	}	
 
-	WM_event_add_notifier(C, NC_SCENE|ND_OB_SELECT, CTX_data_scene(C));
+	WM_event_add_notifier(C, NC_OBJECT|ND_BONE_SELECT, NULL);
 	
 	return OPERATOR_FINISHED;
 }
