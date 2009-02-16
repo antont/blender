@@ -3598,7 +3598,7 @@ void ARMATURE_OT_select_hierarchy(wmOperatorType *ot)
 	};
 	
 	/* identifiers */
-	ot->name= "select a bone in hierarchy";
+	ot->name= "Select Hierarchy";
 	ot->idname= "ARMATURE_OT_select_hierarchy";
 	
 	/* api callbacks */
