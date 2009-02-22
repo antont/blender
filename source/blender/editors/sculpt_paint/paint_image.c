@@ -5145,15 +5145,6 @@ static int texture_paint_radial_control_invoke(bContext *C, wmOperator *op, wmEv
 	return WM_radial_control_invoke(C, op, event);
 }
 
-static int texture_paint_radial_control_modal(bContext *C, wmOperator *op, wmEvent *event)
-{
-	ToolSettings *ts = CTX_data_scene(C)->toolsettings;
-	int ret = WM_radial_control_modal(C, op, event);
-	if(ret != OPERATOR_RUNNING_MODAL)
-		toggle_paint_cursor(C, !ts->imapaint.paintcursor);
-	return ret;
-}
-
 static int texture_paint_radial_control_exec(bContext *C, wmOperator *op)
 {
 	int ret = brush_radial_control_exec(op, CTX_data_scene(C)->toolsettings->imapaint.brush, 2);
@@ -5171,7 +5162,7 @@ void PAINT_OT_texture_paint_radial_control(wmOperatorType *ot)
 	ot->idname= "PAINT_OT_texture_paint_radial_control";
 
 	ot->invoke= texture_paint_radial_control_invoke;
-	ot->modal= texture_paint_radial_control_modal;
+	ot->modal= paint_radial_control_modal;
 	ot->exec= texture_paint_radial_control_exec;
 	ot->poll= texture_paint_toggle_poll;
 	
