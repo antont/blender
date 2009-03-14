@@ -211,7 +211,7 @@ static int file_border_select_exec(bContext *C, wmOperator *op)
 	rect.xmax= RNA_int_get(op->ptr, "xmax");
 	rect.ymax= RNA_int_get(op->ptr, "ymax");
 
-	file_select(sfile, sfile->params, ar, &rect, val );
+	file_select(sfile, ar, &rect, val );
 	WM_event_add_notifier(C, NC_WINDOW, NULL);
 	return OPERATOR_FINISHED;
 }

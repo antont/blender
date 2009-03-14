@@ -748,17 +748,6 @@ void filelist_setfiletypes(struct FileList* filelist, short has_quicktime)
 		
 		if(BLO_has_bfile_extension(file->relname)) {
 			file->flags |= BLENDERFILE;
-			if(filelist->type==FILE_LOADLIB) {		
-				char name[FILE_MAXDIR+FILE_MAXFILE];
-				BLI_strncpy(name, filelist->dir, sizeof(name));
-				strcat(name, file->relname);
-				
-				/* prevent current file being used as acceptable dir */
-				if (BLI_streq(G.main->name, name)==0) {
-					file->type &= ~S_IFMT;
-					file->type |= S_IFDIR;
-				}
-			}
 		} else if(BLI_testextensie(file->relname, ".py")) {
 				file->flags |= PYSCRIPTFILE;
 		} else if(BLI_testextensie(file->relname, ".txt")) {
