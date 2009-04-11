@@ -2406,6 +2406,7 @@ int RNA_function_call_direct_va(PointerRNA *ptr, FunctionRNA *func, const char *
 				fprintf(stderr, "%s.%s: missing required parameter %s\n", tid, fid, pid);
 				break;
 			}
+			ofs++;
 			continue;
 		}
 
