@@ -446,7 +446,6 @@ bool CBlenderPlayerCtrl::initEngine(void)
 						if (m_networkdevice)
 						{
 							// get an audiodevice
-							//SND_DeviceManager::SetDeviceType(snd_e_fmoddevice);
 							SND_DeviceManager::Subscribe();
 							m_audiodevice = SND_DeviceManager::Instance();
 							if (m_audiodevice)
@@ -672,8 +671,8 @@ bool CBlenderPlayerCtrl::startEngine(void)
 				startscenename,
 				m_gamedata->curscene);
 			
-			PyObject* m_dictionaryobject = initGamePlayerPythonScripting("Ketsji", psl_Highest);
-			//PyObject* m_dictionaryobject = initGamePlayerPythonScripting("Ketsji", psl_Lowest);
+			PyObject* m_dictionaryobject = initGamePlayerPythonScripting("Ketsji", psl_Highest, m_gamedata->main, 0, NULL);
+			//PyObject* m_dictionaryobject = initGamePlayerPythonScripting("Ketsji", psl_Lowest, m_gamedata->main, 0, NULL);
 
 			///python scripting doesn't work
 			m_ketsjiengine->SetPythonDictionary(m_dictionaryobject);
@@ -683,6 +682,7 @@ bool CBlenderPlayerCtrl::startEngine(void)
 			initGameKeys();			
 			initPythonConstraintBinding();
 			initMathutils();
+			initBGL();
 			
 			m_sceneconverter->ConvertScene(
 				startscenename,
