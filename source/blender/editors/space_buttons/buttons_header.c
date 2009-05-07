@@ -176,11 +176,6 @@ void buttons_header_buttons(const bContext *C, ARegion *ar)
 	uiDefIconButS(block, ROW, B_CONTEXT_SWITCH,	ICON_SCENE,			xco, yco, XIC, YIC, &(sbuts->mainb), 0.0, (float)BCONTEXT_SCENE, 0, 0, "Scene");
 	uiDefIconButS(block, ROW, B_CONTEXT_SWITCH,	ICON_WORLD,		xco+=XIC, yco, XIC, YIC, &(sbuts->mainb), 0.0, (float)BCONTEXT_WORLD, 0, 0, "World");
 	uiDefIconButS(block, ROW, B_CONTEXT_SWITCH,	ICON_OBJECT_DATA,	xco+=XIC, yco, XIC, YIC, &(sbuts->mainb), 0.0, (float)BCONTEXT_OBJECT, 0, 0, "Object");
-
-	xco+= XIC/2;	
-	uiBlockEndAlign(block);
-
-	uiBlockBeginAlign(block);
 	uiDefIconButS(block, ROW, B_CONTEXT_SWITCH,	dataicon,		xco+=XIC, yco, XIC, YIC, &(sbuts->mainb), 0.0, (float)BCONTEXT_DATA, 0, 0, "Object Data");
 	if(ob && ELEM5(ob->type, OB_MESH, OB_SURF, OB_MBALL, OB_CURVE, OB_FONT))
 		uiDefIconButS(block, ROW, B_BUTSPREVIEW,	ICON_MATERIAL,			xco+=XIC, yco, XIC, YIC, &(sbuts->mainb), 0.0, (float)BCONTEXT_MATERIAL, 0, 0, "Material");
