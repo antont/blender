@@ -85,7 +85,6 @@ CPPFLAGS += -I../../../../../blender/makesdna
 CPPFLAGS += -I../../../../../kernel/gen_system
 CPPFLAGS += -I../../../../../kernel/gen_messaging
 CPPFLAGS += -I$(NAN_STRING)/include
-CPPFLAGS += -I$(NAN_BMFONT)/include
 CPPFLAGS += -I$(OPENGL_HEADERS)
 CPPFLAGS += -I$(NAN_PYTHON)/include/python$(NAN_PYTHON_VERSION)
 
