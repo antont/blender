@@ -1048,6 +1048,12 @@ void ED_region_panels(const bContext *C, ARegion *ar, int vertical, char *contex
 		x += w;
 	else
 		y= miny;
+	
+	/* in case there are no panels */
+	if(x == 0 || y == 0) {
+		x= UI_PANEL_WIDTH;
+		y= UI_PANEL_WIDTH;
+	}
 
 	/* clear */
 	UI_GetThemeColor3fv(TH_BACK, col);
@@ -1055,10 +1061,14 @@ void ED_region_panels(const bContext *C, ARegion *ar, int vertical, char *contex
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	/* before setting the view */
-	if(vertical)
+	if(vertical) {
 		v2d->keepofs |= V2D_LOCKOFS_X;
-	else
+		v2d->keepofs &= ~V2D_LOCKOFS_Y;
+	}
+	else {
 		v2d->keepofs &= ~V2D_LOCKOFS_X;
+		v2d->keepofs |= V2D_LOCKOFS_Y;
+	}
 
 	UI_view2d_totRect_set(v2d, x, -y);
 

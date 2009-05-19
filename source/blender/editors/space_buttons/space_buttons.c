@@ -132,7 +132,7 @@ static void buttons_init(struct wmWindowManager *wm, ScrArea *sa)
 	SpaceButs *sbuts= sa->spacedata.first;
 
 	/* auto-align based on size */
-	if(sbuts->align == BUT_AUTO) {
+	if(sbuts->align == BUT_AUTO || !sbuts->align) {
 		if(sa->winx > sa->winy)
 			sbuts->align= BUT_HORIZONTAL;
 		else
