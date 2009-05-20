@@ -50,12 +50,14 @@ static void rna_Pose_update(bContext *C, PointerRNA *ptr)
 
 IDProperty *rna_PoseChannel_idproperties(PointerRNA *ptr, int create)
 {
-	if(create && !ptr->data) {
+	bPoseChannel *pchan= ptr->data;
+
+	if(create && !pchan->prop) {
 		IDPropertyTemplate val = {0};
-		ptr->data= IDP_New(IDP_GROUP, val, "RNA_PoseChannel group");
+		pchan->prop= IDP_New(IDP_GROUP, val, "RNA_PoseChannel group");
 	}
 
-	return ptr->data;
+	return pchan->prop;
 }
 
 #else
