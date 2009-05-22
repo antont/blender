@@ -545,15 +545,16 @@ static void region_rect_recursive(ARegion *ar, rcti *remainder, int quad)
 
 static void area_calc_totrct(ScrArea *sa, int sizex, int sizey)
 {
-	
-	if(sa->v1->vec.x>0) sa->totrct.xmin= sa->v1->vec.x+1+G.rt;
+	short rt= CLAMPIS(G.rt, 0, 16);
+
+	if(sa->v1->vec.x>0) sa->totrct.xmin= sa->v1->vec.x+1+rt;
 	else sa->totrct.xmin= sa->v1->vec.x;
-	if(sa->v4->vec.x<sizex-1) sa->totrct.xmax= sa->v4->vec.x-1-G.rt;
+	if(sa->v4->vec.x<sizex-1) sa->totrct.xmax= sa->v4->vec.x-1-rt;
 	else sa->totrct.xmax= sa->v4->vec.x;
 	
-	if(sa->v1->vec.y>0) sa->totrct.ymin= sa->v1->vec.y+1+G.rt;
+	if(sa->v1->vec.y>0) sa->totrct.ymin= sa->v1->vec.y+1+rt;
 	else sa->totrct.ymin= sa->v1->vec.y;
-	if(sa->v2->vec.y<sizey-1) sa->totrct.ymax= sa->v2->vec.y-1-G.rt;
+	if(sa->v2->vec.y<sizey-1) sa->totrct.ymax= sa->v2->vec.y-1-rt;
 	else sa->totrct.ymax= sa->v2->vec.y;
 	
 	/* for speedup */
