@@ -1375,10 +1375,10 @@ static void rna_def_modifier_collision(BlenderRNA *brna)
 	RNA_def_struct_ui_text(srna, "Collision Modifier", "Collision modifier defining modifier stack position used for collision.");
 	RNA_def_struct_sdna(srna, "CollisionModifierData");
 	
-	prop= RNA_def_property(srna, "absorbtion", PROP_INT, PROP_PERCENTAGE);
+	prop= RNA_def_property(srna, "absorption", PROP_INT, PROP_PERCENTAGE);
 	RNA_def_property_int_sdna(prop, NULL, "absorption");
 	RNA_def_property_ui_range(prop, 0, 100, 1, 2);
-	RNA_def_property_ui_text(prop, "Absorbtion %", "How much of effector force gets lost during collision with this object (in percent).");
+	RNA_def_property_ui_text(prop, "Absorption %", "How much of effector force gets lost during collision with this object (in percent).");
 	RNA_def_property_update(prop, NC_OBJECT|ND_MODIFIER, "rna_Modifier_update");
 }
 
