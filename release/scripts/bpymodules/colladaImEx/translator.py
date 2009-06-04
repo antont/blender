@@ -5,6 +5,7 @@
 #
 # Copyright (C) 2006: Illusoft - colladablender@illusoft.com
 #    - 2008.08: multiple bugfixes by migius (AKA Remigiusz Fiedler)
+#    - 2009.05: bugfixes by jan (AKA Jan Diederich)
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,6 +25,9 @@
 # --------------------------------------------------------------------------
 
 # History
+# 2009.05.17 by jan:
+# - More information for the user if an error happened (wrong/missing parenting).
+# - Added a progress bar for export (bar for import already exists). 
 # 2009.05.11 by jan:
 # - Perfected the id renaming to fulfill at 100.0% the COLLADA standard for allowed UTF-8 
 #	chars. The new renaming method is also much faster then the old one (benchmarked with
@@ -315,7 +319,7 @@ class DocumentTranslator(object):
 		#TODO: for what is this good? (migius)
 		if 0:	animations = AnimationInfo.CreateAnimations(self.animationsLibrary, self.fps, self.axiss)
 
-		# Read the COLLADA stucture and build the scene in Blender.
+		# Read the COLLADA structure and build the scene in Blender.
 		Blender.Window.DrawProgressBar(0.4, 'Translate Collada 2 Blender')
 		self.sceneGraph.LoadFromCollada(self.colladaDocument.visualScenesLibrary.items, self.colladaDocument.scene)
 
@@ -355,6 +359,7 @@ class DocumentTranslator(object):
 		self.ids = []
 		self.isImport = False
 		Blender.Window.EditMode(0)
+		Blender.Window.DrawProgressBar(0.0, 'Starting Export')
 
 		# Create a new Collada document
 		self.colladaDocument = collada.DaeDocument(debugMode)
@@ -393,11 +398,13 @@ class DocumentTranslator(object):
 					self.containerMesh = temp_mesh
 		if not self.containerMesh:
 			self.containerMesh = Blender.Mesh.New(temp_mesh_name)
-		
-		del temp_mesh
 		#------------ [end] Copied from export OBJ ------------------------
 		
-		# Loop throug all scenes
+		# Loop through all scenes
+		sceneCount = len(Blender.Scene.Get())
+		self.progressStep = self.progressField / sceneCount
+		Blender.Window.DrawProgressBar(0.1, \
+							'Exporting ' + str(sceneCount) + ' scene(s)')
 		for bScene in Blender.Scene.Get():
 			if not exportCurrentScene or self.currentBScene == bScene:
 				self.fps = bScene.getRenderingContext().framesPerSec()
@@ -426,20 +433,35 @@ class DocumentTranslator(object):
 				#self.colladaDocument.visualScenesLibrary.AddItem(sceneGraph.ObjectToDae(bScene))
 				#daeScene = collada.DaeScene()
 				#daeScene.AddInstance()
+				
+			self.ProgressExport()
 
 
 		self.colladaDocument.scene = daeScene
+		
+		Blender.Window.DrawProgressBar(0.98, 'Saving file to disk...')
 
 		self.colladaDocument.SaveDocumentToFile(fileName)
+		
+		Blender.Window.DrawProgressBar(1.0, 'Export finished.')
 
 	def Progress(self):
 		self.progressPartCount = 0.0
 		self.progressCount += self.progressStep
 		Blender.Window.DrawProgressBar(self.progressCount, 'Creating Blender Nodes...')
-
+		
 	def ProgressPart(self, val, text):
 		self.progressPartCount += val
 		Blender.Window.DrawProgressBar(self.progressCount+self.progressPartCount*self.progressStep,text)
+		
+	def ProgressExport(self):
+		self.progressPartCount = 0.0
+		self.progressCount += self.progressStep
+		Blender.Window.DrawProgressBar(self.progressCount, 'Exporting Blender Scenes...')
+
+	def ProgressPartExport(self, val, text):
+		self.progressPartCount += val
+		Blender.Window.DrawProgressBar(self.progressCount+self.progressPartCount, text)
 
 class SceneGraph(object):
 
@@ -552,15 +574,20 @@ class SceneGraph(object):
 		else: 
 			# Now loop trough all nodes in this scene and create a list with 
 			# root nodes and children.
-			for node in bScene.objects:
-				pNode = node.parent
-				if pNode is None:
-					self.rootNodes.append(node)
-				else:
-					try:
-						self.childNodes[pNode.name].append(node)
-					except:
-						self.childNodes[pNode.name] = [node]
+			sceneObjects = bScene.objects 
+			if len(sceneObjects) > 0:
+				progressStep = self.document.progressStep / len(sceneObjects) 
+				for node in sceneObjects:
+					pNode = node.parent
+					if pNode is None:
+						self.rootNodes.append(node)
+					else:
+						try:
+							self.childNodes[pNode.name].append(node)
+						except:
+							self.childNodes[pNode.name] = [node]
+							
+					self.document.ProgressPartExport(progressStep, "Saving node(s)...")
 
 		# Create a new Physics Model.
 		daePhysicsModel = collada.DaePhysicsModel()
@@ -1000,6 +1027,8 @@ class Controller(object):
 		daeSkin.bindShapeMatrix = Matrix(bMeshObject.matrix).transpose()##bMeshObject.getMatrix('localspace').transpose()
 
 		bArmatureObject = bModifier[Blender.Modifier.Settings.OBJECT]
+		if (bArmatureObject is None):
+			HandleError(ERROR_MESH_ARMATURE_PARENT, meshName)
 		bArmature = bArmatureObject.data
 
 		# Create the joints elements
@@ -2076,29 +2105,30 @@ class SceneNode(object):
 			instance = collada.DaeGeometryInstance()
 			daeGeometry = self.document.colladaDocument.geometriesLibrary.FindObject(bNode.getData(True))
 			meshNode = MeshNode(self.document)
-			if daeGeometry is None:
-				# TODO: Maybe add a for-loop if multiple instance are made by
-				# 		a transformation. But so far even a double mirror
-				#		(x and y axis) results only in _1_ instance.
-				derivedObject = BPyObject.getDerivedObjects(bNode)[0][0]
-				virtualMesh = BPyMesh.getMeshFromObject(derivedObject, \
-								self.document.containerMesh, applyModifiers, False, bScene)
-				if debprn:
-					print("Virtual mesh: " + str(virtualMesh) )
-					# + "; type: " + str(type(virtualMesh)))
-				if not virtualMesh:
-					# Fallback!
-					# Should never happen!
-					# (The "mesh=1" param on the getData() method ensures that
-					# it gets a "Mesh" instead of a "NMesh".) 
-					print("Error while trying to save derived object / apply modifiers. Try saving " \
-						  + "more direct, all modifiers will be ignored.")
-					daeGeometry = meshNode.SaveToDae(bNode.getData(mesh=1))
-				else:
-					# Apply original name from untransformed object
-					# to transformed object (name is later copied 1:1 to id).
-					virtualMesh.name = derivedObject.name
-					daeGeometry = meshNode.SaveToDae(virtualMesh)
+			if daeGeometry is None:							   
+				derivedObjsMatrices = BPyObject.getDerivedObjects(bNode)
+				for derivedObject, matrix in derivedObjsMatrices:
+					virtualMesh = BPyMesh.getMeshFromObject(derivedObject, \
+									self.document.containerMesh, applyModifiers, False, bScene)					
+					if debprn:
+						print("Virtual mesh: " + str(virtualMesh) )
+						# + "; type: " + str(type(virtualMesh)))
+					if not virtualMesh:
+						# Fallback!
+						# Should never happen!
+						# (The "mesh=1" param on the getData() method ensures that
+						# it gets a "Mesh" instead of a "NMesh".) 
+						print("Error while trying to save derived object / apply modifiers. Try saving " \
+							  + "more direct, all modifiers will be ignored.")
+						daeGeometry = meshNode.SaveToDae(bNode.getData(mesh=1))
+					else:
+						# Apply original name from untransformed object
+						# to transformed object (name is later copied 1:1 to id).
+						virtualMesh.name = derivedObject.name
+						# _Don't_ apply transformation matrix "matrix"!
+						# The transformation will get instead written in the file itself
+						# seperately!
+						daeGeometry = meshNode.SaveToDae(virtualMesh)
 					
 			meshID = daeGeometry.id
 			bindMaterials = meshNode.GetBindMaterials(bNode.getData(),\
@@ -2118,7 +2148,10 @@ class SceneNode(object):
 					daeController = controller.SaveToDae(bModifier, bNode, meshID)
 
 					#Get the root bone
-					bArmature = bModifier[Blender.Modifier.Settings.OBJECT].getData()
+					bArmatureObject = bModifier[Blender.Modifier.Settings.OBJECT]
+					if (bArmatureObject is None):
+						HandleError(ERROR_MESH_ARMATURE_PARENT, meshID)
+					bArmature = bArmatureObject.getData()
 					rootBones = []
 					for boneName in bArmature.bones.keys():
 						bone = bArmature.bones[boneName]
@@ -2774,14 +2807,14 @@ class MeshNode(object):
 			return bMesh2
 		return
 
-	def SaveToDae(self, bMesh):
+	def SaveToDae(self, mesh):
 		global useTriangles, usePolygons, useUV
 
 		uvTextures = dict()
 		uvIndex = dict()
 
 		daeGeometry = collada.DaeGeometry()
-		daeGeometry.id = daeGeometry.name = self.document.CreateID(bMesh.name,'-Geometry')
+		daeGeometry.id = daeGeometry.name = self.document.CreateID(mesh.name,'-Geometry')
 
 		daeMesh = collada.DaeMesh()
 
@@ -2797,7 +2830,7 @@ class MeshNode(object):
 		accessor = collada.DaeAccessor()
 		daeSource.techniqueCommon.accessor = accessor
 		accessor.source = daeFloatArray.id
-		accessor.count = len(bMesh.verts)
+		accessor.count = len(mesh.verts)
 		accessor.AddParam('X','float')
 		accessor.AddParam('Y','float')
 		accessor.AddParam('Z','float')
@@ -2844,7 +2877,7 @@ class MeshNode(object):
 
 		hasColor = False
 		#Vertex colors:
-		if ( bMesh.vertexColors ) :
+		if ( mesh.vertexColors ) :
 			hasColor = True
 			daeSourceColors = collada.DaeSource()
 			daeSourceColors.id = self.document.CreateID(daeGeometry.id , '-color')
@@ -2860,7 +2893,7 @@ class MeshNode(object):
 			accessorColors.AddParam('B','float')
 			accessorColors.AddParam('A','float')
 
-		for vert in bMesh.verts:
+		for vert in mesh.verts:
 			#print vert
 			for co in vert.co:
 				daeFloatArray.data.append(co)
@@ -2872,14 +2905,13 @@ class MeshNode(object):
 		daeTrianglesDict = dict()
 		daeLines = None
 
-		mesh = Blender.Mesh.Get(bMesh.name)
 
 		# Loop trough all the faces
 		for face in mesh.faces:
 			matIndex = -1
-			if not useUV and bMesh.materials and len(bMesh.materials) > 0:
+			if not useUV and mesh.materials and len(mesh.materials) > 0:
 				matIndex = face.mat
-			elif mesh.faceUV and (useUV or bMesh.materials is None or len(bMesh.materials) == 0):
+			elif mesh.faceUV and (useUV or mesh.materials is None or len(mesh.materials) == 0):
 				if not face.image is None:
 					matIndex = face.image.name
 
@@ -2936,6 +2968,7 @@ class MeshNode(object):
 					# Update the prevVert vertice.
 					prevVert = vert
 
+			# Now use that AddVerts(...) function exactly in this "if"-block
 			if (vertCount == 3 and not usePolygons) or (useTriangles and vertCount == 4): # triangle
 				# Iff a Triangle Item for the current material not exists, create one.
 				daeTrianglesDict.setdefault(matIndex, collada.DaeTriangles())
@@ -2945,14 +2978,14 @@ class MeshNode(object):
 						daeFloatArrayNormals.data.append(no)
 					accessorNormals.count = accessorNormals.count + 1
 				if vertCount == 3:
-					# Add al the vertices to the triangle list.
+					# Add all the vertices to the triangle list.
 					AddVerts(face.verts,daeTrianglesDict[matIndex].triangles, face.smooth )
 					# Update the vertice count for the trianglelist.
 					daeTrianglesDict[matIndex].count += 1
 				else: # Convert polygon to triangles
 					verts1 = face.verts[:3]
 					verts2 = face.verts[2:] + tuple([face.verts[0]])
-					# Add al the vertices to the triangle list.
+					# Add all the vertices to the triangle list.
 					AddVerts(verts1,daeTrianglesDict[matIndex].triangles, face.smooth)
 					AddVerts(verts2, daeTrianglesDict[matIndex].triangles,face.smooth,True)
 					# Update the vertice count for the trianglelist.
@@ -2967,7 +3000,7 @@ class MeshNode(object):
 					for no in face.no:
 						daeFloatArrayNormals.data.append(no)
 					accessorNormals.count = accessorNormals.count + 1
-				# Add al the vertices to the pverts list.
+				# Add all the vertices to the pverts list.
 				AddVerts(face.verts,pverts, face.smooth)
 				# Add the pverts list to the polygons list.
 				daePolygonsDict[matIndex].polygons.append(pverts)
@@ -3007,9 +3040,9 @@ class MeshNode(object):
 		for k, daeTriangles in daeTrianglesDict.iteritems():
 			##print k
 			if k != -1:
-				if not useUV and not bMesh.materials is None and len(bMesh.materials) > 0 and k >= 0:
-					daeTriangles.material = bMesh.materials[k].name
-				elif mesh.faceUV and (useUV or bMesh.materials is None or len(bMesh.materials) == 0):
+				if not useUV and not mesh.materials is None and len(mesh.materials) > 0 and k >= 0:
+					daeTriangles.material = mesh.materials[k].name
+				elif mesh.faceUV and (useUV or mesh.materials is None or len(mesh.materials) == 0):
 					daeTriangles.material = uvTextures[k]
 			offsetCount = 0
 			daeInput.offset = offsetCount
@@ -3031,9 +3064,9 @@ class MeshNode(object):
 			daeMesh.primitives.append(daeTriangles)
 		for k, daePolygons in daePolygonsDict.iteritems():
 			if k != -1:
-				if not useUV and not bMesh.materials is None and len(bMesh.materials) > 0 and k >= 0:
-					daePolygons.material = bMesh.materials[k].name
-				elif mesh.faceUV and (useUV or bMesh.materials is None or len(bMesh.materials) == 0):
+				if not useUV and not mesh.materials is None and len(mesh.materials) > 0 and k >= 0:
+					daePolygons.material = mesh.materials[k].name
+				elif mesh.faceUV and (useUV or mesh.materials is None or len(mesh.materials) == 0):
 					daePolygons.material = uvTextures[k]
 			offsetCount = 0
 			daeInput.offset = offsetCount
