@@ -195,7 +195,6 @@ public:
 	}
 };
 
-
 class SceneExporter: COLLADASW::LibraryVisualScenes
 {
 public:
@@ -275,14 +274,16 @@ public:
 
 void DocumentExporter::exportCurrentScene(Scene *sce, const char* filename)
 {
-	COLLADASW::StreamWriter sw(COLLADABU::NativeString(COLLADABU::String(filename)));
+	COLLADABU::NativeString native_filename =
+		COLLADABU::NativeString(std::string(filename));
+	COLLADASW::StreamWriter sw(native_filename);
 
 	//open <Collada>
 	sw.startDocument();
 
 	//<asset>
-	Asset asset(&sw);
-	asset.setUpAxisType(Asset::Z_UP);
+	COLLADASW::Asset asset(&sw);
+	asset.setUpAxisType(COLLADASW::Asset::Z_UP);
 	asset.add();
 	
 	SceneExporter se(&sw);
