@@ -2688,25 +2688,6 @@ static void createTransNlaData(bContext *C, TransInfo *t)
 		}
 	}
 	
-	/* check if we're supposed to be setting minx/maxx for TimeSlide */
-	if (t->mode == TFM_TIME_SLIDE) {
-		float min=999999999.0f, max=-999999999.0f;
-		int i;
-		
-		td= (t->data + 1);
-		for (i=1; i < count; i+=3, td+=3) {
-			if (min > *(td->val)) min= *(td->val);
-			if (max < *(td->val)) max= *(td->val);
-		}
-		
-		/* minx/maxx values used by TimeSlide are stored as a 
-		 * calloced 2-float array in t->customData. This gets freed
-		 * in postTrans (T_FREE_CUSTOMDATA). 
-		 */
-		*((float *)(t->customData)) = min;
-		*((float *)(t->customData) + 1) = max;
-	}
-	
 	/* cleanup temp list */
 	BLI_freelistN(&anim_data);
 }
