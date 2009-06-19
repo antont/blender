@@ -529,8 +529,7 @@ initialize_gameengine(ketsji_engine_data* k, struct BlendFileData * active_file)
 	if (k->kx_engine)
 	{	
 		k->converter = new
-			KX_BlenderSceneConverter(active_file->main, 0,
-						 k->kx_engine);
+			KX_BlenderSceneConverter(active_file->main, k->kx_engine);
 		
 		PyObject* dictionaryobject 
 			= initGamePlayerPythonScripting("Ketsji", 
@@ -579,6 +578,7 @@ initialize_gameengine(ketsji_engine_data* k, struct BlendFileData * active_file)
 		initGameKeys();
 		initPythonConstraintBinding();
 		initMathutils();
+		initGeometry();
 		initBGL();
 		
 		KXH_log_entry("APH_initialize_gameengine:: will enter kx engine");
