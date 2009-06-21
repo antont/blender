@@ -143,7 +143,7 @@ static void mouse_nla_channels (bAnimContext *ac, float x, int channel_index, sh
 				/* toggle expand */
 				ob->nlaflag ^= OB_ADS_COLLAPSED; // XXX 
 			}
-			else if (nlaedit_is_tweakon(ac) == 0) {
+			else if (nlaedit_is_tweakmode_on(ac) == 0) {
 				/* set selection status */
 				if (selectmode == SELECT_INVERT) {
 					/* swap select */
@@ -242,7 +242,7 @@ static void mouse_nla_channels (bAnimContext *ac, float x, int channel_index, sh
 				/* toggle 'solo' */
 				BKE_nlatrack_solo_toggle(adt, nlt);
 			}
-			else if (nlaedit_is_tweakon(ac) == 0) {
+			else if (nlaedit_is_tweakmode_on(ac) == 0) {
 				/* set selection */
 				if (selectmode == SELECT_INVERT) {
 					/* inverse selection status of this F-Curve only */
