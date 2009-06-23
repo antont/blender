@@ -659,7 +659,7 @@ bool CBlenderPlayerCtrl::startEngine(void)
 		updateEngineInfoDisplay();
 		
 		// create a scene converter, create and convert the starting scene
-		m_sceneconverter = new KX_BlenderSceneConverter(m_gamedata->main, 0, m_ketsjiengine);
+		m_sceneconverter = new KX_BlenderSceneConverter(m_gamedata->main, m_ketsjiengine);
 		if (m_sceneconverter)
 		{
 			m_ketsjiengine->SetSceneConverter(m_sceneconverter);
@@ -672,9 +672,6 @@ bool CBlenderPlayerCtrl::startEngine(void)
 				m_gamedata->curscene);
 			
 			PyObject* m_dictionaryobject = initGamePlayerPythonScripting("Ketsji", psl_Highest, m_gamedata->main, 0, NULL);
-			//PyObject* m_dictionaryobject = initGamePlayerPythonScripting("Ketsji", psl_Lowest, m_gamedata->main, 0, NULL);
-
-			///python scripting doesn't work
 			m_ketsjiengine->SetPythonDictionary(m_dictionaryobject);
 
 			initRasterizer(m_rasterizer, m_canvas);			
@@ -682,6 +679,7 @@ bool CBlenderPlayerCtrl::startEngine(void)
 			initGameKeys();			
 			initPythonConstraintBinding();
 			initMathutils();
+			initGeometry();
 			initBGL();
 			
 			m_sceneconverter->ConvertScene(
