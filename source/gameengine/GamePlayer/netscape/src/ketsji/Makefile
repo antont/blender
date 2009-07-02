@@ -67,6 +67,7 @@ CPPFLAGS += -I../../../../Network/LoopBackNetwork
 CPPFLAGS += -I$(NAN_FUZZICS)/include
 
 # moto
+CPPFLAGS += -I$(NAN_SUMO)/include
 CPPFLAGS += -I$(NAN_MOTO)/include
 
 # player dirs:
