@@ -928,6 +928,12 @@ static void setflag_anim_channels (bAnimContext *ac, short setting, short mode, 
 					case ACHANNEL_SETTING_EXPAND:
 						ACHANNEL_SET_FLAG(agrp, mode, AGRP_EXPANDED);
 						break;
+					case ACHANNEL_SETTING_MUTE:
+						ACHANNEL_SET_FLAG(agrp, mode, AGRP_MUTED);
+						break;
+					case ACHANNEL_SETTING_VISIBLE:
+						ACHANNEL_SET_FLAG_NEG(agrp, mode, AGRP_NOTVISIBLE);
+						break;
 				}
 			}
 				break;
