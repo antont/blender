@@ -1491,9 +1491,17 @@ static void mouse_anim_channels (bAnimContext *ac, float x, int channel_index, s
 				/* toggle expand */
 				agrp->flag ^= AGRP_EXPANDED;
 			}
+			else if ((x < (offset+32)) && (ac->spacetype==SPACE_IPO)) {
+				/* toggle visibility (of grouped F-Curves in Graph editor) */
+				agrp->flag ^= AGRP_NOTVISIBLE;
+			}
 			else if (x >= (ACHANNEL_NAMEWIDTH-ACHANNEL_BUTTON_WIDTH)) {
 				/* toggle protection/locking */
 				agrp->flag ^= AGRP_PROTECTED;
+			}
+			else if (x >= (ACHANNEL_NAMEWIDTH-2*ACHANNEL_BUTTON_WIDTH)) {
+				/* toggle mute */
+				agrp->flag ^= AGRP_MUTED;
 			}
 			else {
 				/* select/deselect group */
