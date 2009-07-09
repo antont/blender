@@ -58,7 +58,7 @@
 #include "BLI_rand.h"
 
 #include "BKE_animsys.h"
-#inc;ude "BKE_fcurve.h"
+#include "BKE_fcurve.h"
 #include "BKE_nla.h"
 #include "BKE_context.h"
 #include "BKE_screen.h"
