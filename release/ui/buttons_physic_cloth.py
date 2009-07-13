@@ -137,6 +137,7 @@ class PHYSICS_PT_cloth_collision(PhysicButtonsPanel):
 	def draw(self, context):
 		layout = self.layout
 		cloth = context.cloth.collision_settings
+		split = layout.split()
 		
 		layout.active = cloth.enable_collision
 		
@@ -147,7 +148,7 @@ class PHYSICS_PT_cloth_collision(PhysicButtonsPanel):
 		
 		col = split.column(align="True")
 		col.itemR(cloth, "enable_self_collision", text="Self Collision")
-		
+		col = col.column(align=True)
 		col.active = cloth.enable_self_collision
 		col.itemR(cloth, "self_collision_quality", slider=True, text="Quality")
 		col.itemR(cloth, "self_min_distance", text="Distance")
@@ -176,13 +177,13 @@ class PHYSICS_PT_cloth_stiffness(PhysicButtonsPanel):
 		
 		sub = split.column(align=True)
 		sub.itemL(text="Structural Stiffness:")
-		sub.item_pointerR(cloth, "structural_stiffness_vertex_group", ob, "vertex_groups", text="")
 		sub.itemR(cloth, "structural_stiffness_max", text="Max")
+		sub.item_pointerR(cloth, "structural_stiffness_vertex_group", ob, "vertex_groups", text="")
 		
 		sub = split.column(align=True)
 		sub.itemL(text="Bending Stiffness:")
-		sub.item_pointerR(cloth, "bending_vertex_group", ob, "vertex_groups", text="")
 		sub.itemR(cloth, "bending_stiffness_max", text="Max")
+		sub.item_pointerR(cloth, "bending_vertex_group", ob, "vertex_groups", text="")
 		
 bpy.types.register(PHYSICS_PT_cloth)
 bpy.types.register(PHYSICS_PT_cloth_cache)
