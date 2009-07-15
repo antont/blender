@@ -186,6 +186,8 @@ public:
 
 			Material *ma = give_current_material(ob, a+1);
 
+			if (!ma) continue;
+
 			if (find(mMat.begin(), mMat.end(), id_name(ma)) == mMat.end()) {
 				(*this->f)(ma, ob);
 
