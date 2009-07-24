@@ -981,6 +981,20 @@ static void setflag_anim_channels (bAnimContext *ac, short setting, short mode, 
 				}
 			}
 				break;
+			case ANIMTYPE_FILLPARTD:
+			{
+				Object *ob= (Object *)ale->data;
+				
+				// XXX - settings should really be moved out of ob->nlaflag
+				if ((onlysel == 0) || (ob->flag & SELECT)) {
+					if (setting == ACHANNEL_SETTING_EXPAND) {
+						if (mode == ACHANNEL_SETFLAG_TOGGLE) 	ob->nlaflag ^= OB_ADS_SHOWPARTS;
+						else if (mode == ACHANNEL_SETFLAG_ADD) 	ob->nlaflag |= OB_ADS_SHOWPARTS;
+						else 									ob->nlaflag &= ~OB_ADS_SHOWPARTS;
+					}
+				}
+			}
+				break;
 					
 			case ANIMTYPE_DSMAT:
 			{
@@ -1044,6 +1058,17 @@ static void setflag_anim_channels (bAnimContext *ac, short setting, short mode, 
 				if (ASUBCHANNEL_SEL_OK(ale)) {
 					if (setting == ACHANNEL_SETTING_EXPAND) {
 						ACHANNEL_SET_FLAG(wo, mode, WO_DS_EXPAND);
+					}
+				}
+			}
+				break;
+			case ANIMTYPE_DSPART:
+			{
+				ParticleSettings *part= (ParticleSettings*)ale->data;
+
+				if (ASUBCHANNEL_SEL_OK(ale)) {
+					if (setting == ACHANNEL_SETTING_EXPAND) {
+						ACHANNEL_SET_FLAG(part, mode, PART_DS_EXPAND);
 					}
 				}
 			}
@@ -1605,6 +1630,13 @@ static int mouse_anim_channels (bAnimContext *ac, float x, int channel_index, sh
 			notifierFlags |= ND_ANIMCHAN_EDIT;
 		}
 			break;
+		case ANIMTYPE_FILLPARTD:
+		{
+			Object *ob= (Object *)ale->data;
+			ob->nlaflag ^= OB_ADS_SHOWPARTS;	// XXX 
+			notifierFlags |= ND_ANIMCHAN_EDIT;
+		}
+			break;
 				
 		case ANIMTYPE_DSMAT:
 		{
@@ -1645,6 +1677,13 @@ static int mouse_anim_channels (bAnimContext *ac, float x, int channel_index, sh
 		{
 			World *wo= (World *)ale->data;
 			wo->flag ^= WO_DS_EXPAND;
+			notifierFlags |= ND_ANIMCHAN_EDIT;
+		}
+			break;
+		case ANIMTYPE_DSPART:
+		{
+			ParticleSettings *part= (ParticleSettings *)ale->data;
+			part->flag ^= PART_DS_EXPAND;
 			notifierFlags |= ND_ANIMCHAN_EDIT;
 		}
 			break;
