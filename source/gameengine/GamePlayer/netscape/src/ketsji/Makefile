@@ -63,9 +63,6 @@ CPPFLAGS += -I../../../../SceneGraph
 CPPFLAGS += -I../../../../Network
 CPPFLAGS += -I../../../../Network/LoopBackNetwork
 
-# physics
-CPPFLAGS += -I$(NAN_FUZZICS)/include
-
 # moto
 CPPFLAGS += -I$(NAN_MOTO)/include
 
