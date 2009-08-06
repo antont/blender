@@ -267,6 +267,8 @@ void bmesh_righthandfaces_exec(BMesh *bm, BMOperator *op)
 		}
 	}
 
+	if (!startf) return;
+
 	BM_Compute_Face_Center(bm, startf, cent);
 
 	if (cent[0]*startf->no[0] + cent[1]*startf->no[1] + cent[2]*startf->no[2] < 0.0)
@@ -304,6 +306,8 @@ void bmesh_righthandfaces_exec(BMesh *bm, BMOperator *op)
 			}
 		}
 	}
+
+	V_FREE(fstack);
 
 	/*check if we have faces yet to do.  if so, recurse.*/
 	BMO_ITER(f, &siter, bm, op, "faces", BM_FACE) {
