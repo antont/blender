@@ -31,13 +31,7 @@
 #include <stdio.h>
 
 #include "nsCOMPtr.h"
-
-#ifdef MOZ_NOT_NET
 #include "nsIModule.h"
-#else
-#include "nsIComponentManager.h"
-#endif
-
 #include "nsIServiceManager.h"
 #include "nsIClassInfo.h"
 #include "nsIGenericFactory.h"
@@ -99,11 +93,7 @@ extern "C" PR_IMPLEMENT(nsresult)
 	nsCOMPtr<nsIServiceManager> servMgr(do_QueryInterface(aServMgr, &rv));
 	if (NS_FAILED(rv)) return rv;
 	
-#ifdef MOZ_NOT_NET
 	nsCOMPtr<nsIComponentManagerObsolete> compMgr = 
-#else
-	nsCOMPtr<nsIComponentManager> compMgr = 
-#endif
 		do_GetService(kComponentManagerCID, &rv);
 	if (NS_FAILED(rv)) return rv;
 
@@ -135,11 +125,7 @@ extern "C" PR_IMPLEMENT(nsresult)
 	nsCOMPtr<nsIServiceManager> servMgr(do_QueryInterface(aServMgr, &rv));
 	if (NS_FAILED(rv)) return rv;
 
-#ifdef MOZ_NOT_NET
 	nsCOMPtr<nsIComponentManagerObsolete> compMgr = 
-#else
-	nsCOMPtr<nsIComponentManager> compMgr = 
-#endif
 		do_GetService(kComponentManagerCID, &rv);
 	if (NS_FAILED(rv)) return rv;
 
