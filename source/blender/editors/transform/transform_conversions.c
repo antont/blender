@@ -917,7 +917,7 @@ static short pose_grab_with_ik(Object *ob)
 	Bone *bonec;
 	short tot_ik= 0;
 
-	if ((ob==NULL) || (ob->pose==NULL) || (ob->flag & OB_MODE_POSE)==0)
+	if ((ob==NULL) || (ob->pose==NULL) || (ob->mode & OB_MODE_POSE)==0)
 		return 0;
 
 	arm = ob->data;
