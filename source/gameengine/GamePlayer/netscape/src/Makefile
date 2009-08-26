@@ -59,9 +59,6 @@ CPPFLAGS += -I../../../GameLogic
 CPPFLAGS += -I../../../Rasterizer
 #CPPFLAGS += -I../../../Network/LoopBackNetwork
 
-# physics
-CPPFLAGS += -I../../../../sumo/Fuzzics/include
-
 # moto
 CPPFLAGS += -I$(NAN_MOTO)/include
 
