@@ -693,7 +693,11 @@ class TEXTURE_PT_pointdensity(TextureButtonsPanel):
 
 class TEXTURE_PT_pointdensity_turbulence(TextureButtonsPanel):
 	__label__ = "Turbulence"
-
+	
+	def poll(self, context):
+		tex = context.texture
+		return (tex and tex.type == 'POINT_DENSITY')
+		
 	def draw_header(self, context):
 		layout = self.layout
 		
