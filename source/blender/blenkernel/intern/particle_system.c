@@ -3740,7 +3740,7 @@ static void hair_step(Scene *scene, Object *ob, ParticleSystemModifierData *psmd
 {
 	ParticleSettings *part = psys->part;
 	PARTICLE_P;
-	float disp = (float)get_current_display_percentage(psys)/50.0f-1.0f;
+	float disp = (float)get_current_display_percentage(psys)/100.0f;
 
 	BLI_srandom(psys->seed);
 
@@ -3789,7 +3789,7 @@ static void cached_step(Scene *scene, Object *ob, ParticleSystemModifierData *ps
 			precalc_effectors(scene, ob,psys,psmd,cfra);
 	//}
 	
-	disp= (float)get_current_display_percentage(psys)/50.0f-1.0f;
+	disp= (float)get_current_display_percentage(psys)/100.0f;
 
 	LOOP_PARTICLES {
 #if 0 // XXX old animation system
@@ -4252,7 +4252,7 @@ static void system_step(Scene *scene, Object *ob, ParticleSystem *psys, Particle
 	}
 
 	/* set particles to be not calculated TODO: can't work with pointcache */
-	disp= (float)get_current_display_percentage(psys)/50.0f-1.0f;
+	disp= (float)get_current_display_percentage(psys)/100.0f;
 
 	BLI_srandom(psys->seed);
 	LOOP_PARTICLES {
