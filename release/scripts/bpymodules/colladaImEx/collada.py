@@ -108,10 +108,6 @@ class DaeDocument(object):
 		self.physicsModelsLibrary.LoadFromXml(self, xmlUtils.FindElementByTagName(colladaNode, DaeSyntax.LIBRARY_PHYSICS_MODELS))
 		self.physicsScenesLibrary.LoadFromXml(self, xmlUtils.FindElementByTagName(colladaNode, DaeSyntax.LIBRARY_PHYSICS_SCENES))
 
-		# establish instance references in nodes library
-		for node in self.nodesLibrary.items:
-			node.LinkInstances(self)
-
 		# Get the sceneNodes
 		sceneNodes = colladaNode.getElementsByTagName(DaeSyntax.SCENE)
 
@@ -1169,25 +1165,6 @@ class DaeNode(DaeElement):
 		self.extras = []
 		self.syntax = DaeSyntax.NODE
 
-	def LinkInstances(self, daeDocument):
-		for iAnimation in self.iAnimations:
-			iAnimation.AssignLink(daeDocument.animationsLibrary)
-		for iCamera in self.iCameras:
-			iCamera.AssignLink(daeDocument.cameraLibrary)
-		for iController in self.iControllers:
-			iController.AssignLink(daeDocument.controllersLibrary)
-		for iGeometry in self.iGeometries:
-			iGeometry.AssignLink(daeDocument.geometriesLibrary)
-		for iLight in self.iLights:
-			iLight.AssignLink(daeDocument.lightsLibrary)
-		for iNode in self.iNodes:
-			iNode.AssignLink(daeDocument.nodesLibrary)
-		for iVisualScene in self.iVisualScenes:
-			iVisualScene.AssignLink(daeDocument.visualScenesLibrary)
-
-		for node in self.nodes:
-			node.LinkInstances(daeDocument)
-
 	def LoadFromXml(self, daeDocument, xmlNode):
 		super(DaeNode, self).LoadFromXml(daeDocument, xmlNode)
 		self.sid = xmlUtils.ReadAttribute(xmlNode, DaeSyntax.SID)
@@ -1792,9 +1769,6 @@ class DaeInstance(DaeEntity):
 		self.extras = []
 		self.object = None
 
-	def AssignLink(self, daeLibrary):
-		self.object = daeLibrary.FindObject(self.url)
-
 	def LoadFromXml(self, daeDocument, xmlNode):
 		self.url = ReadNodeUrl(xmlNode)
 		self.extras = CreateObjectsFromXml(daeDocument, xmlNode, DaeSyntax.EXTRA, DaeExtra)
@@ -2023,7 +1997,7 @@ class DaeSyntax(object):
 	LIBRARY_IMAGES = 'library_images'
 	LIBRARY_LIGHTS = 'library_lights'
 	LIBRARY_MATERIALS = 'library_materials'
-	LIBRARY_NODES = 'library_nodes'
+	LIBRARY_NODES = 'library_NODES'
 	LIBRARY_PHYSICS_MATERIALS = 'library_physics_materials'
 	LIBRARY_PHYSICS_MODELS = 'library_physics_models'
 	LIBRARY_PHYSICS_SCENES = 'library_physics_scenes'
@@ -3486,6 +3460,7 @@ def ReadNodeUrl(node):
 	attribute = xmlUtils.ReadAttribute(node,DaeSyntax.URL)
 	if attribute == None: return None
 	else :
+		attribute = str(attribute)
 		if attribute.startswith('#'):
 			return attribute[1:]
 	return None
