@@ -47,7 +47,6 @@ CPPFLAGS += -I..
 CPPFLAGS += -I../../netscape_api
 CPPFLAGS += -I../../common
 CPPFLAGS += -I$(NAN_NSPR)/include
-CPPFLAGS += -I$(NAN_SOUNDSYSTEM)/include
 CPPFLAGS += -I$(NAN_NSPR)/include/nspr
 CPPFLAGS += -I$(NAN_MOZILLA_INC)/nspr
 
@@ -63,11 +62,7 @@ CPPFLAGS += -I../../../../SceneGraph
 CPPFLAGS += -I../../../../Network
 CPPFLAGS += -I../../../../Network/LoopBackNetwork
 
-# physics
-CPPFLAGS += -I$(NAN_FUZZICS)/include
-
 # moto
-CPPFLAGS += -I$(NAN_SUMO)/include
 CPPFLAGS += -I$(NAN_MOTO)/include
 
 # player dirs:
@@ -85,7 +80,6 @@ CPPFLAGS += -I../../../../../blender/makesdna
 CPPFLAGS += -I../../../../../kernel/gen_system
 CPPFLAGS += -I../../../../../kernel/gen_messaging
 CPPFLAGS += -I$(NAN_STRING)/include
-CPPFLAGS += -I$(NAN_BMFONT)/include
 CPPFLAGS += -I$(OPENGL_HEADERS)
 CPPFLAGS += -I$(NAN_PYTHON)/include/python$(NAN_PYTHON_VERSION)
 

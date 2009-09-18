@@ -36,7 +36,7 @@ except NameError:
 	print "Error! Could not find Blender modules!"
 	_ERROR = True
 
-__version__ = '0.3.160'
+__version__ = '0.3.162'
 
 # Show the wait cursor in blender
 Blender.Window.WaitCursor(1)
@@ -256,9 +256,14 @@ toggleExportRelativePaths = None
 toggleUseUV = None
 toggleSampleAnimation = None
 toggleOnlyMainScene = None
+toggleApplyModifiers = None
 
 def LoadDefaultVals():
-	global toggleLookAt, toggleBakeMatrix, toggleSampleAnimation, toggleNewScene, toggleClearScene, toggleTriangles, togglePolygons, toggleExportSelection, scriptsLocation, doImport, defaultFilename, fileButton, valsLoaded, togglePhysics, toggleExportCurrentScene, toggleExportRelativePaths, toggleUseUV, toggleOnlyMainScene
+	global toggleLookAt, toggleBakeMatrix, toggleSampleAnimation, toggleNewScene, \
+	toggleClearScene, toggleTriangles, togglePolygons, toggleExportSelection, \
+	scriptsLocation, doImport, defaultFilename, fileButton, valsLoaded, \
+	togglePhysics, toggleExportCurrentScene, toggleExportRelativePaths, \
+	toggleUseUV, toggleOnlyMainScene, toggleApplyModifiers
 
 	if valsLoaded:
 		return None
@@ -310,10 +315,17 @@ def LoadDefaultVals():
 			toggleExportRelativePaths.val = colladaReg.get('exportRelativePaths', True)
 			toggleSampleAnimation.val = colladaReg.get('sampleAnimation', False)
 			toggleUseUV.val = colladaReg.get('useUV', False)
+			#TODO: "toggleOnlyMainScene" left out intentionally by the original plugin author?
+			toggleApplyModifiers.val = colladaReg.get('applyModifiers', True)
 	valsLoaded = True
 
 def Gui():
-	global toggleLookAt, toggleBakeMatrix, toggleSampleAnimation, toggleNewScene, toggleClearScene, toggleTriangles, togglePolygons, toggleExportSelection, scriptsLocation, doImport, defaultFilename, fileButton, togglePhysics, toggleExportCurrentScene, toggleExportRelativePaths, toggleUseUV, toggleOnlyMainScene
+	global toggleLookAt, toggleBakeMatrix, toggleSampleAnimation, toggleNewScene, \
+	toggleClearScene, toggleTriangles, togglePolygons, toggleExportSelection, \
+	scriptsLocation, doImport, defaultFilename, fileButton, togglePhysics, \
+	toggleExportCurrentScene, toggleExportRelativePaths, toggleUseUV, \
+	toggleOnlyMainScene, toggleApplyModifiers
+	
 	Blender.BGL.glClearColor(0.898,0.910,0.808,1) # Set BG Color1
 	Blender.BGL.glClear(Blender.BGL.GL_COLOR_BUFFER_BIT)
 	Blender.BGL.glColor3f(0.835,0.848,0.745) # BG Color 2
@@ -455,6 +467,7 @@ def Gui():
 
 		toggleUseUV = Blender.Draw.Toggle('Use UV Image Mats',15,45, yval, 150, 20, toggleUseUVVal, 'Use UV Image instead of the material textures. Use this if you did not use the Material Textures window. Note: If you reimport this file, they will have moved to the materials section!!')
 
+		##yval = yval - 40
 		# Create Lookat  Option
 		if not (toggleLookAt is None):
 			toggleLookAtVal = toggleLookAt.val
@@ -462,6 +475,14 @@ def Gui():
 			toggleLookAtVal = 0
 
 		##toggleLookAt = Blender.Draw.Toggle('Camera as Lookat',14,45, yval, 150, 20, toggleLookAtVal, 'Export the transformation of camera\'s as lookat')
+		
+		yval = yval - 40
+		if not (toggleApplyModifiers is None):
+			toggleApplyModifiersVal = toggleApplyModifiers.val
+		else:
+			toggleApplyModifiersVal = 0
+		
+		toggleApplyModifiers = Blender.Draw.Toggle('Apply modifiers',14,45, yval, 150, 20, toggleApplyModifiersVal, 'Apply modifiers, like mirroring, transformations, etc.')
 
 		Blender.Draw.PushButton(importExportText, 12, 45+55+35+100+35, 10, 55, 20, importExportText)
 	else: # IMPORT GUI
@@ -502,12 +523,22 @@ def Gui():
 
 	LoadDefaultVals()
 
+def CalcElapsedTime(startTime):
+	'''
+	Calc elapsed time between now and start time.
+	'''	
+	return Blender.sys.time() - startTime	
 
 def Event(evt, val):
 	pass
 
 def ButtonEvent(evt):
-	global toggleLookAt, toggleBakeMatrix, toggleExportSelection,toggleNewScene, toggleClearScene, toggleTriangles, togglePolygons, doImport, defaultFilename, fileSelectorShown, fileButton, valsLoaded, togglePhysics, toggleExportCurrentScene, toggleExportRelativePaths, toggleUseUV, toggleSampleAnimation, toggleOnlyMainScene
+	global toggleLookAt, toggleBakeMatrix, toggleExportSelection,toggleNewScene, \
+	toggleClearScene, toggleTriangles, togglePolygons, doImport, defaultFilename, \
+	fileSelectorShown, fileButton, valsLoaded, togglePhysics, \
+	toggleExportCurrentScene, toggleExportRelativePaths, toggleUseUV, \
+	toggleSampleAnimation, toggleOnlyMainScene
+	
 	checkImportButtons = False
 	if evt == 1:
 		toggle = 1 - toggle
@@ -605,6 +636,11 @@ def ButtonEvent(evt):
 			sampleAnimation = False
 		else:
 			sampleAnimation = bool(toggleSampleAnimation.val)
+			
+		if toggleApplyModifiers is None:
+			applyModifiers = False
+		else:
+			applyModifiers = bool(toggleApplyModifiers.val)
 
 
 		d = Blender.Registry.GetKey('collada',True)
@@ -627,6 +663,7 @@ def ButtonEvent(evt):
 			d['exportRelativePaths'] = exportRelativePaths
 			d['useUV'] = useUV
 			d['sampleAnimation'] = sampleAnimation
+			d['applyModifiers'] = applyModifiers
 
 		Blender.Registry.SetKey('collada',d, True)
 
@@ -636,21 +673,26 @@ def ButtonEvent(evt):
 			importExportText = "Export"
 
 		try:
-			transl = translator.Translator(doImport,__version__,debug,fileName, useTriangles, usePolygons, bakeMatrices, exportSelection, newScene, clearScene, lookAt, usePhysics, exportCurrentScene, exportRelativePaths, useUV, sampleAnimation, onlyMainScene)
-			# Redraw al 3D windows.
+			transl = translator.Translator(doImport,__version__,debug,fileName, \
+										useTriangles, usePolygons, bakeMatrices,\
+										exportSelection, newScene, clearScene,  \
+										lookAt, usePhysics, exportCurrentScene, \
+										exportRelativePaths, useUV, sampleAnimation, \
+										onlyMainScene, applyModifiers)
+			
+			cutils.Debug.Debug('Time to process and save data: %.1f' \
+							% CalcElapsedTime(startTime), 'FEEDBACK')
+			
+			# Redraw all 3D windows.
 			Blender.Window.RedrawAll()
-
-			# calculate the elapsed time
-			endTime = Blender.sys.time()
-			elapsedTime = endTime - startTime
+			
 			Blender.Draw.PupMenu(importExportText + " Successful %t")
-		except:
-			endTime = Blender.sys.time()
-			elapsedTime = endTime - startTime
+		except:						
 			Blender.Draw.PupMenu(importExportText + "ing failed%t | Check the console for more info")
 			raise # throw the exception
 
-		cutils.Debug.Debug('FINISHED - time elapsed: %.1f'%(elapsedTime),'FEEDBACK')
+		cutils.Debug.Debug('FINISHED - time elapsed: %.1f' % CalcElapsedTime(startTime), \
+						'FEEDBACK')
 
 		# Hide the wait cursor in blender
 		Blender.Window.WaitCursor(0)

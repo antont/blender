@@ -46,6 +46,7 @@ extern "C"
 #include "BLO_readfile.h"
 #include "DNA_scene_types.h"
 #include "BKE_blender.h"
+#include "BKE_report.h"
 #ifdef __cplusplus
 }
 #endif // __cplusplus
@@ -155,15 +156,11 @@ extern "C" {
 
 		/** Did the main file retrieval fail for some reason? */
 		bool blendfile_failed;
-		/* for parsing the errors from the main file */
-		BlendReadError error;
 
 		/** The loading anim resource. */
 		struct BlendFileData *loading_anim;
 		/** Did the loading anim file retrieval fail for some reason? */
 		bool loading_anim_failed;
-		/* for parsing the errors from the loading anim */
-		BlendReadError loading_anim_error;
 
 		/** Placeholder for blender logo, if needed */
 		GPC_RawImage* blender_logo;

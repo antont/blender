@@ -77,6 +77,8 @@ extern "C"
 
 #include "BLO_readfile.h"
 
+#include "BKE_report.h"
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus
@@ -444,7 +446,6 @@ bool CBlenderPlayerCtrl::initEngine(void)
 						if (m_networkdevice)
 						{
 							// get an audiodevice
-							//SND_DeviceManager::SetDeviceType(snd_e_fmoddevice);
 							SND_DeviceManager::Subscribe();
 							m_audiodevice = SND_DeviceManager::Instance();
 							if (m_audiodevice)
@@ -495,8 +496,12 @@ void CBlenderPlayerCtrl::SetGameData(struct BlendFileData *gamedata)
 
 bool CBlenderPlayerCtrl::LoadGameData(char *fromfile)
 {
-	BlendReadError error;
-	BlendFileData *bfd= BLO_read_from_file(fromfile, &error);
+	ReportList reports;
+	BlendFileData *bfd;
+	
+	BKE_reports_init(&reports, 0);
+	bfd= BLO_read_from_file(fromfile, &reports);
+	BKE_reports_clear(&reports);
 
 	if (bfd) {
 		SetGameData(bfd);
@@ -510,8 +515,12 @@ bool CBlenderPlayerCtrl::LoadGameData(char *fromfile)
 
 bool CBlenderPlayerCtrl::LoadGameData(void *mem, int memsize)
 {
-	BlendReadError error;
-	BlendFileData *bfd= BLO_read_from_memory(mem, memsize, &error);
+	ReportList reports;
+	BlendFileData *bfd;
+	
+	BKE_reports_init(&reports, 0);
+	bfd= BLO_read_from_memory(mem, memsize, &reports);
+	BKE_reports_clear(&reports);
 
 	if (bfd) {
 		SetGameData(bfd);
@@ -650,7 +659,7 @@ bool CBlenderPlayerCtrl::startEngine(void)
 		updateEngineInfoDisplay();
 		
 		// create a scene converter, create and convert the starting scene
-		m_sceneconverter = new KX_BlenderSceneConverter(m_gamedata->main, 0, m_ketsjiengine);
+		m_sceneconverter = new KX_BlenderSceneConverter(m_gamedata->main, m_ketsjiengine);
 		if (m_sceneconverter)
 		{
 			m_ketsjiengine->SetSceneConverter(m_sceneconverter);
@@ -662,10 +671,7 @@ bool CBlenderPlayerCtrl::startEngine(void)
 				startscenename,
 				m_gamedata->curscene);
 			
-			PyObject* m_dictionaryobject = initGamePlayerPythonScripting("Ketsji", psl_Highest);
-			//PyObject* m_dictionaryobject = initGamePlayerPythonScripting("Ketsji", psl_Lowest);
-
-			///python scripting doesn't work
+			PyObject* m_dictionaryobject = initGamePlayerPythonScripting("Ketsji", psl_Highest, m_gamedata->main, 0, NULL);
 			m_ketsjiengine->SetPythonDictionary(m_dictionaryobject);
 
 			initRasterizer(m_rasterizer, m_canvas);			
@@ -673,12 +679,13 @@ bool CBlenderPlayerCtrl::startEngine(void)
 			initGameKeys();			
 			initPythonConstraintBinding();
 			initMathutils();
+			initGeometry();
+			initBGL();
 			
 			m_sceneconverter->ConvertScene(
 				startscenename,
 				startscene,
 				m_dictionaryobject,
-				m_keyboard,
 				m_rendertools,
 				m_canvas);
 			m_ketsjiengine->AddScene(startscene);
