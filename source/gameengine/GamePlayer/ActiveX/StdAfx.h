@@ -15,7 +15,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
  * The Original Code is Copyright (C) 2001-2002 by NaN Holding BV.
  * All rights reserved.
@@ -30,7 +30,7 @@
 #define AFX_STDAFX_H__3821D263_E6F2_43B9_A1A8_EB96F30D281E__INCLUDED_
 
 #if defined(__WIN32__) || defined(WIN32) || defined(_WIN32)
-	#define WINVER 0x0400
+	#define WINVER 0x0600 
 #endif
 
 #if _MSC_VER > 1000
