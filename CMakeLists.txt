@@ -114,7 +114,7 @@ OPTION(WITH_LZO           "Enable fast LZO compression (used for pointcache)" ON
 OPTION(WITH_LZMA          "Enable best LZMA compression, (used for pointcache)" ON)
 
 # Misc
-OPTION(WITH_RAYOPTIMIZATION	"Enable use of SIMD (SSE) optimizations for the raytracer" OFF) 
+OPTION(WITH_RAYOPTIMIZATION	"Enable use of SIMD (SSE) optimizations for the raytracer" ON) 
 OPTION(WITH_CXX_GUARDEDALLOC "Enable GuardedAlloc for C++ memory allocation tracking" OFF)
 OPTION(WITH_INSTALL       "Install accompanying scripts and language files needed to run blender" ON)
 
@@ -230,6 +230,10 @@ IF(UNIX AND NOT APPLE)
 			/opt/include/OpenEXR
 		)
 		SET(OPENEXR_LIB Half IlmImf Iex Imath)
+		
+		IF(NOT OPENEXR_INC)
+			SET(WITH_OPENEXR OFF)
+		ENDIF(NOT OPENEXR_INC)
 	ENDIF(WITH_OPENEXR)
 
 	IF(WITH_TIFF)
@@ -720,7 +724,12 @@ IF(APPLE)
 		SET(OPENEXR_LIBPATH ${OPENEXR}/lib)
 	ENDIF(WITH_OPENEXR)
 
-    # TODO: IF(WITH_LCMS)
+	IF(WITH_LCMS)
+		SET(LCMS ${LIBDIR}/lcms)
+		SET(LCMS_INCLUDE_DIR ${LCMS}/include)
+		SET(LCMS_LIBRARY lcms)
+		SET(LCMS_LIBPATH ${LCMS}/lib)
+	ENDIF(WITH_LCMS)
 
 	IF(WITH_FFMPEG)
 		SET(FFMPEG ${LIBDIR}/ffmpeg)
