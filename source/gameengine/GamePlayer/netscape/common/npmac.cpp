@@ -40,15 +40,11 @@
 #include <Resources.h>
 #include <ToolUtils.h>
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #define XP_MAC 1
 
 //
 // A4Stuff.h contains the definition of EnterCodeResource and 
-// EnterCodeResource, used for setting up the code resource’s
+// EnterCodeResource, used for setting up the code resource's
 // globals for 68K (analagous to the function SetCurrentA5
 // defined by the toolbox).
 //
@@ -89,7 +85,7 @@
 #define PLUGIN_TRACE 0
 
 #if PLUGIN_TRACE
-#define PLUGINDEBUGSTR(msg)		::DebugStr(msg)
+#define PLUGINDEBUGSTR(msg)		fprintf(stderr, msg)
 #else
 #define PLUGINDEBUGSTR
 #endif
@@ -105,8 +101,8 @@
 //
 //::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-QDGlobals*		gQDPtr;				// Pointer to Netscape’s QuickDraw globals
-short			gResFile;			// Refnum of the plugin’s resource file
+QDGlobals*		gQDPtr;				// Pointer to Netscape's QuickDraw globals
+short			gResFile;			// Refnum of the plugin's resource file
 NPNetscapeFuncs	gNetscapeFuncs;		// Function table for procs in Netscape called by plugin
 
 
@@ -297,7 +293,7 @@ NPError Private_Initialize(void)
 {
 	NPError err;
 	EnterCodeResource();
-	PLUGINDEBUGSTR("\pInitialize;g;");
+	PLUGINDEBUGSTR("Initialize;g;");
 	err = NPP_Initialize();
 	ExitCodeResource();
 	return err;
@@ -306,7 +302,7 @@ NPError Private_Initialize(void)
 void Private_Shutdown(void)
 {
 	EnterCodeResource();
-	PLUGINDEBUGSTR("\pShutdown;g;");
+	PLUGINDEBUGSTR("Shutdown;g;");
 	NPP_Shutdown();
 	ExitCodeResource();
 }
@@ -316,7 +312,7 @@ NPError	Private_New(NPMIMEType pluginType, NPP instance, uint16 mode, int16 argc
 {
 	EnterCodeResource();
 	NPError ret = NPP_New(pluginType, instance, mode, argc, argn, argv, saved);
-	PLUGINDEBUGSTR("\pNew;g;");
+	PLUGINDEBUGSTR("New;g;");
 	ExitCodeResource();
 	return ret;	
 }
@@ -325,7 +321,7 @@ NPError Private_Destroy(NPP instance, NPSavedData** save)
 {
 	NPError err;
 	EnterCodeResource();
-	PLUGINDEBUGSTR("\pDestroy;g;");
+	PLUGINDEBUGSTR("Destroy;g;");
 	err = NPP_Destroy(instance, save);
 	ExitCodeResource();
 	return err;
@@ -335,7 +331,7 @@ NPError Private_SetWindow(NPP instance, NPWindow* window)
 {
 	NPError err;
 	EnterCodeResource();
-	PLUGINDEBUGSTR("\pSetWindow;g;");
+	PLUGINDEBUGSTR("SetWindow;g;");
 	err = NPP_SetWindow(instance, window);
 	ExitCodeResource();
 	return err;
@@ -345,7 +341,7 @@ NPError Private_NewStream(NPP instance, NPMIMEType type, NPStream* stream, NPBoo
 {
 	NPError err;
 	EnterCodeResource();
-	PLUGINDEBUGSTR("\pNewStream;g;");
+	PLUGINDEBUGSTR("NewStream;g;");
 	err = NPP_NewStream(instance, type, stream, seekable, stype);
 	ExitCodeResource();
 	return err;
@@ -355,7 +351,7 @@ int32 Private_WriteReady(NPP instance, NPStream* stream)
 {
 	int32 result;
 	EnterCodeResource();
-	PLUGINDEBUGSTR("\pWriteReady;g;");
+	PLUGINDEBUGSTR("WriteReady;g;");
 	result = NPP_WriteReady(instance, stream);
 	ExitCodeResource();
 	return result;
@@ -365,7 +361,7 @@ int32 Private_Write(NPP instance, NPStream* stream, int32 offset, int32 len, voi
 {
 	int32 result;
 	EnterCodeResource();
-	PLUGINDEBUGSTR("\pWrite;g;");
+	PLUGINDEBUGSTR("Write;g;");
 	result = NPP_Write(instance, stream, offset, len, buffer);
 	ExitCodeResource();
 	return result;
@@ -374,7 +370,7 @@ int32 Private_Write(NPP instance, NPStream* stream, int32 offset, int32 len, voi
 void Private_StreamAsFile(NPP instance, NPStream* stream, const char* fname)
 {
 	EnterCodeResource();
-	PLUGINDEBUGSTR("\pStreamAsFile;g;");
+	PLUGINDEBUGSTR("StreamAsFile;g;");
 	NPP_StreamAsFile(instance, stream, fname);
 	ExitCodeResource();
 }
@@ -384,7 +380,7 @@ NPError Private_DestroyStream(NPP instance, NPStream* stream, NPError reason)
 {
 	NPError err;
 	EnterCodeResource();
-	PLUGINDEBUGSTR("\pDestroyStream;g;");
+	PLUGINDEBUGSTR("DestroyStream;g;");
 	err = NPP_DestroyStream(instance, stream, reason);
 	ExitCodeResource();
 	return err;
@@ -394,7 +390,7 @@ int16 Private_HandleEvent(NPP instance, void* event)
 {
 	int16 result;
 	EnterCodeResource();
-	PLUGINDEBUGSTR("\pHandleEvent;g;");
+	PLUGINDEBUGSTR("HandleEvent;g;");
 	result = NPP_HandleEvent(instance, event);
 	ExitCodeResource();
 	return result;
@@ -403,7 +399,7 @@ int16 Private_HandleEvent(NPP instance, void* event)
 void Private_Print(NPP instance, NPPrint* platformPrint)
 {
 	EnterCodeResource();
-	PLUGINDEBUGSTR("\pPrint;g;");
+	PLUGINDEBUGSTR("Print;g;");
 	NPP_Print(instance, platformPrint);
 	ExitCodeResource();
 }
@@ -411,7 +407,7 @@ void Private_Print(NPP instance, NPPrint* platformPrint)
 void Private_URLNotify(NPP instance, const char* url, NPReason reason, void* notifyData)
 {
 	EnterCodeResource();
-	PLUGINDEBUGSTR("\pURLNotify;g;");
+	PLUGINDEBUGSTR("URLNotify;g;");
 	NPP_URLNotify(instance, url, reason, notifyData);
 	ExitCodeResource();
 }
@@ -420,7 +416,7 @@ void Private_URLNotify(NPP instance, const char* url, NPReason reason, void* not
 jref Private_GetJavaClass(void)
 {
 	EnterCodeResource();
-	PLUGINDEBUGSTR("\pGetJavaClass;g;");
+	PLUGINDEBUGSTR("GetJavaClass;g;");
 
     jref clazz = NPP_GetJavaClass();
     ExitCodeResource();
@@ -445,7 +441,7 @@ void SetUpQD(void)
 	Str255 				errName;
 	
 	//
-	// Memorize the plugin’s resource file 
+	// Memorize the plugin's resource file 
 	// refnum for later use.
 	//
 	gResFile = CurResFile();
@@ -473,7 +469,7 @@ void SetUpQD(void)
 		
 		result = GetProcessInformation(&PSN, &infoRec);
 		if (result != noErr)
-			PLUGINDEBUGSTR("\pFailed in GetProcessInformation");
+			PLUGINDEBUGSTR("Failed in GetProcessInformation");
 		}
 	else
 		//
@@ -486,7 +482,7 @@ void SetUpQD(void)
 		//
 		// Now that we know the app name and FSSpec, we can call GetDiskFragment
 		// to get a connID to use in a subsequent call to FindSymbol (it will also
-		// return the address of “main” in app, which we ignore).  If GetDiskFragment 
+		// return the address of 'main' in app, which we ignore).  If GetDiskFragment 
 		// returns an error, we assume the app must be 68K.
 		//
 		Ptr mainAddr; 	
@@ -498,13 +494,13 @@ void SetUpQD(void)
 	{
 		//
 		// The app is a PPC code fragment, so call FindSymbol
-		// to get the exported “qd” symbol so we can access its
+		// to get the exported 'qd' symbol so we can access its
 		// QuickDraw globals.
 		//
 		SymClass symClass;
 		result = FindSymbol(connID, "\pqd", (Ptr*)&gQDPtr, &symClass);
 		if (result != noErr)
-			PLUGINDEBUGSTR("\pFailed in FindSymbol qd");
+			PLUGINDEBUGSTR("Failed in FindSymbol qd");
 	}
 	else
 	{
@@ -529,7 +525,7 @@ RoutineDescriptor mainRD = BUILD_ROUTINE_DESCRIPTOR(uppNPP_MainEntryProcInfo, ma
 NPError main(NPNetscapeFuncs* nsTable, NPPluginFuncs* pluginFuncs, NPP_ShutdownUPP* unloadUpp)
 {
 	EnterCodeResource();
-	PLUGINDEBUGSTR("\pmain");
+	PLUGINDEBUGSTR("main");
 
 	NPError err = NPERR_NO_ERROR;
 	
@@ -540,11 +536,11 @@ NPError main(NPNetscapeFuncs* nsTable, NPPluginFuncs* pluginFuncs, NPP_ShutdownU
 		err = NPERR_INVALID_FUNCTABLE_ERROR;
 	
 	//
-	// Check the “major” version passed in Netscape’s function table.
-	// We won’t load if the major version is newer than what we expect.
+	// Check the 'major' version passed in Netscape's function table.
+	// We won't load if the major version is newer than what we expect.
 	// Also check that the function tables passed in are big enough for
 	// all the functions we need (they could be bigger, if Netscape added
-	// new APIs, but that’s OK with us -- we’ll just ignore them).
+	// new APIs, but that's OK with us -- we'll just ignore them).
 	//
 	if (err == NPERR_NO_ERROR)
 	{
@@ -560,7 +556,7 @@ NPError main(NPNetscapeFuncs* nsTable, NPPluginFuncs* pluginFuncs, NPP_ShutdownU
 	if (err == NPERR_NO_ERROR)
 	{
 		//
-		// Copy all the fields of Netscape’s function table into our
+		// Copy all the fields of Netscape's function table into our
 		// copy so we can call back into Netscape later.  Note that
 		// we need to copy the fields one by one, rather than assigning
 		// the whole structure, because the Netscape function table
