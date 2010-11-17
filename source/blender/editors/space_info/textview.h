@@ -17,44 +17,36 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * The Original Code is Copyright (C) 2001-2002 by NaN Holding BV.
- * All rights reserved.
- *
- * The Original Code is: all of this file.
- *
- * Contributor(s): none yet.
+ * Contributor(s): Campbell Barton
  *
  * ***** END GPL LICENSE BLOCK *****
- * Specific implementations for linking the browser, plugin
- * and gl together.
  */
 
-#ifndef PLB_SCRIPT_BINDINGS_H
-#define PLB_SCRIPT_BINDINGS_H
+typedef struct TextViewContext {
+	int lheight;
+	int sel_start, sel_end;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+	/* view settings */
+	int cwidth; /* shouldnt be needed! */
+	int winx;
+	int ymin, ymax;
 	
-	
-	/** Hook for Javascript blenderURL function */
-	void
-	PLB_native_blenderURL_func(void* inst,
-				   const char* url);
-	
-	/** Hook for Javascript SendMessage function */
-	void
-	PLB_native_SendMessage_func(
-		void* inst,
-		const char* to,
-		const char* from,
-		const char* subject,
-		const char* body
-		);
-	
-#ifdef __cplusplus
-}
-#endif
+	/* callbacks */
+	int (*begin)(struct TextViewContext *tvc);
+	void (*end)(struct TextViewContext *tvc);
+	void *arg1;
+	void *arg2;
 
-# endif
+	/* iterator */
+	int (*step)(struct TextViewContext *tvc);
+	int (*line_get)(struct TextViewContext *tvc, const char **, int *);
+	int (*line_color)(struct TextViewContext *tvc, unsigned char fg[3], unsigned char bg[3]);
+	void *iter;
+	int iter_index;
 
+} TextViewContext;
+
+int textview_draw(struct TextViewContext *tvc, int draw, int mval[2], void **mouse_pick, int *pos_pick);
+
+#define TVC_LINE_FG	(1<<0)
+#define TVC_LINE_BG	(1<<1)
