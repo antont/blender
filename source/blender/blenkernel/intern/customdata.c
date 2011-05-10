@@ -1834,7 +1834,8 @@ int CustomData_set_layer_name(const CustomData *data, int type, int n, const cha
 	int layer_index = CustomData_get_layer_index_n(data, type, n);
 
 	if(layer_index < 0) return 0;
-
+	if (!name) return 0;
+	
 	strcpy(data->layers[layer_index].name, name);
 	
 	return 1;
