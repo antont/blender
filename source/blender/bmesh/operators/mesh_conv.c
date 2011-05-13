@@ -458,7 +458,6 @@ void bmesh_to_mesh_exec(BMesh *bm, BMOperator *op) {
 
 			BLI_addfilledge(lasteve, firsteve);
 			totface += BLI_edgefill(0);
-			printf("FAces now %d\n", totface);
 
 			BLI_end_edgefill();
 		}
