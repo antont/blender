@@ -21,6 +21,8 @@
 #
 # ***** END GPL LICENSE BLOCK *****
 
+# <pep8 compliant>
+
 # This script dumps ui definitions as XML.
 # useful for finding bad api usage.
 
@@ -30,16 +32,17 @@
 import sys
 ModuleType = type(sys)
 
+
 def module_add(name):
     mod = sys.modules[name] = ModuleType(name)
     return mod
+
 
 class AttributeBuilder(object):
     """__slots__ = (
         "_attr", "_attr_list", "_item_set", "_args",
         "active", "operator_context", "enabled", "index", "data"
         )"""
-    
     
     def _as_py(self):
         data = [self._attr_single, self._args, [child._as_py() for child in self._attr_list]]
@@ -54,8 +57,6 @@ class AttributeBuilder(object):
                 value = value.replace("<", " ")
                 value = value.replace(">", " ")
                 
-                
-                
                 return '"' + value + '"'
             else:
                 return '"' + str(value) + '"'
@@ -67,7 +68,6 @@ class AttributeBuilder(object):
                 for i, a in enumerate(args):
                     args_str += "arg" + str(i + 1) + "=" + to_xml_str(a) + " "
                 
-            
             if dict_args:
                 args_str += " ".join(["%s=%s" % (key, to_xml_str(value)) for key, value in sorted(dict_args.items())])
             
@@ -99,11 +99,13 @@ class AttributeBuilder(object):
         self._item_set = []
         self._args = {}
         self._args_tuple = ()
+
     def __call__(self, *args, **kwargs):
         # print(self._attr, args, kwargs)
         self._args_tuple = args
         self._args = kwargs
         return self
+
     def __getattr__(self, attr):
         attr_obj = NewAttr(self._attr + "." + attr, attr)
         self._attr_list.append(attr_obj)
@@ -153,8 +155,10 @@ class AttributeBuilder(object):
     # Custom functions
     def lower(self):
         return ""
+
     def upper(self):
         return ""
+
     def keys(self):
         return []
 
@@ -163,26 +167,33 @@ def NewAttr(attr, attr_single):
     obj = AttributeBuilder(attr, attr_single)
     return obj
 
+
 class BaseFakeUI():
     def __init__(self):
         self.layout = NewAttr("self.layout", "layout")
 
+
 class Panel(BaseFakeUI):
     pass
+
 
 class Header(BaseFakeUI):
     pass
 
+
 class Menu(BaseFakeUI):
     def draw_preset(self, context):
         pass
+
     def path_menu(self, a, b,c):
         pass
+
 
 class Operator(BaseFakeUI):
     pass
 
-class IDPropertyGroup():
+
+class PropertyGroup():
     pass
         
 
@@ -194,7 +205,7 @@ def fake_main():
     bpy.types.Panel = Panel
     bpy.types.Header = Header
     bpy.types.Menu = Menu
-    bpy.types.IDPropertyGroup = IDPropertyGroup
+    bpy.types.PropertyGroup = PropertyGroup
     bpy.types.Operator = Operator
     
     bpy.types.Armature = type("Armature", (), {})
@@ -251,6 +262,7 @@ def fake_main():
     bpy.path = module_add("bpy.path")
     bpy.path.display_name = lambda f: ""
 
+
 def fake_helper():
 
     class PropertyPanel():
@@ -270,6 +282,7 @@ fake_helper()
 import bpy
 
 sys.path.insert(0, "/b/release/scripts/ui/")
+
 
 def module_classes(mod):
     classes = []

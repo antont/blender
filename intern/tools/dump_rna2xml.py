@@ -21,6 +21,8 @@
 #
 # ***** END GPL LICENSE BLOCK *****
 
+# <pep8 compliant>
+
 # This script dumps rna into xml.
 # useful for finding bugs in RNA api.
 
@@ -34,8 +36,8 @@ invalid_classes = (bpy.types.Operator,
                bpy.types.KeyingSet,
                bpy.types.Header)
 
-def build_property_typemap():
 
+def build_property_typemap():
 
     property_typemap = {}
 
@@ -56,6 +58,7 @@ def build_property_typemap():
 
 def print_ln(data):
     print(data, end="")
+
 
 def rna2xml(fw=print_ln, ident_val="  "):
     from xml.sax.saxutils import quoteattr
@@ -138,8 +141,6 @@ def rna2xml(fw=print_ln, ident_val="  "):
 
         fw("%s</%s>\n" % (ident, value_type_name))
 
-
-
     fw("<root>\n")
     for attr in dir(bpy.data):
         
@@ -162,6 +163,7 @@ def rna2xml(fw=print_ln, ident_val="  "):
             fw("%s</%s>\n" % (ident_val, attr))
 
     fw("</root>\n")
+
 
 def main():
     filename = bpy.data.filepath.rstrip(".blend") + ".xml"

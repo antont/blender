@@ -225,10 +225,19 @@ def _api():
         type_cast_link = struct_dict[b'Link']
 
         def list_base_iter(self, type_name):
+            if type(type_name) == str:
             type_cast = struct_dict[type_name.encode('ASCII')]
+            else:
+                # allow passing types direcly
+                type_cast = type_name
+
+            # empty listbase
+            if self.first is None:
+                ret = None
+            else:
             try:
                 ret = type_cast_link.from_address(ctypes.addressof(self.first))
-            except:
+                except TypeError:
                 ret = type_cast_link.from_address(self.first)
 
             while ret is not None:
@@ -248,7 +257,11 @@ def _api():
         struct_dict[b'ListBase'].ITER = list_base_iter
         
         def CAST(self, to):
+            if type(type_name) == str:
             type_cast = struct_dict[to.encode('ASCII')]
+            else:
+                type_cast = to
+
             return type_cast.from_address(ctypes.addressof(self))
         
         MixIn.CAST = CAST
@@ -279,6 +292,7 @@ def _api():
                      ("subversionfile", ctypes.c_short),
                      ("minversionfile", ctypes.c_short),
                      ("minsubversionfile", ctypes.c_short),
+                     ("revision", ctypes.c_int),
                      ("curlib", ctypes.POINTER(struct_dict[b"Library"])),
                      ("scene", _lb),
                      ("library", _lb),
