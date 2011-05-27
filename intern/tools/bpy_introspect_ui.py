@@ -43,41 +43,41 @@ class AttributeBuilder(object):
         "_attr", "_attr_list", "_item_set", "_args",
         "active", "operator_context", "enabled", "index", "data"
         )"""
-    
+
     def _as_py(self):
         data = [self._attr_single, self._args, [child._as_py() for child in self._attr_list]]
         return data
-    
+
     def _as_xml(self, indent="    "):
-        
+
         def to_xml_str(value):
             if type(value) == str:
                 # quick shoddy clean
                 value = value.replace("&", " ")
                 value = value.replace("<", " ")
                 value = value.replace(">", " ")
-                
+
                 return '"' + value + '"'
             else:
                 return '"' + str(value) + '"'
-            
+
         def dict_to_kw(args, dict_args):
             args_str = ""
             if args:
                 # args_str += " ".join([to_xml_str(a) for a in args])
                 for i, a in enumerate(args):
                     args_str += "arg" + str(i + 1) + "=" + to_xml_str(a) + " "
-                
+
             if dict_args:
                 args_str += " ".join(["%s=%s" % (key, to_xml_str(value)) for key, value in sorted(dict_args.items())])
-            
+
             if args_str:
                 return " " + args_str
 
             return ""
-        
+
         lines = []
-        
+
         def py_to_xml(item, indent_ctx):
             if item._attr_list:
                 lines.append("%s<%s%s>" % (indent_ctx, item._attr_single, dict_to_kw(item._args_tuple, item._args)))
@@ -87,11 +87,11 @@ class AttributeBuilder(object):
                 lines.append("%s</%s>" % (indent_ctx, item._attr_single))
             else:
                 lines.append("%s<%s%s/>" % (indent_ctx, item._attr_single, dict_to_kw(item._args_tuple, item._args)))
-        
+
         py_to_xml(self, indent)
-        
+
         return "\n".join(lines)
-    
+
     def __init__(self, attr, attr_single):
         self._attr = attr
         self._attr_single = attr_single
@@ -113,14 +113,14 @@ class AttributeBuilder(object):
 
     # def __setattr__(self, attr, value):
     #     setatte
-    
+
     def __getitem__(self, item):
         item_obj = NewAttr(self._attr + "[" + repr(item) + "]", item)
         self._item_set.append(item_obj)
         return item_obj
-        
+
     def __setitem__(self, item, value):
-        pass # TODO?
+        pass  # TODO?
 
     def __repr__(self):
         return self._attr
@@ -130,13 +130,13 @@ class AttributeBuilder(object):
 
     #def __len__(self):
     #    return 0
-        
+
     def __int__(self):
         return 0
-    
+
     def __cmp__(self, other):
         return -1
-        
+
     def __lt__(self, other):
         return -1
 
@@ -151,7 +151,7 @@ class AttributeBuilder(object):
 
     def __sub__(self, other):
         return self
-    
+
     # Custom functions
     def lower(self):
         return ""
@@ -185,7 +185,7 @@ class Menu(BaseFakeUI):
     def draw_preset(self, context):
         pass
 
-    def path_menu(self, a, b,c):
+    def path_menu(self, a, b, c):
         pass
 
 
@@ -195,7 +195,7 @@ class Operator(BaseFakeUI):
 
 class PropertyGroup():
     pass
-        
+
 
 # setup fake module
 def fake_main():
@@ -207,7 +207,7 @@ def fake_main():
     bpy.types.Menu = Menu
     bpy.types.PropertyGroup = PropertyGroup
     bpy.types.Operator = Operator
-    
+
     bpy.types.Armature = type("Armature", (), {})
     bpy.types.Bone = type("Bone", (), {})
     bpy.types.EditBone = type("EditBone", (), {})
@@ -228,13 +228,13 @@ def fake_main():
     bpy.types.Scene = type("Scene", (), {})
     bpy.types.Scene.EnumProperty = NewAttr("bpy.types.Scene.EnumProperty", "EnumProperty")
     bpy.types.Scene.StringProperty = NewAttr("bpy.types.Scene.StringProperty", "StringProperty")
-    
+
     bpy.props = module_add("bpy.props")
     bpy.props.StringProperty = dict
     bpy.props.BoolProperty = dict
     bpy.props.IntProperty = dict
     bpy.props.EnumProperty = dict
-    
+
     bpy.data = module_add("bpy.data")
     bpy.data.scenes = ()
     bpy.data.groups = ()
@@ -248,13 +248,13 @@ def fake_main():
     bpy.data.metaballs = ()
     bpy.data.armatures = ()
     bpy.data.particles = ()
-    
+
     bpy.data.file_is_saved = True
-    
+
     bpy.utils = module_add("bpy.utils")
     bpy.utils.smpte_from_frame = lambda f: ""
     bpy.utils.script_paths = lambda f: []
-    
+
     bpy.app = module_add("bpy.app")
     bpy.app.debug = False
     bpy.app.version = 2, 55, 1
@@ -294,7 +294,7 @@ def module_classes(mod):
 
         if is_subclass:
             classes.append(value)
-    
+
     return classes
 
 
@@ -310,7 +310,7 @@ def main():
         if f.endswith(".py"):
             # print(f)
             mod = __import__(f[:-3])
-            
+
             classes = module_classes(mod)
 
             for cls in classes:
@@ -324,7 +324,7 @@ def main():
             mod = __import__(f[:-3])
 
             classes = module_classes(mod)
-            
+
             for cls in classes:
                 # want to check if the draw function is directly in the class
                 # print("draw")

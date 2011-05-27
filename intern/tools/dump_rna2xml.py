@@ -63,7 +63,7 @@ def rna2xml(fw=print_ln, ident_val="  "):
 
     def rna2xml_node(ident, value, parent):
         ident_next = ident + ident_val
-        
+
         # divide into attrs and nodes.
         node_attrs = []
         nodes_items = []
@@ -73,11 +73,11 @@ def rna2xml(fw=print_ln, ident_val="  "):
 
         if issubclass(value_type, invalid_classes):
             return
-        
+
         # XXX, fixme, pointcache has eternal nested pointer to its self.
         if value == parent:
             return
-        
+
         value_type_name = value_type.__name__
         for prop in property_typemap[value_type_name]:
 
@@ -117,7 +117,7 @@ def rna2xml(fw=print_ln, ident_val="  "):
                                 return str(s)
                             else:
                                 return " ".join([str_recursive(si) for si in s])
-                        
+
                         node_attrs.append("%s=\"%s\"" % (prop, " ".join(str_recursive(v) for v in subvalue_rna)))
                     else:
                         nodes_lists.append((prop, subvalue_ls, subvalue_type))
@@ -141,7 +141,7 @@ def rna2xml(fw=print_ln, ident_val="  "):
 
     fw("<root>\n")
     for attr in dir(bpy.data):
-        
+
         # exceptions
         if attr.startswith("_"):
             continue
@@ -153,10 +153,10 @@ def rna2xml(fw=print_ln, ident_val="  "):
             ls = value[:]
         except:
             ls = None
-        
+
         if type(ls) == list:
             fw("%s<%s>\n" % (ident_val, attr))
-            for blend_id in ls:            
+            for blend_id in ls:
                 rna2xml_node(ident_val + ident_val, blend_id, None)
             fw("%s</%s>\n" % (ident_val, attr))
 
