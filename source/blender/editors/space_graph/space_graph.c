@@ -184,7 +184,12 @@ static void graph_init(struct wmWindowManager *UNUSED(wm), ScrArea *sa)
 	/* init dopesheet data if non-existant (i.e. for old files) */
 	if (sipo->ads == NULL) {
 		sipo->ads= MEM_callocN(sizeof(bDopeSheet), "GraphEdit DopeSheet");
+		
 		sipo->ads->source= (ID *)(G.main->scene.first); // FIXME: this is a really nasty hack here for now...
+		
+		/* settings for making it easier by default to just see what you're interested in tweaking */
+		sipo->ads->filterflag |= ADS_FILTER_ONLYSEL;
+		sipo->flag |= SIPO_SELVHANDLESONLY;
 	}
 
 	ED_area_tag_refresh(sa);
