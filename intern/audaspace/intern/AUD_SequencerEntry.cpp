@@ -72,10 +72,13 @@ void AUD_SequencerEntry::setSound(AUD_Reference<AUD_IFactory> sound)
 
 void AUD_SequencerEntry::move(float begin, float end, float skip)
 {
-	m_begin = begin;
-	m_skip = skip;
-	m_end = end;
-	m_pos_status++;
+	if(m_begin != begin || m_skip != skip || m_end != end)
+	{
+		m_begin = begin;
+		m_skip = skip;
+		m_end = end;
+		m_pos_status++;
+	}
 }
 
 void AUD_SequencerEntry::mute(bool mute)
