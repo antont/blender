@@ -11510,8 +11510,17 @@ static void do_versions(FileData *fd, Library *lib, Main *main)
 
 		{
 			Scene *scene;
+			Sequence *seq;
+
 			for (scene=main->scene.first; scene; scene=scene->id.next)
+			{
 				scene->r.ffcodecdata.audio_channels = 2;
+				scene->audio.volume = 1.0f;
+				SEQ_BEGIN(scene->ed, seq) {
+					seq->pitch = 1.0f;
+				}
+				SEQ_END
+			}
 		}
 	}
 	
