@@ -37,21 +37,24 @@
 
 /* based on a doubling non-chaining approach */
 
-extern unsigned int hashsizes[];
-#define NONHASH	-25436536
-typedef struct entry {uintptr_t key; void *val;} entry;
+typedef struct {
+	uintptr_t key;
+	void *val;
+} SmallHashEntry;
 
 /*how much stack space to use before dynamically allocating memory*/
 #define SMSTACKSIZE	521
 typedef struct SmallHash {
-	entry *table, _stacktable[SMSTACKSIZE], _copytable[SMSTACKSIZE];
-	entry *stacktable, *copytable;
+	SmallHashEntry *table;
+	SmallHashEntry _stacktable[SMSTACKSIZE];
+	SmallHashEntry _copytable[SMSTACKSIZE];
+	SmallHashEntry *stacktable, *copytable;
 	int used;
 	int curhash;
 	int size;
 } SmallHash;
 
-typedef struct SmallHashIter {
+typedef struct {
 	SmallHash *hash;
 	int i;
 } SmallHashIter;
