@@ -1614,7 +1614,7 @@ static void do_weight_paint_vertex(VPaint *wp, Object *ob, int index,
 		oldChange = 0;
 	}
 	if(dv.dw) {
-		MEM_freeN`(dv.dw);
+		MEM_freeN(dv.dw);
 	}
 	// dvert may have been altered greatly
 	dw = defvert_find_index(me->dvert+index, vgroup);
