@@ -58,6 +58,7 @@
 #include "BKE_node.h"
 #include "BKE_paint.h"
 #include "BKE_particle.h"
+#include "BKE_scene.h"
 
 #include "RNA_access.h"
 
