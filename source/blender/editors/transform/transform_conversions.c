@@ -298,7 +298,8 @@ static void createTransTexspace(TransInfo *t)
 
 /* ********************* edge (for crease) ***** */
 
-static void createTransEdge(TransInfo *t) {
+static void createTransEdge(TransInfo *t)
+{
 	BMEditMesh *em = ((Mesh *)t->obedit->data)->edit_btmesh;
 	TransData *td = NULL;
 	BMEdge *eed;
@@ -308,7 +309,7 @@ static void createTransEdge(TransInfo *t) {
 	int propmode = t->flag & T_PROP_EDIT;
 
 	BM_ITER(eed, &iter, em->bm, BM_EDGES_OF_MESH, NULL) {
-		if (!BM_TestHFlag(eed, BM_HIDDEN))
+		if (!BM_TestHFlag(eed, BM_HIDDEN)) {
 			if (BM_TestHFlag(eed, BM_SELECT)) countsel++;
 			if (propmode) count++;
 		}
