@@ -619,6 +619,7 @@ static void emDM_drawMappedFaces(
 {
 	EditDerivedBMesh *bmdm= (EditDerivedBMesh*) dm;
 	BMFace *efa;
+	struct BMLoop *(*looptris)[3]= bmdm->tc->looptris;
 	const int tottri= bmdm->tc->tottri;
 	const int lasttri= tottri - 1; /* compare agasint this a lot */
 	int i, draw, flush;
@@ -642,7 +643,7 @@ static void emDM_drawMappedFaces(
 		BM_ElemIndex_Ensure(bmdm->tc->bm, BM_VERT | BM_FACE);
 
 		for (i=0; i < tottri; i++) {
-			BMLoop **l = bmdm->tc->looptris[i];
+			BMLoop **l = looptris[i];
 			int drawSmooth;
 
 			efa = l[0]->f;
@@ -699,7 +700,7 @@ static void emDM_drawMappedFaces(
 
 				flush= (draw==2);
 				if (!skip_normals && !flush && (i != lasttri))
-					flush|= efa->mat_nr != bmdm->tc->looptris[i + 1][0]->f->mat_nr; /* TODO, make this neater */
+					flush|= efa->mat_nr != looptris[i + 1][0]->f->mat_nr; /* TODO, make this neater */
 
 				if (flush) {
 					glEnd();
@@ -713,8 +714,8 @@ static void emDM_drawMappedFaces(
 	else {
 		BM_ElemIndex_Ensure(bmdm->tc->bm, BM_FACE);
 
-		for (i=0; i<bmdm->tc->tottri; i++) {
-			BMLoop **l = bmdm->tc->looptris[i];
+		for (i=0; i < tottri; i++) {
+			BMLoop **l = looptris[i];
 			int drawSmooth;
 
 			efa = l[0]->f;
@@ -771,7 +772,7 @@ static void emDM_drawMappedFaces(
 
 				flush= (draw==2);
 				if (!skip_normals && !flush && (i != lasttri)) {
-					flush|= efa->mat_nr != bmdm->tc->looptris[i + 1][0]->f->mat_nr; /* TODO, make this neater */
+					flush|= efa->mat_nr != looptris[i + 1][0]->f->mat_nr; /* TODO, make this neater */
 				}
 
 				if (flush) {
