@@ -325,12 +325,14 @@ class CLIP_PT_tools_object(Panel):
         tracking_object = clip.tracking.objects.active
         settings = sc.clip.tracking.settings
 
-        layout.prop(tracking_object, "scale")
+        col = layout.column()
 
-        layout.separator()
+        col.prop(tracking_object, "scale")
 
-        layout.operator("clip.set_solution_scale", text="Set Scale")
-        layout.prop(settings, "object_distance")
+        col.separator()
+
+        col.operator("clip.set_solution_scale", text="Set Scale")
+        col.prop(settings, "object_distance")
 
 
 class CLIP_PT_tools_grease_pencil(Panel):
