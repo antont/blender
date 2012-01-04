@@ -182,6 +182,8 @@ static DerivedMesh *applyModifier(ModifierData *md, Object *ob,
 	int vc_tot_linked= 0;
 	short other_axis_1, other_axis_2;
 	float *tmpf1, *tmpf2;
+
+	int edge_offset;
 	
 	MPoly *mpoly_new, *mp_new;
 	MLoop *mloop_new, *ml_new;
@@ -777,6 +779,9 @@ static DerivedMesh *applyModifier(ModifierData *md, Object *ob,
 	ml_new= mloop_new;
 	med_new_firstloop= medge_new;
 	
+	/* more of an offset in this case */
+	edge_offset = totedge + (totvert * (step_tot - (close ? 0 : 1)));
+
 	for (i=0; i < totedge; i++, med_new_firstloop++) {
 		/* for each edge, make a cylinder of quads */
 		i1= med_new_firstloop->v1;
@@ -791,9 +796,9 @@ static DerivedMesh *applyModifier(ModifierData *md, Object *ob,
 				ml_new[1].v = i2 + totvert;
 				ml_new[0].v = i1 + totvert;
 
-				ml_new[2].e = step == 0 ? i : (totedge + (totvert * step_tot) + step + (i * (step_tot - 1))) - 1;
+				ml_new[2].e = step == 0 ? i : (edge_offset + step + (i * (step_tot - 1))) - 1;
 				ml_new[1].e = totedge + i2;
-				ml_new[0].e = totedge + (totvert * step_tot) + step + (i * (step_tot - 1));
+				ml_new[0].e = edge_offset + step + (i * (step_tot - 1));
 				ml_new[3].e = totedge + i1;
 			}
 			else {
@@ -802,9 +807,9 @@ static DerivedMesh *applyModifier(ModifierData *md, Object *ob,
 				ml_new[2].v = i2 + totvert;
 				ml_new[3].v = i1 + totvert;
 
-				ml_new[0].e = step == 0 ? i : (totedge + (totvert * step_tot) + step + (i * (step_tot - 1))) - 1;
+				ml_new[0].e = step == 0 ? i : (edge_offset + step + (i * (step_tot - 1))) - 1;
 				ml_new[1].e = totedge + i2;
-				ml_new[2].e = totedge + (totvert * step_tot) + step + (i * (step_tot - 1));
+				ml_new[2].e = edge_offset + step + (i * (step_tot - 1));
 				ml_new[3].e = totedge + i1;
 			}
 
@@ -837,7 +842,7 @@ static DerivedMesh *applyModifier(ModifierData *md, Object *ob,
 				ml_new[1].v = med_new_firstloop->v2;
 				ml_new[0].v = med_new_firstloop->v1;
 
-				ml_new[2].e = (totedge + (totvert * step_tot) + step + (i * (step_tot - 1))) - 1;
+				ml_new[2].e = (edge_offset + step + (i * (step_tot - 1))) - 1;
 				ml_new[1].e = totedge + i2;
 				ml_new[0].e = i;
 				ml_new[3].e = totedge + i1;
@@ -848,7 +853,7 @@ static DerivedMesh *applyModifier(ModifierData *md, Object *ob,
 				ml_new[2].v = med_new_firstloop->v2;
 				ml_new[3].v = med_new_firstloop->v1;
 
-				ml_new[0].e = (totedge + (totvert * step_tot) + step + (i * (step_tot - 1))) - 1;
+				ml_new[0].e = (edge_offset + step + (i * (step_tot - 1))) - 1;
 				ml_new[1].e = totedge + i2;
 				ml_new[2].e = i;
 				ml_new[3].e = totedge + i1;
@@ -871,7 +876,7 @@ static DerivedMesh *applyModifier(ModifierData *md, Object *ob,
 		med_new++;
 	}
 
-	/* validate */
+	/* validate loop edges */
 #if 0
 	{
 		i = 0;
