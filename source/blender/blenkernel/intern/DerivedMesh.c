@@ -1032,7 +1032,7 @@ static void add_weight_mcol_dm(Object *ob, DerivedMesh *dm, int const draw_flag)
 	wtcol_f = MEM_mallocN(sizeof (unsigned char) * totface*4*4, "weightmap_f");
 
 	/*first add colors to the tesselation faces*/
-	for (i=0; i<me->totface; i++, mf++, wtcol_f_step += (4 * 4)) {
+	for (i=0; i<totface; i++, mf++, wtcol_f_step += (4 * 4)) {
 		/*origindex being NULL means we're operating on original mesh data*/
 #if 0
 		unsigned int fidx= mf->v4 ? 3:2;
