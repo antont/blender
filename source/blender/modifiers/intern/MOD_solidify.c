@@ -605,7 +605,7 @@ static DerivedMesh *applyModifier(ModifierData *md, Object *ob,
 			/* notice we use 'mp->totloop' which is later overwritten,
 			 * we could lookup the original face but theres no point since this is a copy
 			 * and will have the same value, just take care when changing order of assignment */
-			k1 = mpoly[fidx].loopstart + ((edge_order[eidx] + mp->totloop + 1) % mp->totloop);
+			k1 = mpoly[fidx].loopstart + ((edge_order[eidx] + 1) % mp->totloop);
 			k2 = mpoly[fidx].loopstart +  (edge_order[eidx]);
 
 			mp->totloop = 4;
