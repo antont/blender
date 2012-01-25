@@ -42,7 +42,6 @@
 
 #include "BLI_array.h"
 #include "BLI_math.h"
-#include "BLI_cellalloc.h"
 
 #include "bmesh.h"
 #include "bmesh_private.h"
