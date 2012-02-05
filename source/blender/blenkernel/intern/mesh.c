@@ -2201,7 +2201,7 @@ void mesh_loops_to_mface_corners(CustomData *fdata, CustomData *ldata,
 
 		for (j=0; j < mf_len; j++) {
 			mloopuv = CustomData_get_n(ldata, CD_MLOOPUV, lindex[j], i);
-			copy_v3_v3(texface->uv[j], mloopuv->uv);
+			copy_v2_v2(texface->uv[j], mloopuv->uv);
 		}
 	}
 
