@@ -1525,6 +1525,10 @@ static void weld_align_uv(bContext *C, int tool)
 			else {
 				/* error - not a line, needs 3+ points  */
 			}
+
+			if (eve_line) {
+				MEM_freeN(eve_line);
+			}
 		}
 		else {
 			/* error - cant find an endpoint */
