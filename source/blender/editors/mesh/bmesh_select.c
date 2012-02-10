@@ -1809,7 +1809,7 @@ static int select_linked_pick_invoke(bContext *C, wmOperator *op, wmEvent *event
 		 * For now I dont think this is a showstopper - campbell */
 
 		/* now use vertex select flag to select rest */
-		EDBM_selectmode_flush_ex(em, SCE_SELECT_EDGE);
+		EDBM_selectmode_flush_ex(em, SCE_SELECT_VERTEX);
 
 	}
 
