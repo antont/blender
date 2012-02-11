@@ -43,7 +43,6 @@
 #include "bmesh.h"
 #include "bmesh_private.h"
 
-
 #define SELECT 1
 
 /* prototypes */

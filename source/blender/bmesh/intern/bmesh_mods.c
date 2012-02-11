@@ -34,6 +34,8 @@
 #include "BLI_array.h"
 #include "BLI_smallhash.h"
 
+#include "BKE_customdata.h"
+
 #include "bmesh.h"
 #include "bmesh_private.h"
 
