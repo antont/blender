@@ -238,7 +238,7 @@ void MESH_OT_select_next_loop(struct wmOperatorType *ot);
 #define SUBDIV_CORNER_INNERVERT	1
 #define SUBDIV_CORNER_FAN		2
 
-extern EnumPropertyItem corner_type_items[];
+extern struct EnumPropertyItem *corner_type_items;
 
 #if 0 /* REMOVE AFTER BMESH MERGE */
 
