@@ -315,7 +315,10 @@ BMFace *BM_face_create(BMesh *bm, BMVert **verts, BMEdge **edges, const int len,
 	lastl->next = startl;
 	
 	f->len = len;
+
+#ifdef USE_BMESH_HOLES
 	f->totbounds = 0;
+#endif
 	
 	BM_CHECK_ELEMENT(bm, f);
 
@@ -1072,7 +1075,10 @@ static BMFace *bmesh_addpolylist(BMesh *bm, BMFace *UNUSED(example))
 	CustomData_bmesh_set_default(&bm->pdata, &f->head.data);
 
 	f->len = 0;
+
+#ifdef USE_BMESH_HOLES
 	f->totbounds = 1;
+#endif
 
 	return (BMFace *) f;
 }

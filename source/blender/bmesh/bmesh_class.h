@@ -111,8 +111,8 @@ typedef struct BMLoopList {
 typedef struct BMFace {
 	BMHeader head;
 	int len; /*includes all boundary loops*/
-	int totbounds; /*total boundaries, is one plus the number of holes in the face*/
 #ifdef USE_BMESH_HOLES
+	int totbounds; /*total boundaries, is one plus the number of holes in the face*/
 	ListBase loops;
 #else
 	BMLoop *l_first;
