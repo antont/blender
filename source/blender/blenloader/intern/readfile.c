@@ -6332,7 +6332,7 @@ static void lib_link_mask(FileData *fd, Main *main)
 			while (maskobj) {
 				MaskSpline *spline;
 
-				maskobj = maskobj->splines.first;
+				spline = maskobj->splines.first;
 				while (spline) {
 					int i;
 
