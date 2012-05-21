@@ -41,11 +41,12 @@ libraries_filepath  = "libraries.gl"
 extensions_filepath = "extensions.gl"
 es11_filepath       = "es11.gl"
 es20_filepath       = "es20.gl"
+blender_filepath    = "blender.gl"
 
 # location of source code to be scanned relative to this script
 source_location = "../../../"
 report_filepath = "report.txt"
-    
+
 # these files contain practically the entire OpenGL api
 # scraping them spams the resulting report and makes it less useful
 stop_files = [
@@ -146,6 +147,13 @@ tokenizer = re.compile(r'''
 
         # camel-case types
         (?:(?:AGL|CGL|kCGL|GLX)[a-zA-Z0-9_]*)|
+
+        # Blender internal helper functions
+        (?:(?:bgl|gla)[_A-Z0-9][a-zA-Z0-9_]*)|
+        (?:fdraw[a-zA-Z0-9_]*)|
+        (?:stipple_[a-zA-Z0-9_]*)|
+        set_inverted_drawing|
+        setlinestyle|
 
         # possible fakes
         (?:(?:glx|wgl|WGL|agl|AGL|glew|GLEW|CGL)[a-zA-Z0-9_]+)|
@@ -261,8 +269,8 @@ def pivot_database(db_out, db_in):
 
             db_out[token].add(label)
 
-            
-            
+
+
 def read_database():
     global core_filepath
     global deprecated_filepath
@@ -275,6 +283,7 @@ def read_database():
     global extensions_filepath
     global es11_filepath
     global es20_filepath
+    global blender_filepath
 
     core_file       = open(core_filepath)
     deprecated_file = open(deprecated_filepath)
@@ -287,6 +296,7 @@ def read_database():
     libraries_file  = open(libraries_filepath)
     es11_file       = open(es11_filepath)
     es20_file       = open(es20_filepath)
+    blender_file    = open(blender_filepath)
 
     core_str       = core_file.read()
     deprecated_str = deprecated_file.read()
@@ -299,13 +309,14 @@ def read_database():
     libraries_str  = libraries_file.read()
     es11_str       = es11_file.read()
     es20_str       = es20_file.read()
+    blender_str    = blender_file.read()
 
     # fill the database with all categories
     # database is used to classify tokens
-    database_str = '{ %s %s %s %s %s %s %s %s %s }' % (
+    database_str = '{ %s %s %s %s %s %s %s %s %s %s }' % (
         core_str, deprecated_str, extensions_str,
         agl_str, cgl_str, egl_str, glX_str, wgl_str,
-        libraries_str)
+        libraries_str, blender_str)
 
     global database
     pivot_database(database, eval(database_str))
@@ -313,16 +324,16 @@ def read_database():
     # platform_es11 and platform_es20 contain platforms
     # they are used to find tokens that do not belong on a particular platform
     # library functions included because otherwise library functions would be
-    # considered to all be incompatible with each platform, 
+    # considered to all be incompatible with each platform,
     # which is noisy and not particularly true
-    platform_es11_str = '{ %s %s %s %s %s %s %s }' % (
-        es11_str, agl_str, cgl_str, egl_str, glX_str, wgl_str, libraries_str)
+    platform_es11_str = '{ %s %s %s %s %s %s %s %s }' % (
+        es11_str, agl_str, cgl_str, egl_str, glX_str, wgl_str, libraries_str, blender_str)
 
     global platform_es11
     pivot_database(platform_es11, eval(platform_es11_str))
 
-    platform_es20_str = '{ %s %s %s %s %s %s %s }' %  (
-        es20_str, agl_str, cgl_str, egl_str, glX_str, wgl_str, libraries_str)
+    platform_es20_str = '{ %s %s %s %s %s %s %s %s }' %  (
+        es20_str, agl_str, cgl_str, egl_str, glX_str, wgl_str, libraries_str, blender_str)
 
     global platform_es20
     pivot_database(platform_es20, eval(platform_es20_str))
@@ -345,7 +356,7 @@ def write_plain_text_report(filepath):
     global platform_es20
 
     global report
-    
+
     out = open(filepath, "w")
 
     out.write("Files That Appear to Use OpenGL: " + str(len(report)) + "\n")
@@ -424,7 +435,7 @@ def write_plain_text_report(filepath):
 
     out.close()
 
-    
+
 # main
 read_database()
 make_report()
