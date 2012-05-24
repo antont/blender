@@ -987,8 +987,6 @@ void BKE_mask_evaluate(Mask *mask, float ctime, const int do_newframe)
 
 		/* animation if available */
 		if (do_newframe) {
-			//MaskObjectShape *maskobj_shape = BKE_mask_object_shape_find_frame(maskobj, (int)ctime);
-
 			MaskObjectShape *maskobj_shape_a;
 			MaskObjectShape *maskobj_shape_b;
 			int found;
