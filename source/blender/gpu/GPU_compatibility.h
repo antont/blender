@@ -33,7 +33,8 @@
 #define __GPU_COMPATIBILITY_H__
 
 #include "intern/gpu_immediate_inline.h"
-
+#include "GPU_lighting.h"
+#include "GPU_primitives.h" // XXX: temporary, these do not belong here
 
 
 #ifndef GPU_MANGLE_DEPRECATED
