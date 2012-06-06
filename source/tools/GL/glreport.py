@@ -54,6 +54,10 @@ stop_files = [
     os.path.join('extern', 'glew', 'include', 'GL', 'glxew.h'),
     os.path.join('extern', 'glew', 'include', 'GL', 'wglew.h'),
     os.path.join('extern', 'glew', 'src', 'glew.c'),
+    os.path.join('extern', 'glew-android', 'include', 'GL', 'glew.h'),
+    os.path.join('extern', 'glew-android', 'include', 'GL', 'glxew.h'),
+    os.path.join('extern', 'glew-android', 'include', 'GL', 'wglew.h'),
+    os.path.join('extern', 'glew-android', 'src', 'glew.c'),
     os.path.join('source', 'blender', 'python', 'generic', 'bgl.h'),
     os.path.join('source', 'blender', 'python', 'generic', 'bgl.c')]
 
