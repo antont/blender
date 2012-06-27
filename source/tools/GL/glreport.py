@@ -59,7 +59,9 @@ stop_files = [
     os.path.join('extern', 'glew-android', 'include', 'GL', 'wglew.h'),
     os.path.join('extern', 'glew-android', 'src', 'glew.c'),
     os.path.join('source', 'blender', 'python', 'generic', 'bgl.h'),
-    os.path.join('source', 'blender', 'python', 'generic', 'bgl.c')]
+    os.path.join('source', 'blender', 'python', 'generic', 'bgl.c'),
+    os.path.join('source', 'blender', 'gpu', 'intern', 'gpu_deprecated.h'),
+    os.path.join('source', 'blender', 'gpu', 'intern', 'gpu_debug.c')]
 
 # for_all_files will visit every file in a file hierarchy
 # doDirCallback  - called on each directory
