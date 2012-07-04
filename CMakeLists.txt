@@ -1043,6 +1043,7 @@ elseif(WIN32)
 				set(OPENCOLORIO_LIBRARIES OpenColorIO tinyxml yaml-cpp) # for static 2 extra libs are needed
 			else()
 				set(OPENCOLORIO_LIBRARIES OpenColorIO)
+			endif()
 			set_lib_path(OPENCOLORIO_LIBPATH "opencolorio/lib")
 			set(OPENCOLORIO_DEFINITIONS)
 		endif()
