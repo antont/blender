@@ -318,7 +318,8 @@ def blender_check_operator(index_start, index_end, op_text):
 
     if len(op_text) > 1:
         if op_text[0] == "*" and op_text[-1] == "*":
-            if not tokens[index_start - 1].text.isspace():
+            if ((not tokens[index_start - 1].text.isspace()) and
+                (not tokens[index_start - 1].type == Token.Punctuation)):
                 warning("no space before pointer operator '%s'" % op_text, index_start, index_end)
             if tokens[index_end + 1].text.isspace():
                 warning("space before pointer operator '%s'" % op_text, index_start, index_end)
@@ -368,6 +369,7 @@ def scan_source(fp, args):
     global filepath
 
     filepath = fp
+    filepath_base = os.path.basename(filepath)
 
     #print(highlight(code, CLexer(), RawTokenFormatter()).decode('utf-8'))
     code = open(filepath, 'r', encoding="utf-8").read()
@@ -399,6 +401,17 @@ def scan_source(fp, args):
             if tokens[i - 1].type != Token.Operator:
                 op, index_kw_end = extract_operator(i)
                 blender_check_operator(i, index_kw_end, op)
+        elif tok.type in Token.Comment:
+            doxyfn = None
+            if "\\file" in tok.text:
+                doxyfn = tok.text.split("\\file", 1)[1].strip().split()[0]
+            elif "@file" in tok.text:
+                doxyfn = tok.text.split("@file", 1)[1].strip().split()[0]
+
+            if doxyfn is not None:
+                doxyfn_base = os.path.basename(doxyfn)
+                if doxyfn_base != filepath_base:
+                    warning("doxygen filename mismatch %s != %s" % (doxyfn_base, filepath_base), i, i)
 
         # ensure line length
         if (not args.no_length_check) and tok.type == Token.Text and tok.text == "\n":
@@ -409,7 +422,7 @@ def scan_source(fp, args):
             index_line_start = i + 1
         else:
             col += len(tok.text.expandtabs(TAB_SIZE))
-                
+
         #elif tok.type == Token.Name:
         #    print(tok.text)
 
