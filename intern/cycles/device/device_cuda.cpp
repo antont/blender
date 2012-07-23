@@ -531,6 +531,8 @@ public:
 		cuda_assert(cuFuncSetBlockShape(cuPathTrace, xthreads, ythreads, 1))
 		cuda_assert(cuLaunchGrid(cuPathTrace, xblocks, yblocks))
 
+		cuda_assert(cuCtxSynchronize())
+
 		cuda_pop_context();
 	}
 
@@ -840,10 +842,6 @@ public:
 					}
 
 					path_trace(tile, sample);
-
-					cuda_push_context();
-					cuda_assert(cuCtxSynchronize())
-					cuda_pop_context();
 				}
 
 				task->release_tile(tile);
