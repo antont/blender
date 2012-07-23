@@ -834,12 +834,17 @@ public:
 				int start_sample = tile.start_sample;
 				int end_sample = tile.start_sample + tile.num_samples;
 
-				for(int sample = start_sample; sample < end_sample; sample++)
+				for(int sample = start_sample; sample < end_sample; sample++) {
+					if (task->get_cancel()) {
+						break;
+					}
+
 					path_trace(tile, sample);
 
-				cuda_push_context();
-				cuda_assert(cuCtxSynchronize())
-				cuda_pop_context();
+					cuda_push_context();
+					cuda_assert(cuCtxSynchronize())
+					cuda_pop_context();
+				}
 
 				task->release_tile(tile);
 			}
