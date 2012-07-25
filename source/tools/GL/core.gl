@@ -1,4 +1,10 @@
-'GLSL': set([
+'GLSL':	set([
+	'gl_ModelViewProjectionMatrix',
+    'gl_Position',
+	'gl_Normal',
+	'gl_NormalMatrix',
+	'gl_ProjectionMatrix',
+	'gl_Vertex',
 	'gl_FragColor',
 	'gl_ModelViewMatrix',
 	'gl_TexCoord']),
@@ -497,7 +503,7 @@
 	'glTexParameteriv',
 	'glViewport']),
 
-'GL_VERSION_1_1': set([
+'GL_VERSION_1_1':	set([
 	'GL_ALPHA12',
 	'GL_ALPHA16',
 	'GL_ALPHA4',
@@ -599,7 +605,7 @@
 	'glTexSubImage1D',
 	'glTexSubImage2D']),
 
-'GL_VERSION_1_2': set([
+'GL_VERSION_1_2':	set([
 	'GL_ALIASED_LINE_WIDTH_RANGE',
 	'GL_ALIASED_POINT_SIZE_RANGE',
 	'GL_BGR',
@@ -647,10 +653,10 @@
 	'glTexImage3D',
 	'glTexSubImage3D']),
 
-'GL_VERSION_1_2_1': set([
+'GL_VERSION_1_2_1':	set([
 	'GL_VERSION_1_2_1']),
 
-'GL_VERSION_1_3': set([
+'GL_VERSION_1_3':	set([
 	'GL_ACTIVE_TEXTURE',
 	'GL_ADD_SIGNED',
 	'GL_CLAMP_TO_BORDER',
@@ -757,7 +763,7 @@
 	'glGetCompressedTexImage',
 	'glSampleCoverage']),
 
-'GL_VERSION_1_4': set([
+'GL_VERSION_1_4':	set([
 	'GL_BLEND_DST_ALPHA',
 	'GL_BLEND_DST_RGB',
 	'GL_BLEND_SRC_ALPHA',
@@ -846,7 +852,7 @@
 	'glWindowPos3s',
 	'glWindowPos3sv']),
 
-'GL_VERSION_1_5': set([
+'GL_VERSION_1_5':	set([
 	'GL_ARRAY_BUFFER',
 	'GL_ARRAY_BUFFER_BINDING',
 	'GL_BUFFER_ACCESS',
@@ -920,7 +926,7 @@
 	'glMapBuffer',
 	'glUnmapBuffer']),
 
-'GL_VERSION_2_0': set([
+'GL_VERSION_2_0':	set([
 	'GL_ACTIVE_ATTRIBUTES',
 	'GL_ACTIVE_ATTRIBUTE_MAX_LENGTH',
 	'GL_ACTIVE_UNIFORMS',
@@ -1101,7 +1107,7 @@
 	'glVertexAttrib4usv',
 	'glVertexAttribPointer']),
 
-'GL_VERSION_2_1': set([
+'GL_VERSION_2_1':	set([
 	'GL_COMPRESSED_SLUMINANCE',
 	'GL_COMPRESSED_SLUMINANCE_ALPHA',
 	'GL_COMPRESSED_SRGB',
@@ -1133,7 +1139,7 @@
 	'glUniformMatrix4x2fv',
 	'glUniformMatrix4x3fv']),
 
-'GL_VERSION_3_0': set([
+'GL_VERSION_3_0':	set([
 	'GL_ALPHA_INTEGER',
 	'GL_BGRA_INTEGER',
 	'GL_BGR_INTEGER',
@@ -1299,7 +1305,7 @@
 	'glVertexAttribI4usv',
 	'glVertexAttribIPointer']),
 
-'GL_VERSION_3_1': set([
+'GL_VERSION_3_1':	set([
 	'GL_BUFFER_ACCESS_FLAGS',
 	'GL_BUFFER_MAP_LENGTH',
 	'GL_BUFFER_MAP_OFFSET',
@@ -1340,7 +1346,7 @@
 	'glPrimitiveRestartIndex',
 	'glTexBuffer']),
 
-'GL_VERSION_3_2': set([
+'GL_VERSION_3_2':	set([
 	'GL_CONTEXT_COMPATIBILITY_PROFILE_BIT',
 	'GL_CONTEXT_CORE_PROFILE_BIT',
 	'GL_CONTEXT_PROFILE_MASK',
@@ -1368,7 +1374,7 @@
 	'glGetBufferParameteri64v',
 	'glGetInteger64i_v']),
 
-'GL_VERSION_3_3': set([
+'GL_VERSION_3_3':	set([
 	'GL_ANY_SAMPLES_PASSED',
 	'GL_RGB10_A2UI',
 	'GL_TEXTURE_SWIZZLE_A',
@@ -1380,7 +1386,7 @@
 	'GL_VERTEX_ATTRIB_ARRAY_DIVISOR',
 	'glVertexAttribDivisor']),
 
-'GL_VERSION_4_0': set([
+'GL_VERSION_4_0':	set([
 	'GL_FRAGMENT_INTERPOLATION_OFFSET_BITS',
 	'GL_GEOMETRY_SHADER_INVOCATIONS',
 	'GL_INT_SAMPLER_CUBE_MAP_ARRAY',
@@ -1405,8 +1411,8 @@
 	'glBlendFunci',
 	'glMinSampleShading']),
 
-'GL_VERSION_4_1': set([
+'GL_VERSION_4_1':	set([
 	'GL_VERSION_4_1']),
 
-'GL_VERSION_4_2': set([
+'GL_VERSION_4_2':	set([
 	'GL_VERSION_4_2']),

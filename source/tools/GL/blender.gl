@@ -1,4 +1,10 @@
+'IGNORE': set([
+    'gl_glx',
+    'GLimp_SetMode']),
+
 'BLENDER': set([
+    'GLarm',
+    'GLUarm',
 	'bglBegin',
 	'bglBuffer',
 	'bglEnd',
@@ -42,4 +48,5 @@
 	'stipple_diag_stripes_neg',
 	'stipple_diag_stripes_pos',
 	'stipple_halftone',
-	'stipple_quarttone']),
+	'stipple_quarttone',
+    'bgl_sphere_project']),

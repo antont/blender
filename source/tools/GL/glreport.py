@@ -47,9 +47,10 @@ blender_filepath    = "blender.gl"
 source_location = "../../../"
 report_filepath = "report.txt"
 
-# these files contain practically the entire OpenGL api
-# scraping them spams the resulting report and makes it less useful
+# stop files are ignored when scrapping
 stop_files = [
+    # these files contain practically the entire OpenGL api
+    # scraping them spams the resulting report and makes it less useful
     os.path.join('extern', 'glew', 'include', 'GL', 'glew.h'),
     os.path.join('extern', 'glew', 'include', 'GL', 'glxew.h'),
     os.path.join('extern', 'glew', 'include', 'GL', 'wglew.h'),
@@ -61,7 +62,32 @@ stop_files = [
     os.path.join('source', 'blender', 'python', 'generic', 'bgl.h'),
     os.path.join('source', 'blender', 'python', 'generic', 'bgl.c'),
     os.path.join('source', 'blender', 'gpu', 'intern', 'gpu_deprecated.h'),
-    os.path.join('source', 'blender', 'gpu', 'intern', 'gpu_debug.c')]
+    os.path.join('source', 'blender', 'gpu', 'intern', 'gpu_debug.c'),
+    
+    # the following files are included because they a part of debugging or tests,
+    # so I want to ignore them for now
+	os.path.join('extern', 'eltopo', 'common', 'gluvi.cpp'),
+	os.path.join('extern', 'eltopo', 'common', 'gluvi.h'),
+	os.path.join('extern', 'eltopo', 'common', 'meshes', 'ObjLoader.cpp'),
+	os.path.join('extern', 'eltopo', 'common', 'meshes', 'meshloader.cpp'),
+	os.path.join('extern', 'eltopo', 'common', 'meshes', 'meshloader.h'),
+	os.path.join('extern', 'eltopo', 'common', 'openglutils.cpp'),
+	os.path.join('extern', 'eltopo', 'eltopo3d', 'meshrenderer.cpp'),
+	os.path.join('extern', 'libmv', 'third_party', 'ceres', 'internal', 'ceres', 'visibility_based_preconditioner.h'),
+	os.path.join('intern', 'bsp', 'test', 'BSP_GhostTest', 'BSP_GhostTest3D.cpp'),
+	os.path.join('intern', 'bsp', 'test', 'BSP_GhostTest', 'BSP_MeshDrawer.cpp'),
+	os.path.join('intern', 'decimation', 'test', 'decimate_glut_test', 'intern', 'GlutMeshDrawer.h'),
+	os.path.join('intern', 'decimation', 'test', 'decimate_glut_test', 'intern', 'main.cpp'),
+	os.path.join('intern', 'elbeem', 'intern', 'solver_control.cpp'),
+	os.path.join('intern', 'elbeem', 'intern', 'solver_util.cpp'),
+	os.path.join('intern', 'ghost', 'test', 'gears', 'GHOST_C-Test.c'),
+	os.path.join('intern', 'ghost', 'test', 'gears', 'GHOST_Test.cpp'),
+	os.path.join('intern', 'ghost', 'test', 'multitest', 'GL.h'),
+	os.path.join('intern', 'ghost', 'test', 'multitest', 'MultiTest.c'),
+	os.path.join('intern', 'iksolver', 'intern', 'IK_QJacobianSolver.cpp'),
+	os.path.join('intern', 'iksolver', 'test', 'ik_glut_test', 'intern', 'ChainDrawer.h'),
+	os.path.join('intern', 'iksolver', 'test', 'ik_glut_test', 'intern', 'MyGlutMouseHandler.h'),
+	os.path.join('intern', 'iksolver', 'test', 'ik_glut_test', 'intern', 'main.cpp')]
 
 # for_all_files will visit every file in a file hierarchy
 # doDirCallback  - called on each directory

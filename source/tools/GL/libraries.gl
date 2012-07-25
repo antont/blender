@@ -1,4 +1,10 @@
-'GLEW': set([
+'GLEW':	set([
+	'GLEWAPI',
+	'GLEW_APIENTRY_DEFINED',
+	'GLEW_BUILD',
+	'GLEW_CALLBACK_DEFINED',
+	'GLEW_STATIC',
+	'GLEW_WINGDIAPI_DEFINED',
 	'GLEW_ARB_depth_texture',
 	'GLEW_ARB_fragment_program',
 	'GLEW_ARB_fragment_shader',
@@ -19,16 +25,22 @@
 	'GLEW_EXT_separate_specular_color',
 	'GLEW_EXT_texture_filter_anisotropic',
 	'GLEW_EXT_texture_rectangle',
+	'GLEW_EXT_texture_compression_s3tc',
 	'GLEW_NV_texture_rectangle',
+	'GLEW_GREMEDY_string_marker',
 	'GLEW_VERSION_1_1',
 	'GLEW_VERSION_1_2',
+	'GLEW_VERSION_1_3',
+	'GLEW_VERSION_1_4',
+	'GLEW_VERSION_1_5',
+	'GLEW_VERSION_2_0',
 	'GLEW_VERSION_3_0',
 	'glewInit',
 	'glewIsSupported',
 	'glxew',
 	'wglew']),
 
-'GLM': set([
+'GLM':	set([
 	'GLM_COLOR',
 	'GLM_FLAT',
 	'GLM_MATERIAL',
@@ -80,6 +92,9 @@
 	'glmWriteOBJ']),
 
 'GLU': set([
+	'GLU_INVALID_ENUM',
+	'GLU_INVALID_VALUE',
+	'GLU_OUT_OF_MEMORY',
 	'GLU_FILL',
 	'GLU_INSIDE',
 	'GLU_OUTSIDE',
@@ -104,7 +119,7 @@
 	'gluSphere',
 	'gluUnProject']),
 
-'GLUT': set([
+'GLUT':	set([
 	'glutBitmapCharacter',
 	'glutBitmapLength',
 	'glutCreateWindow',
