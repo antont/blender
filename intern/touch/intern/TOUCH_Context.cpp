@@ -25,32 +25,11 @@
  * ***** END GPL LICENSE BLOCK *****
  */
 
-/** \file touch/intern/TOUCH_API.cpp
+/** \file touch/intern/TOUCH_Context.cpp
  *  \ingroup TOUCH
  */
 
-#include "TOUCH_API.h"
-#include "TOUCH_Manager.h"
+#include "TOUCH_Context.h"
 
-extern TOUCH_Handle TOUCH_InitManager()
-{
-	TOUCH_Manager::CreateManager();
-	TOUCH_Manager * manager = TOUCH_Manager::GetManager();
-
-	return (TOUCH_Handle)manager;
-}
-
-extern TOUCH_Handle TOUCH_GetManager()
-{
-	return (TOUCH_Handle)TOUCH_Manager::GetManager();
-}
-
-extern void TOUCH_DestroyManager(TOUCH_Handle* handle) {
-	delete handle;
-}
-
-extern void TOUCH_AddTouchEvent(TOUCH_Handle* handle, void * event)
-{
-	TOUCH_Manager * manager = (TOUCH_Manager *) handle;
-	manager->AddTouchEvent(event);
-}
+TOUCH_Context::TOUCH_Context(){}
+TOUCH_Context::~TOUCH_Context(){}
