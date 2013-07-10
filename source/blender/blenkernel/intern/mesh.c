@@ -685,15 +685,16 @@ BoundBox *BKE_mesh_boundbox_get(Object *ob)
 	if (ob->bb)
 		return ob->bb;
 
-	if (!me->bb)
+	if (me->bb == NULL || (me->bb->flag & BOUNDBOX_INVALID)) {
 		BKE_mesh_texspace_calc(me);
+	}
 
 	return me->bb;
 }
 
 void BKE_mesh_texspace_get(Mesh *me, float r_loc[3], float r_rot[3], float r_size[3])
 {
-	if (!me->bb) {
+	if (me->bb == NULL || (me->bb->flag & BOUNDBOX_INVALID)) {
 		BKE_mesh_texspace_calc(me);
 	}
 
