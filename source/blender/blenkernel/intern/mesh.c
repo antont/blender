@@ -656,6 +656,8 @@ void BKE_mesh_boundbox_calc(Mesh *me, float r_loc[3], float r_size[3])
 	r_size[2] = (max[2] - min[2]) / 2.0f;
 	
 	BKE_boundbox_init_from_minmax(bb, min, max);
+
+	bb->flag &= ~BOUNDBOX_INVALID;
 }
 
 void BKE_mesh_texspace_calc(Mesh *me)
