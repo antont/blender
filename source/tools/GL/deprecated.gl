@@ -392,6 +392,10 @@
 	'glWindowPos3s',
 	'glWindowPos3sv']),
 
+'OLD_TOKEN_NAME_1_2': set([
+	'GL_POINT_SIZE_RANGE',
+	'GL_POINT_SIZE_GRANULARITY']),
+
 'OLD_TOKEN_NAME_1_5': set([
 	'GL_CURRENT_FOG_COORDINATE',
 	'GL_FOG_COORDINATE',
