@@ -48,5 +48,5 @@
 	'stipple_diag_stripes_neg',
 	'stipple_diag_stripes_pos',
 	'stipple_halftone',
-	'stipple_quarttone',
+	'stipple_quartone',
     'bgl_sphere_project']),

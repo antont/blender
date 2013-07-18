@@ -55,10 +55,12 @@ stop_files = [
     os.path.join('extern', 'glew', 'include', 'GL', 'glxew.h'),
     os.path.join('extern', 'glew', 'include', 'GL', 'wglew.h'),
     os.path.join('extern', 'glew', 'src', 'glew.c'),
-    os.path.join('extern', 'glew-android', 'include', 'GL', 'glew.h'),
-    os.path.join('extern', 'glew-android', 'include', 'GL', 'glxew.h'),
-    os.path.join('extern', 'glew-android', 'include', 'GL', 'wglew.h'),
-    os.path.join('extern', 'glew-android', 'src', 'glew.c'),
+    os.path.join('extern', 'glew-es', 'include', 'GL', 'eglew.h'),
+    os.path.join('extern', 'glew-es', 'include', 'GL', 'glesew.h'),
+    os.path.join('extern', 'glew-es', 'include', 'GL', 'glew.h'),
+    os.path.join('extern', 'glew-es', 'include', 'GL', 'glxew.h'),
+    os.path.join('extern', 'glew-es', 'include', 'GL', 'wglew.h'),
+    os.path.join('extern', 'glew-es', 'src', 'glew.c'),
     os.path.join('source', 'blender', 'python', 'generic', 'bgl.h'),
     os.path.join('source', 'blender', 'python', 'generic', 'bgl.c'),
     os.path.join('source', 'blender', 'gpu', 'intern', 'gpu_deprecated.h'),
@@ -87,8 +89,13 @@ stop_files = [
 	os.path.join('intern', 'iksolver', 'intern', 'IK_QJacobianSolver.cpp'),
 	os.path.join('intern', 'iksolver', 'test', 'ik_glut_test', 'intern', 'ChainDrawer.h'),
 	os.path.join('intern', 'iksolver', 'test', 'ik_glut_test', 'intern', 'MyGlutMouseHandler.h'),
-	os.path.join('intern', 'iksolver', 'test', 'ik_glut_test', 'intern', 'main.cpp')]
+	os.path.join('intern', 'iksolver', 'test', 'ik_glut_test', 'intern', 'main.cpp'),
 
+    # some annoying fakes were found in these files that aren't even use OpenGL
+    os.path.join('extern', 'bullet2', 'src', 'BulletDynamics', 'ConstraintSolver', 'btGeneric6DofConstraint.h'),
+    os.path.join('extern', 'wcwidth', 'wcwidth.c'),
+
+    ]
 # for_all_files will visit every file in a file hierarchy
 # doDirCallback  - called on each directory
 # doFileCallback - called on each file
@@ -162,23 +169,23 @@ def never(path, unprefixed_path, item):
 
 # This regular expression recognizes almost all tokens introduced by OpenGL
 # It is careful to exclude tokens like "glow" or "GLARE", but makes sure to
-# catche "fake" OpenGL identifiers that should be avoided like "glHerpDerp".
+# catch "fake" OpenGL identifiers that should be avoided like "glHerpDerp".
 
 # XXX: TODO: It may be better to make an explicit list of allowed symbols so this can be simplified somewhat later
 
 tokenizer = re.compile(r'''
     \b(?:
         # entry points
-        (?:(?:gl|glu|glut|glew|glX|wgl|agl|CGL|glm)[A-Z_][a-zA-Z0-9_]*)|
+        (?:(?:gl|glu|glut|glew|glX|wgl|agl|cgl|CGL|glm|egl|glew|wglew|xglew|eglew)[A-Z_][a-zA-Z0-9_]*)|
 
         # enums
-        (?:(?:GL|GLU|GLUT|GLEW|GLX|WGL|AGL|GLM)_[a-zA-Z0-9_]*])|
+        (?:(?:GL|GLU|GLUT|GLEW|GLX|WGL|AGL|CGL|GLM|EGL|GLEW|WGLEW|EGLEW|XGLEW)_[a-zA-Z0-9_]*])|
 
         # lower-case types
         (?:(?:GL|GLU|GLM)[a-z0-9_][a-zA-Z0-9_]*)|
 
         # camel-case types
-        (?:(?:AGL|CGL|kCGL|GLX)[a-zA-Z0-9_]*)|
+        (?:(?:AGL|CGL|kCGL|GLX|EGL)[a-zA-Z0-9_]*)|
 
         # Blender internal helper functions
         (?:(?:bgl|gla)[_A-Z0-9][a-zA-Z0-9_]*)|
@@ -228,9 +235,13 @@ def add_report_entry(path, unprefixed_path, item):
 
     print("Scanning: " + unprefixed_path + " ...");
 
-    f = open(path)
-    s = f.read()
-    f.close()
+    try:
+        f = open(path)
+        s = f.read()
+        f.close()
+    except Exception as e:
+        print("Exception occurred while reading " + unprefixed_path + ": \n" + str(e))
+        return
 
     matches = tokenizer.findall(s)
 
