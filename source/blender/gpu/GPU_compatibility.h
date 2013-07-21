@@ -43,6 +43,7 @@
 #include "intern/gpu_raster.h"
 #include "intern/gpu_profile.h"
 #include "intern/gpu_pixels.h"
+#include "intern/gpu_select.h"
 
 #ifndef GPU_MANGLE_DEPRECATED
 #define GPU_MANGLE_DEPRECATED 1
