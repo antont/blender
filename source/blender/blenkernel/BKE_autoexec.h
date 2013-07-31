@@ -15,27 +15,17 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * The Original Code is Copyright (C) 2001-2002 by NaN Holding BV.
- * All rights reserved.
- *
- * The Original Code is: all of this file.
- *
- * Contributor(s): none yet.
+ * Contributor(s): Blender Foundation 2013
  *
  * ***** END GPL LICENSE BLOCK *****
  */
+#ifndef __BKE_AUTOEXEC_H__
+#define __BKE_AUTOEXEC_H__
 
-/** \file GPC_RawLogoArrays.h
- *  \ingroup player
+/** \file BKE_autoexec.h
+ *  \ingroup bke
  */
 
-#ifndef __GPC_RAWLOGOARRAYS_H__
-#define __GPC_RAWLOGOARRAYS_H__
+bool BKE_autoexec_match(const char *path);
 
-void GetRawBlenderLogo(unsigned char **data, int *width, int *height);
-void GetRawBlender3DLogo(unsigned char **data, int *width, int *height);
-#if 0
-void GetRawNaNLogo(unsigned char **data, int *width, int *height);
-#endif
-
-#endif  /* __GPC_RAWLOGOARRAYS_H__ */
+#endif  /* __BKE_AUTOEXEC_H__ */

@@ -14,40 +14,33 @@
 #  along with this program; if not, write to the Free Software Foundation,
 #  Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 #
-# The Original Code is Copyright (C) 2006, Blender Foundation
-# All rights reserved.
-#
-# Contributor(s): Enrico Fracasso.
-#
 # ##### END GPL LICENSE BLOCK #####
 
-message(STATUS "Configuring WebPlugin")
-
-# Enable build flag
-string(TOUPPER ${WEBPLUGIN_SANDBOX_MODE} WEBPLUGIN_SANDBOX_MODE_UPPER)
-
-if(WEBPLUGIN_SANDBOX_MODE_UPPER STREQUAL "APPARMOR")
-	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DWITH_APPARMOR ")
-endif()
-
-if(WEBPLUGIN_SANDBOX_MODE_UPPER STREQUAL "PRIVSEP")
-	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DWITH_PRIVSEP ")
-	add_executable(blenderplayer-wrapper blenderplayer-wrapper.c)
-endif()
-
-# set output path
-set(LIBRARY_OUTPUT_PATH  ${CMAKE_BINARY_DIR}/webplugin)
-
-set(INC
-	${GECKO_DIR}/include/
-)
-
-set(SRC 
-	npunix.c 
-	UnixShell.c 
-)
-
-blender_include_dirs("${INC}")
-add_library(blender_plugin SHARED ${SRC})
+# <pep8 compliant>
+import bpy
+from bpy.types import Header
 
 
+class PROPERTIES_HT_header(Header):
+    bl_space_type = 'PROPERTIES'
+
+    def draw(self, context):
+        layout = self.layout
+
+        view = context.space_data
+
+        row = layout.row()
+        row.template_header(menus=False)
+        row.prop(view, "context", expand=True, icon_only=True)
+
+
+def register():
+    bpy.utils.register_module(__name__)
+
+
+def unregister():
+    bpy.utils.unregister_module(__name__)
+
+
+if __name__ == "__main__":
+    register()

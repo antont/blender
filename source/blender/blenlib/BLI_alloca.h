@@ -15,33 +15,32 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * The Original Code is Copyright (C) 2001-2002 by NaN Holding BV.
- * All rights reserved.
- *
- * This is a new part of Blender.
- *
- * Contributor(s): Willian P. Germano.
- *
  * ***** END GPL LICENSE BLOCK *****
  */
-#ifndef __BKE_SCRIPT_H__
-#define __BKE_SCRIPT_H__
 
-/** \file BKE_script.h
- *  \ingroup bke
- *  \since March 2001
- *  \author nzc
- *  \author Willian P. Germano
+#ifndef __BLI_ALLOCA_H__
+
+/** \file BLI_alloca.h
+ *  \ingroup bli
+ *
+ * Defines alloca and utility macro BLI_array_alloca
  */
 
-#ifdef __cplusplus
-extern "C" {
+/* BLI_array_alloca / alloca */
+#ifdef _MSC_VER
+#  define alloca _alloca
 #endif
 
-struct Script;
-
-#ifdef __cplusplus
-}
+#if defined(__MINGW32__)
+#  include <malloc.h>  /* mingw needs for alloca() */
 #endif
 
-#endif /* __BKE_SCRIPT_H__ */
+#if defined(__GNUC__) || defined(__clang__)
+#define BLI_array_alloca(arr, realsize) \
+	(typeof(arr))alloca(sizeof(*arr) * (realsize))
+#else
+#define BLI_array_alloca(arr, realsize) \
+	alloca(sizeof(*arr) * (realsize))
+#endif
+
+#endif /* __BLI_ALLOCA_H__ */
