@@ -1,3 +1,6 @@
+#ifndef _GPU_SELECT_H_
+#define _GPU_SELECT_H_
+
 /*
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -25,14 +28,11 @@
  * ***** END GPL LICENSE BLOCK *****
  */
 
-/** \file blender/gpu/intern/gpu_select.h
+/** \file source/blender/gpu/GPU_select.h
  *  \ingroup gpu
  */
 
-#ifndef __GPU_SELECT_H__
-#define __GPU_SELECT_H__
-
-#include "gpu_glew.h"
+#include "GPU_glew.h"
 
 
 
@@ -42,15 +42,15 @@ extern "C" {
 
 
 
-void    gpuSelectBuffer(GLsizei size, GLuint* buffer);
+void    GPU_select_buffer(GLsizei size, GLuint* buffer);
 
-void    gpuSelectBegin (void);
-GLsizei gpuSelectEnd   (void);
+void    GPU_select_begin (void);
+GLsizei GPU_select_end   (void);
 
-void    gpuSelectClear (void);
-void    gpuSelectPop   (void);
-void    gpuSelectPush  (GLuint name);
-void    gpuSelectLoad  (GLuint name);
+void    GPU_select_clear (void);
+void    GPU_select_pop   (void);
+void    GPU_select_push  (GLuint name);
+void    GPU_select_load  (GLuint name);
 
 
 

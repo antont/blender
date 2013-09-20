@@ -32,16 +32,16 @@
  *  \ingroup gpu
  */
 
-#include "GPU_aspect.h"
+#include "GPU_blender_aspect.h"
 
-#ifndef __cplusplus
+#ifdef __cplusplus
 extern "C" {
 #endif
 
 void gpu_blender_aspect_init(void);
 void gpu_blender_aspect_exit(void);
 
-#ifndef __cplusplus
+#ifdef __cplusplus
 }
 #endif
 

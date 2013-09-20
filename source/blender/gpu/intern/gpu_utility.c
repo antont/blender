@@ -1,6 +1,3 @@
-#ifndef _GPU_PIXELS_INTERN_H_
-#define _GPU_PIXELS_INTERN_H_
-
 /*
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -18,7 +15,7 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * The Original Code is Copyright (C) 2013 Blender Foundation.
+ * The Original Code is Copyright (C) 2012 Blender Foundation.
  * All rights reserved.
  *
  * The Original Code is: all of this file.
@@ -28,24 +25,55 @@
  * ***** END GPL LICENSE BLOCK *****
  */
 
-/** \file blender/gpu/intern/gpu_pixels_intern.h
+/** \file blender/gpu/intern/gpu_utility.c
  *  \ingroup gpu
  */
 
-#include "GPU_pixels.h"
+#include "GPU_utility.h"
 
-#ifdef __cplusplus
-extern "C" {
+
+
+const char* gpuErrorString(GLenum err)
+{
+	switch(err) {
+		case GL_NO_ERROR:
+			return "No Error";
+
+		case GL_INVALID_ENUM:
+			return "Invalid Enum";
+
+		case GL_INVALID_VALUE:
+			return "Invalid Value";
+
+		case GL_INVALID_OPERATION:
+			return "Invalid Operation";
+
+		case GL_STACK_OVERFLOW:
+			return "Stack Overflow";
+
+		case GL_STACK_UNDERFLOW:
+			return "Stack Underflow";
+
+		case GL_OUT_OF_MEMORY:
+			return "Out of Memory";
+
+#if GL_ARB_imagining
+		case GL_TABLE_TOO_LARGE:
+			return "Table Too Large";
 #endif
 
-void gpu_pixels_init(void);
-void gpu_pixels_exit(void);
+#if defined(WITH_GLU)
+		case GLU_INVALID_ENUM:
+			return "Invalid Enum (GLU)";
 
-void gpu_pixels_bind  (void);
-void gpu_pixels_unbind(void);
+		case GLU_INVALID_VALUE:
+			return "Invalid Value (GLU)";
 
-#ifdef __cplusplus
+		case GLU_OUT_OF_MEMORY:
+			return "Out of Memory (GLU)";
+#endif
+
+		default:
+			return "<unknown error>";
+	}
 }
-#endif
-
-#endif /* _GPU_PIXELS_INTERN_H_ */
