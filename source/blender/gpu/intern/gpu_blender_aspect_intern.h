@@ -1,5 +1,5 @@
-#ifndef GPU_FONT_SHADER_H
-#define GPU_FONT_SHADER_H
+#ifndef _GPU_BLENDER_ASPECT_INTERN_H_
+#define _GPU_BLENDER_ASPECT_INTERN_H_
 
 /*
  * ***** BEGIN GPL LICENSE BLOCK *****
@@ -18,37 +18,31 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- * The Original Code is Copyright (C) 2013 Blender Foundation.
+ * The Original Code is Copyright (C) 2012 Blender Foundation.
  * All rights reserved.
  *
  * The Original Code is: all of this file.
  *
- * Contributor(s): Jason Wilkins
+ * Contributor(s): Jason Wilkins.
  *
  * ***** END GPL LICENSE BLOCK *****
  */
 
-/** \file GPU_font_shader.h
+/** \file blender/gpu/intern/gpu_aspectimpl_intern.h
  *  \ingroup gpu
  */
 
+#include "GPU_aspect.h"
 
-
-#ifdef __cplusplus
+#ifndef __cplusplus
 extern "C" {
 #endif
 
+void gpu_blender_aspect_init(void);
+void gpu_blender_aspect_exit(void);
 
-
-void GPU_font_shader_init  (void);
-void GPU_font_shader_exit  (void);
-void GPU_font_shader_bind  (void);
-void GPU_font_shader_unbind(void);
-
-
-
-#ifdef __cplusplus
+#ifndef __cplusplus
 }
 #endif
 
-#endif
+#endif /* _GPU_BLENDER_ASPECT_INTERN_H_ */

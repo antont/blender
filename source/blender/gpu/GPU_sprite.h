@@ -1,5 +1,5 @@
-#ifndef _GPU_IMMEDIATE_GL_H_
-#define _GPU_IMMEDIATE_GL_H_
+#ifndef _GPU_SPRITE_H_
+#define _GPU_SPRITE_H_
 
 /*
  * ***** BEGIN GPL LICENSE BLOCK *****
@@ -23,46 +23,45 @@
  *
  * The Original Code is: all of this file.
  *
- * Contributor(s): Alexandr Kuznetsov, Jason Wilkins.
+ * Contributor(s): 
  *
  * ***** END GPL LICENSE BLOCK *****
  */
 
-/** \file source/blender/gpu/intern/gpu_immediate_gl.h
- *  \ingroup gpu
+/** \file blender/gpu/GPU_sprite.h
+ *   \ingroup gpu
  */
 
-/*
-
-This module contains the back-end of the immediate mode replacement.
-
-These are the parts of the code that depend directly on OpenGL.
-
-*/
-
-#include "BLI_utildefines.h" /* for restrict */
+#include "BLI_sys_types.h" // for uint32_t
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void gpu_lock_buffer_gl(void);
-void gpu_unlock_buffer_gl(void);
-void gpu_begin_buffer_gl(void);
-void gpu_end_buffer_gl(void);
-void gpu_shutdown_buffer_gl(struct GPUimmediate *restrict immediate);
-void gpu_current_normal_gl(void);
-void gpu_index_begin_buffer_gl(void);
-void gpu_index_end_buffer_gl(void);
-void gpu_index_shutdown_buffer_gl(struct GPUindex *restrict index);
-void gpu_draw_elements_gl(void);
-void gpu_draw_range_elements_gl(void);
+void GPU_sprite_begin(void);
+void GPU_sprite_end  (void);
 
-void gpu_immediate_gl_init(void);
-void gpu_immediate_gl_exit(void);
+void GPU_sprite_size(float size);
+
+typedef enum GPUSpriteShaderOption {
+	GPU_SPRITE_AA         = (1<<0), /* */
+	GPU_SPRITE_TEXTURE_2D = (1<<1), /* */
+
+	GPU_SPRITE_OPTIONS_NUM         = 1,
+	GPU_SPRITE_OPTION_COMBINATIONS = (1<<GPU_SPRITE_OPTIONS_NUM)
+} GPUSpriteShaderOption;
+
+void GPU_sprite_enable (uint32_t options);
+void GPU_sprite_disable(uint32_t options);
+
+void GPU_sprite_2f (float x, float y);
+void GPU_sprite_2fv(const float v[2]);
+
+void GPU_sprite_3f (float x, float y, float z);
+void GPU_sprite_3fv(const float v[3]);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* _GPU_IMMEDIATE_GL_H_ */
+#endif /* _GPU_SPRITE_H_ */

@@ -1,3 +1,6 @@
+#ifndef _GPU_BLENDER_ASPECT_H_
+#define _GPU_BLENDER_ASPECT_H_
+
 /*
  * ***** BEGIN GPL LICENSE BLOCK *****
  *
@@ -20,31 +23,31 @@
  *
  * The Original Code is: all of this file.
  *
- * Contributor(s): Alexandr Kuznetsov
+ * Contributor(s): Jason Wilkins.
  *
  * ***** END GPL LICENSE BLOCK *****
  */
 
-#define GPU_VIEW_INTERN
-#include "gpu_view.h"
-#include "gpu_view_gl.h"
+/** \file blender/gpu/GPU_blender_aspect.h
+ *  \ingroup gpu
+ */
+
+#include "GPU_aspect.h"
 
 
-void gpuInitializeViewFuncs(void)
-{
 
-gpuColorAndClear = gpuColorAndClear_gl;
-gpuClearColor = gpuClearColor_gl;
+extern uint32_t GPU_ASPECT_BASIC;
+extern uint32_t GPU_ASPECT_FONT;
+extern uint32_t GPU_ASPECT_PIXELS;
+extern uint32_t GPU_ASPECT_RASTER;
+extern uint32_t GPU_ASPECT_SPRITE;
 
-gpuColorAndClearvf = gpuColorAndClearvf_gl;
-gpuClearColorfv = gpuClearColorvf_gl;
+extern GPUaspectimpl* GPU_ASPECTIMPL_BASIC;
+extern GPUaspectimpl* GPU_ASPECTIMPL_FONT;
+extern GPUaspectimpl* GPU_ASPECTIMPL_PIXELS;
+extern GPUaspectimpl* GPU_ASPECTIMPL_RASTER;
+extern GPUaspectimpl* GPU_ASPECTIMPL_SPRITE;
 
 
-gpuViewport = gpuViewport_gl;
-gpuScissor = gpuScissor_gl;
-gpuViewportScissor = gpuViewportScissor_gl;
-gpuGetSizeBox = gpuGetSizeBox_gl;
 
-gpuClear = gpuClear_gl;
-
-}
+#endif /* _GPU_BLENDER_ASPECT_H_ */
