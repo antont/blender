@@ -42,15 +42,15 @@ extern "C" {
 
 
 
-void    GPU_select_buffer(GLsizei size, GLuint* buffer);
+void    GPU_select_buffer(GLsizei size, GLuint* buffer); /* replaces glSelectBuffer(size, buffer) */
 
-void    GPU_select_begin (void);
-GLsizei GPU_select_end   (void);
+void    GPU_select_begin (void);                         /* replaces glRenderMode(GL_SELECT)      */
+GLsizei GPU_select_end   (void);                         /* replaces glRenderMode(GL_RENDER)      */
 
-void    GPU_select_clear (void);
-void    GPU_select_pop   (void);
-void    GPU_select_push  (GLuint name);
-void    GPU_select_load  (GLuint name);
+void    GPU_select_clear (void);                         /* replaces glInitNames()                */
+void    GPU_select_pop   (void);                         /* replaces glPopName()                  */
+void    GPU_select_push  (GLuint name);                  /* replaces glPushName(name)             */
+void    GPU_select_load  (GLuint name);                  /* replaces glLoadName(name)             */
 
 
 
@@ -58,4 +58,4 @@ void    GPU_select_load  (GLuint name);
 }
 #endif
 
-#endif
+#endif /* _GPU_SELECT_H_ */
