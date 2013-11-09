@@ -1835,8 +1835,12 @@ static NlaEvalChannel *nlaevalchan_verify(PointerRNA *ptr, ListBase *channels, N
 		nec->index = fcu->array_index;
 		
 		/* initialise value using default value of property [#35856] */
-		nlaevalchan_value_init(nec);
+        //disabled to fix [#36496]
+		//nlaevalchan_value_init(nec);
 	}
+    else {
+        nec = 0;
+    }
 	
 	/* we can now return */
 	return nec;
